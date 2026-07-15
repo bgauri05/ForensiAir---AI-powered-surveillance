@@ -16,7 +16,7 @@ Instead of checking whether pollution exceeds legal limits, the system identifie
 
 ---
 
-# 🚀 Features
+# Features
 
 - Industrial telemetry preprocessing
 - Synthetic tampering dataset generation
