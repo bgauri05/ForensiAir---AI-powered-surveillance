@@ -1,0 +1,3 @@
+id,run_timestamp,total_pages_scraped,total_records_scraped,new_records_inserted,duplicate_records_skipped,execution_time,status,error_message
+1,2026-07-05 14:41:57.547469+05:30,26,95737,36,95701,420.07,SUCCESS,
+2,2026-07-05 15:10:15.548468+05:30,26,95737,0,95737,955.98,SUCCESS,
