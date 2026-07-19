@@ -439,14 +439,27 @@ def compute_rolling_correlation(df: pd.DataFrame, config: dict) -> pd.DataFrame:
 
                 col_name = f"corr_{p1}_{p2}"
 
-                factory_corr[col_name] = (
-                    group[p1]
+                s1 = group[p1]
+                s2 = group[p2]
+
+                s1_std = s1.rolling(window=w_size, min_periods=w_size).std()
+                s2_std = s2.rolling(window=w_size, min_periods=w_size).std()
+
+                corr = (
+                    s1
                     .rolling(
                         window=w_size,
                         min_periods=w_size
                     )
-                    .corr(group[p2])
+                    .corr(s2)
                 )
+
+                # Zero-guard: if either rolling std is 0 or < 1e-9, set correlation to NaN
+                corr_guarded = np.where((s1_std < 1e-9) | (s2_std < 1e-9), np.nan, corr)
+                # Ensure no infs are left
+                corr_guarded = pd.Series(corr_guarded, index=group.index).replace([np.inf, -np.inf], np.nan)
+
+                factory_corr[col_name] = corr_guarded
 
         corr_frames.append(factory_corr)
 
@@ -579,29 +592,62 @@ def compute_limit_hugging(
 
     pct = config["windows"]["limit_hugging_pct"]
 
+    # Map raw parameter names to standard ETP parameter IDs
+    limits = limits_df.copy()
+
+    def map_raw_parameter_to_standard(param_name: str) -> str:
+        if not isinstance(param_name, str):
+            return None
+        param_name_lower = param_name.lower().strip()
+        if "ph value" in param_name_lower or param_name_lower == "ph":
+            return "ETP-pH"
+        if "trade effluent" in param_name_lower or "flow" in param_name_lower:
+            return "ETP-Flow"
+        if "bod" in param_name_lower:
+            return "ETP-BOD"
+        if "cod" in param_name_lower:
+            return "ETP-COD"
+        if "tss" in param_name_lower or "suspended solid" in param_name_lower:
+            return "ETP-TSS"
+        return None
+
+    limits["parameter_id"] = limits["parameter_id"].apply(map_raw_parameter_to_standard)
+    limits = limits[limits["parameter_id"].notna()]
+    
+    # Filter out proxy limits and non-positive limits
+    limits = limits[limits["proxy_source_factory_id"].isna()]
+    limits = limits[limits["upper_limit"] > 0.0]
+    
+    # Deduplicate limits per factory and parameter, keeping highest extraction_confidence
+    limits = limits.sort_values("extraction_confidence", ascending=False)
+    limits = limits.drop_duplicates(subset=["factory_id", "parameter_id"], keep="first")
+
+    # Merge on both factory_id and parameter_id
     df = df.merge(
-        limits_df,
-        on="parameter_id",
+        limits[["factory_id", "parameter_id", "lower_limit", "upper_limit"]],
+        on=["factory_id", "parameter_id"],
         how="left"
     )
 
-    lower_threshold = (
-        df["lower_limit"] +
-        (df["upper_limit"] - df["lower_limit"]) * pct
-    )
+    upper_limit = df["upper_limit"]
+    lower_limit = df["lower_limit"]
 
-    upper_threshold = (
-        df["upper_limit"] -
-        (df["upper_limit"] - df["lower_limit"]) * pct
-    )
+    # Upper hugging: value between (1 - pct) * upper_limit and upper_limit (inclusive)
+    upper_hugging = (df["value"] >= (1 - pct) * upper_limit) & (df["value"] <= upper_limit)
 
-    hugging = (
-        (df["value"] <= lower_threshold) |
-        (df["value"] >= upper_threshold)
-    )
+    # Lower hugging: only when lower_limit is defined, value between lower_limit and lower_limit + (upper_limit - lower_limit) * pct (inclusive)
+    lower_hugging = pd.Series(False, index=df.index)
+    has_lower = lower_limit.notna()
+    lower_hugging.loc[has_lower] = (df["value"].loc[has_lower] >= lower_limit.loc[has_lower]) & \
+                                   (df["value"].loc[has_lower] <= lower_limit.loc[has_lower] + (upper_limit.loc[has_lower] - lower_limit.loc[has_lower]) * pct)
+
+    hugging = upper_hugging | lower_hugging
+
+    # Return NaN where limits do not exist
+    hugging_result = np.where(df["upper_limit"].notna(), hugging.astype(float), np.nan)
 
     return pd.Series(
-        hugging.astype(float),
+        hugging_result,
         index=df.index,
         name="limit_hugging"
     )
