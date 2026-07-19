@@ -1,0 +1,13 @@
+windows:
+  flatline_window: "2H"
+  flatline_std_threshold: 0.01
+  correlation_window: "24H"
+  autocorr_lag: 96
+  missing_rate_window: "7D"
+  limit_hugging_pct: 0.05
+parameters:
+  - ETP-Flow
+  - ETP-pH
+  - ETP-COD
+  - ETP-BOD
+  - ETP-TSS
