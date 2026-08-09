@@ -57,6 +57,8 @@ def main():
     # 3. Open ETP-pH CSV file
     csv_path = "c:/Users/gauri/OneDrive/Desktop/mpcb_scraper/mpcb_ph_data.csv"
     if not os.path.exists(csv_path):
+        csv_path = os.path.join(os.path.dirname(__file__), "mpcb_ph_data.csv")
+    if not os.path.exists(csv_path):
         print(f"CSV file not found: {csv_path}")
         return
         

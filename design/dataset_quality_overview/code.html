@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Dataset Quality Overview | ForensiAir</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary": "#00355f",
+                    "warning-orange": "#F57C00",
+                    "tertiary-fixed": "#ffdcc4",
+                    "on-secondary": "#ffffff",
+                    "surface-container": "#edeef0",
+                    "outline": "#727780",
+                    "inverse-on-surface": "#f0f1f3",
+                    "secondary-fixed": "#a3f69c",
+                    "background": "#f8f9fb",
+                    "on-background": "#191c1e",
+                    "surface-container-low": "#f2f4f6",
+                    "on-tertiary": "#ffffff",
+                    "on-surface": "#191c1e",
+                    "tertiary-container": "#743b00",
+                    "primary-fixed": "#d2e4ff",
+                    "error": "#ba1a1a",
+                    "primary-container": "#0f4c81",
+                    "on-primary-container": "#8ebdf9",
+                    "on-secondary-fixed": "#002204",
+                    "surface-container-lowest": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "primary-fixed-dim": "#a0c9ff",
+                    "outline-variant": "#c2c7d1",
+                    "surface-dim": "#d9dadc",
+                    "secondary-fixed-dim": "#88d982",
+                    "on-primary-fixed-variant": "#07497d",
+                    "on-secondary-fixed-variant": "#005312",
+                    "surface-white": "#FFFFFF",
+                    "inverse-primary": "#a0c9ff",
+                    "surface-tint": "#2d6197",
+                    "on-primary-fixed": "#001c37",
+                    "secondary": "#1b6d24",
+                    "on-primary": "#ffffff",
+                    "surface-bright": "#f8f9fb",
+                    "on-tertiary-container": "#f9a767",
+                    "on-secondary-container": "#217128",
+                    "on-tertiary-fixed-variant": "#6f3800",
+                    "on-surface-variant": "#42474f",
+                    "surface-variant": "#e1e2e4",
+                    "inverse-surface": "#2e3132",
+                    "danger-red": "#D32F2F",
+                    "on-tertiary-fixed": "#2f1400",
+                    "secondary-container": "#a0f399",
+                    "on-error": "#ffffff",
+                    "surface": "#f8f9fb",
+                    "border-gray": "#E5E7EB",
+                    "surface-container-highest": "#e1e2e4",
+                    "tertiary-fixed-dim": "#ffb780",
+                    "tertiary": "#532800",
+                    "error-container": "#ffdad6",
+                    "surface-container-high": "#e7e8ea",
+                    "text-main": "#1F2937"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "stack-sm": "0.5rem",
+                    "sidebar-width": "280px",
+                    "stack-md": "1rem",
+                    "container-padding": "2rem",
+                    "gutter": "1.5rem"
+            },
+            "fontFamily": {
+                    "headline-md": ["IBM Plex Sans"],
+                    "body-md": ["IBM Plex Sans"],
+                    "table-data": ["IBM Plex Sans"],
+                    "body-sm": ["IBM Plex Sans"],
+                    "label-caps": ["IBM Plex Sans"],
+                    "display-kpi": ["IBM Plex Sans"],
+                    "headline-lg": ["IBM Plex Sans"]
+            },
+            "fontSize": {
+                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "table-data": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                    "display-kpi": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                    "headline-lg": ["28px", {"lineHeight": "36px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #f8f9fb;
+            font-family: 'IBM Plex Sans', sans-serif;
+            color: #191c1e;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .sidebar-active-indicator {
+            position: absolute;
+            left: 0;
+            width: 2px;
+            height: 100%;
+            background-color: #a0c9ff;
+        }
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 1.5rem;
+        }
+        .heatmap-cell {
+            aspect-ratio: 1/1;
+            width: 100%;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #c2c7d1;
+        }
+    </style>
+</head>
+<body class="flex min-h-screen">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-full w-[280px] bg-primary dark:bg-on-primary-fixed border-r border-outline-variant dark:border-outline flex flex-col py-stack-md z-50">
+<div class="px-6 mb-8">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-primary text-3xl" style="font-variation-settings: 'FILL' 1;">dataset</span>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-on-primary">ForensiAir</h1>
+<p class="text-[10px] uppercase tracking-widest text-on-primary/60">Environmental Surveillance</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center px-6 py-3 text-on-primary/70 hover:text-on-primary hover:bg-primary-container/50 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined mr-3">dashboard</span>
+<span class="font-body-md text-body-md">Dashboard</span>
+</a>
+<a class="flex items-center px-6 py-3 text-on-primary/70 hover:text-on-primary hover:bg-primary-container/50 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined mr-3">factory</span>
+<span class="font-body-md text-body-md">Factories</span>
+</a>
+<a class="flex items-center px-6 py-3 text-on-primary/70 hover:text-on-primary hover:bg-primary-container/50 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined mr-3">sensors</span>
+<span class="font-body-md text-body-md">Monitoring</span>
+</a>
+<a class="flex items-center px-6 py-3 text-on-primary/70 hover:text-on-primary hover:bg-primary-container/50 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined mr-3">psychology</span>
+<span class="font-body-md text-body-md">AI Analysis</span>
+</a>
+<a class="flex items-center px-6 py-3 text-on-primary/70 hover:text-on-primary hover:bg-primary-container/50 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined mr-3">notifications</span>
+<span class="font-body-md text-body-md">Alerts</span>
+</a>
+<a class="flex items-center px-6 py-3 text-on-primary/70 hover:text-on-primary hover:bg-primary-container/50 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined mr-3">assessment</span>
+<span class="font-body-md text-body-md">Reports</span>
+</a>
+<!-- Active Tab: Dataset Quality -->
+<a class="relative flex items-center px-6 py-3 bg-primary-container text-on-primary-container border-l-2 border-primary-fixed-dim transition-colors duration-200" href="#">
+<span class="material-symbols-outlined mr-3" style="font-variation-settings: 'FILL' 1;">query_stats</span>
+<span class="font-body-md text-body-md font-semibold">Dataset Quality</span>
+</a>
+<a class="flex items-center px-6 py-3 text-on-primary/70 hover:text-on-primary hover:bg-primary-container/50 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined mr-3">admin_panel_settings</span>
+<span class="font-body-md text-body-md">Administration</span>
+</a>
+<a class="flex items-center px-6 py-3 text-on-primary/70 hover:text-on-primary hover:bg-primary-container/50 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined mr-3">settings</span>
+<span class="font-body-md text-body-md">Settings</span>
+</a>
+</nav>
+<div class="px-6 pt-6 mt-auto border-t border-white/10">
+<div class="flex items-center gap-3">
+<img class="w-10 h-10 rounded-full border border-white/20" data-alt="A clean professional profile picture of a government environmental official, middle-aged, neutral expression, high-quality corporate photography, white background, soft lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-PfJzq_5WWnxgtOUecZk-hB1I6Kn9mPqjkggugaL-3jIn818hMJGQHmV5dgyu9EuVM-HRroUtw5nvOxf_sQY8SZ8qfiPWbsS1CcdErLF9b-EkqtOHJrAq7HkG33IFAfNpQunk5BcsAXT3gpQ-wUqTF61Jx6Xvx6sy1f_YKjISS0yGny-UIKD59QXev8XWnwuy5uCCAM0UD2zsn8Cx0g1sGZRQKmLXrh4rJHFaZyC_wrFMv7wqbgDxkg"/>
+<div class="overflow-hidden">
+<p class="font-label-caps text-label-caps text-on-primary truncate">Director Chen</p>
+<p class="text-[10px] text-on-primary/50">Audit Div. Senior Lead</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-[280px] flex-1 flex flex-col min-h-screen">
+<!-- TopAppBar -->
+<header class="h-16 bg-surface-white border-b border-border-gray flex items-center justify-between px-gutter sticky top-0 z-40">
+<div class="flex items-center bg-surface-container-low px-4 py-1.5 rounded-lg border border-outline-variant w-96">
+<span class="material-symbols-outlined text-outline mr-2 text-xl">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-body-sm w-full p-0" placeholder="Search factory audits, sensor IDs, or quality metrics..." type="text"/>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2 px-3 py-1 bg-secondary/10 text-secondary rounded-full border border-secondary/20">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-label-caps text-[10px]">NETWORK STATUS: NOMINAL</span>
+</div>
+<div class="flex items-center gap-4 text-on-surface-variant">
+<button class="hover:bg-surface-container-low p-2 rounded-full transition-colors">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+<button class="hover:bg-surface-container-low p-2 rounded-full transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full border-2 border-surface-white"></span>
+</button>
+<button class="flex items-center gap-2 hover:bg-surface-container-low px-2 py-1 rounded transition-colors">
+<span class="material-symbols-outlined">account_circle</span>
+<span class="material-symbols-outlined text-sm">expand_more</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Page Content -->
+<div class="p-8 space-y-8 flex-1 overflow-y-auto custom-scrollbar">
+<!-- Header Section -->
+<div class="flex justify-between items-end">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-primary">Dataset Quality Overview</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Institutional audit of environmental sensor network integrity and AI readiness.</p>
+</div>
+<div class="flex gap-3">
+<button class="px-4 py-2 bg-surface-white border border-border-gray text-primary font-medium rounded flex items-center gap-2 hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-lg">calendar_today</span>
+                        Last 30 Days
+                    </button>
+<button class="px-4 py-2 bg-primary text-on-primary font-medium rounded flex items-center gap-2 transition-colors active:brightness-95">
+<span class="material-symbols-outlined text-lg">download</span>
+                        Export Audit Report
+                    </button>
+</div>
+</div>
+<!-- KPI Cards Row -->
+<div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
+<!-- Coverage -->
+<div class="bg-surface-white border border-border-gray p-5 rounded">
+<div class="flex justify-between items-start mb-2">
+<span class="font-label-caps text-label-caps text-on-surface-variant">COVERAGE</span>
+<span class="px-2 py-0.5 bg-secondary/10 text-secondary text-[10px] font-bold rounded border border-secondary/20">HEALTHY</span>
+</div>
+<div class="font-display-kpi text-display-kpi text-primary">98.4%</div>
+<div class="text-[11px] text-secondary mt-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+                        +0.2% from last audit
+                    </div>
+</div>
+<!-- Duplicates -->
+<div class="bg-surface-white border border-border-gray p-5 rounded">
+<div class="flex justify-between items-start mb-2">
+<span class="font-label-caps text-label-caps text-on-surface-variant">DUPLICATES</span>
+<span class="px-2 py-0.5 bg-secondary/10 text-secondary text-[10px] font-bold rounded border border-secondary/20">LOW</span>
+</div>
+<div class="font-display-kpi text-display-kpi text-primary">0.12%</div>
+<div class="text-[11px] text-secondary mt-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">trending_down</span>
+                        -0.05% vs baseline
+                    </div>
+</div>
+<!-- Missing Data -->
+<div class="bg-surface-white border border-border-gray p-5 rounded">
+<div class="flex justify-between items-start mb-2">
+<span class="font-label-caps text-label-caps text-on-surface-variant">MISSING DATA</span>
+<span class="px-2 py-0.5 bg-warning-orange/10 text-warning-orange text-[10px] font-bold rounded border border-warning-orange/20">WITHIN TOLERANCE</span>
+</div>
+<div class="font-display-kpi text-display-kpi text-primary">1.48%</div>
+<div class="text-[11px] text-error mt-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+                        +0.32% regional variance
+                    </div>
+</div>
+<!-- Quality Grade -->
+<div class="bg-surface-white border border-border-gray p-5 rounded">
+<div class="flex justify-between items-start mb-2">
+<span class="font-label-caps text-label-caps text-on-surface-variant">QUALITY GRADE</span>
+<span class="material-symbols-outlined text-primary-container text-lg">verified</span>
+</div>
+<div class="font-display-kpi text-display-kpi text-primary">A+</div>
+<div class="text-[11px] text-on-surface-variant mt-1">Institutional Standard met</div>
+</div>
+<!-- Readiness Score -->
+<div class="bg-primary-container p-5 rounded text-on-primary">
+<div class="flex justify-between items-start mb-2">
+<span class="font-label-caps text-label-caps text-on-primary-container">AI READINESS</span>
+<span class="material-symbols-outlined text-on-primary-container text-lg">psychology</span>
+</div>
+<div class="font-display-kpi text-display-kpi">96/100</div>
+<div class="text-[11px] text-on-primary-container mt-1">Ready for Inference Engine v4.2</div>
+</div>
+</div>
+<!-- Analytics Bento Grid -->
+<div class="bento-grid">
+<!-- Coverage by Factory (Bar Chart Simulation) -->
+<div class="col-span-12 lg:col-span-7 bg-surface-white border border-border-gray p-6 rounded">
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-headline-md text-headline-md text-primary">Coverage by Factory</h3>
+<span class="material-symbols-outlined text-outline">more_horiz</span>
+</div>
+<div class="space-y-4">
+<div class="space-y-1.5">
+<div class="flex justify-between text-label-caps text-[10px] text-on-surface-variant">
+<span>SINOTECH CHEMICALS</span>
+<span>99.8%</span>
+</div>
+<div class="w-full bg-surface-container-low h-3 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 99.8%"></div>
+</div>
+</div>
+<div class="space-y-1.5">
+<div class="flex justify-between text-label-caps text-[10px] text-on-surface-variant">
+<span>PACIFIC TEXTILES</span>
+<span>97.2%</span>
+</div>
+<div class="w-full bg-surface-container-low h-3 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 97.2%"></div>
+</div>
+</div>
+<div class="space-y-1.5">
+<div class="flex justify-between text-label-caps text-[10px] text-on-surface-variant">
+<span>GLOBAL PULP &amp; PAPER</span>
+<span>98.5%</span>
+</div>
+<div class="w-full bg-surface-container-low h-3 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 98.5%"></div>
+</div>
+</div>
+<div class="space-y-1.5">
+<div class="flex justify-between text-label-caps text-[10px] text-on-surface-variant">
+<span>RIVERDALE TANNERS</span>
+<span>94.1%</span>
+</div>
+<div class="w-full bg-surface-container-low h-3 rounded-full overflow-hidden">
+<div class="bg-warning-orange h-full rounded-full" style="width: 94.1%"></div>
+</div>
+</div>
+<div class="space-y-1.5">
+<div class="flex justify-between text-label-caps text-[10px] text-on-surface-variant">
+<span>NORTHERN REFINERY</span>
+<span>98.9%</span>
+</div>
+<div class="w-full bg-surface-container-low h-3 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 98.9%"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Quality Distribution (Curve simulation) -->
+<div class="col-span-12 lg:col-span-5 bg-surface-white border border-border-gray p-6 rounded flex flex-col">
+<h3 class="font-headline-md text-headline-md text-primary mb-6">Quality Distribution</h3>
+<div class="flex-1 flex items-end gap-1 mb-4 h-40">
+<div class="bg-surface-container-low w-full h-[15%]" title="Poor"></div>
+<div class="bg-surface-container-low w-full h-[25%]" title="Fair"></div>
+<div class="bg-primary-fixed-dim w-full h-[60%]" title="Good"></div>
+<div class="bg-primary-container w-full h-[95%]" title="Excellent"></div>
+<div class="bg-primary-fixed-dim w-full h-[40%]" title="Good"></div>
+</div>
+<div class="grid grid-cols-4 gap-2">
+<div class="text-center">
+<p class="font-label-caps text-[9px] text-on-surface-variant">POOR</p>
+<p class="font-bold text-sm text-primary">2.1%</p>
+</div>
+<div class="text-center">
+<p class="font-label-caps text-[9px] text-on-surface-variant">FAIR</p>
+<p class="font-bold text-sm text-primary">8.4%</p>
+</div>
+<div class="text-center">
+<p class="font-label-caps text-[9px] text-on-surface-variant">GOOD</p>
+<p class="font-bold text-sm text-primary">34.5%</p>
+</div>
+<div class="text-center">
+<p class="font-label-caps text-[9px] text-on-surface-variant">EXCEL</p>
+<p class="font-bold text-sm text-primary">55%</p>
+</div>
+</div>
+</div>
+<!-- Missing Data Heatmap -->
+<div class="col-span-12 lg:col-span-8 bg-surface-white border border-border-gray p-6 rounded">
+<div class="flex justify-between items-center mb-6">
+<div>
+<h3 class="font-headline-md text-headline-md text-primary">Missing Data Heatmap</h3>
+<p class="text-body-sm text-on-surface-variant">Incident frequency by sensor parameter (Weekly)</p>
+</div>
+<div class="flex gap-2 text-[10px] font-bold items-center">
+<span>ZERO</span>
+<div class="flex gap-1">
+<div class="w-3 h-3 bg-secondary-container"></div>
+<div class="w-3 h-3 bg-primary-fixed-dim"></div>
+<div class="w-3 h-3 bg-warning-orange"></div>
+<div class="w-3 h-3 bg-danger-red"></div>
+</div>
+<span>CRITICAL</span>
+</div>
+</div>
+<div class="grid grid-cols-[80px_1fr] gap-4">
+<div class="space-y-4 pt-1">
+<div class="text-[11px] font-bold text-on-surface-variant h-4 flex items-center">BOD</div>
+<div class="text-[11px] font-bold text-on-surface-variant h-4 flex items-center">COD</div>
+<div class="text-[11px] font-bold text-on-surface-variant h-4 flex items-center">FLOW</div>
+<div class="text-[11px] font-bold text-on-surface-variant h-4 flex items-center">pH</div>
+<div class="text-[11px] font-bold text-on-surface-variant h-4 flex items-center">TSS</div>
+</div>
+<div class="grid grid-cols-24 gap-1.5" id="heatmap-grid">
+<!-- JS loop would fill this, using placeholders for now -->
+<script>
+                                const grid = document.getElementById('heatmap-grid');
+                                const colors = ['bg-secondary-container', 'bg-secondary-container', 'bg-secondary-container', 'bg-primary-fixed-dim', 'bg-secondary-container', 'bg-warning-orange', 'bg-secondary-container', 'bg-danger-red'];
+                                for (let i = 0; i < 5 * 24; i++) {
+                                    const cell = document.createElement('div');
+                                    cell.className = `h-4 rounded-sm ${colors[Math.floor(Math.random() * colors.length)]} opacity-80 hover:opacity-100 cursor-pointer`;
+                                    grid.appendChild(cell);
+                                }
+                            </script>
+</div>
+</div>
+<div class="flex justify-between mt-4 text-[10px] text-on-surface-variant pl-[80px]">
+<span>MON 00:00</span>
+<span>WED 12:00</span>
+<span>SUN 23:59</span>
+</div>
+</div>
+<!-- Parameter Statistics (Stability Chart) -->
+<div class="col-span-12 lg:col-span-4 bg-surface-white border border-border-gray p-6 rounded">
+<h3 class="font-headline-md text-headline-md text-primary mb-6">Parameter Stability</h3>
+<div class="space-y-5">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded bg-surface-container-low flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">water_drop</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between mb-1">
+<span class="text-sm font-semibold">Dissolved Oxygen</span>
+<span class="text-sm text-secondary">99.1% Stable</span>
+</div>
+<div class="h-1.5 bg-surface-container-low rounded-full">
+<div class="bg-secondary h-full rounded-full" style="width: 99.1%"></div>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded bg-surface-container-low flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">thermometer</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between mb-1">
+<span class="text-sm font-semibold">Temperature</span>
+<span class="text-sm text-secondary">98.4% Stable</span>
+</div>
+<div class="h-1.5 bg-surface-container-low rounded-full">
+<div class="bg-secondary h-full rounded-full" style="width: 98.4%"></div>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded bg-surface-container-low flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">science</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between mb-1">
+<span class="text-sm font-semibold">Nitrate Levels</span>
+<span class="text-sm text-warning-orange">82.1% Stable</span>
+</div>
+<div class="h-1.5 bg-surface-container-low rounded-full">
+<div class="bg-warning-orange h-full rounded-full" style="width: 82.1%"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Factory Quality Summary Table -->
+<section class="bg-surface-white border border-border-gray rounded overflow-hidden">
+<div class="px-6 py-4 border-b border-border-gray flex justify-between items-center bg-surface-bright">
+<h3 class="font-headline-md text-headline-md text-primary">Factory Quality Summary</h3>
+<div class="flex gap-2">
+<span class="px-3 py-1 bg-surface-container-low border border-border-gray text-[11px] font-bold rounded">FILTER: ALL DISTRICTS</span>
+<span class="px-3 py-1 bg-surface-container-low border border-border-gray text-[11px] font-bold rounded">SORT: READINESS SCORE</span>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead>
+<tr class="bg-surface-container-lowest border-b border-border-gray">
+<th class="px-6 py-3 font-label-caps text-label-caps text-on-surface-variant">FACTORY NAME</th>
+<th class="px-6 py-3 font-label-caps text-label-caps text-on-surface-variant">DISTRICT</th>
+<th class="px-6 py-3 font-label-caps text-label-caps text-on-surface-variant">LAST AUDIT</th>
+<th class="px-6 py-3 font-label-caps text-label-caps text-on-surface-variant">COVERAGE %</th>
+<th class="px-6 py-3 font-label-caps text-label-caps text-on-surface-variant">MISSING %</th>
+<th class="px-6 py-3 font-label-caps text-label-caps text-on-surface-variant">READINESS SCORE</th>
+<th class="px-6 py-3 font-label-caps text-label-caps text-on-surface-variant text-right">ACTION</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-border-gray">
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-3 font-table-data text-table-data font-semibold">Sinotech Chemicals Ltd.</td>
+<td class="px-6 py-3 font-table-data text-table-data">Eastern Industrial Zone</td>
+<td class="px-6 py-3 font-table-data text-table-data">2023-11-24</td>
+<td class="px-6 py-3 font-table-data text-table-data">99.8%</td>
+<td class="px-6 py-3 font-table-data text-table-data text-secondary">0.02%</td>
+<td class="px-6 py-3 font-table-data text-table-data">
+<div class="flex items-center gap-2">
+<div class="w-16 h-1.5 bg-surface-container-low rounded-full">
+<div class="bg-secondary h-full rounded-full" style="width: 98%"></div>
+</div>
+<span>98</span>
+</div>
+</td>
+<td class="px-6 py-3 text-right">
+<button class="text-primary-container font-bold text-xs hover:underline uppercase tracking-wider">View Details</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-3 font-table-data text-table-data font-semibold">Pacific Textiles Corp</td>
+<td class="px-6 py-3 font-table-data text-table-data">Waterfront District</td>
+<td class="px-6 py-3 font-table-data text-table-data">2023-11-23</td>
+<td class="px-6 py-3 font-table-data text-table-data">97.2%</td>
+<td class="px-6 py-3 font-table-data text-table-data text-warning-orange">2.10%</td>
+<td class="px-6 py-3 font-table-data text-table-data">
+<div class="flex items-center gap-2">
+<div class="w-16 h-1.5 bg-surface-container-low rounded-full">
+<div class="bg-primary h-full rounded-full" style="width: 89%"></div>
+</div>
+<span>89</span>
+</div>
+</td>
+<td class="px-6 py-3 text-right">
+<button class="text-primary-container font-bold text-xs hover:underline uppercase tracking-wider">View Details</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-3 font-table-data text-table-data font-semibold">Global Pulp &amp; Paper</td>
+<td class="px-6 py-3 font-table-data text-table-data">Northern Highlands</td>
+<td class="px-6 py-3 font-table-data text-table-data">2023-11-20</td>
+<td class="px-6 py-3 font-table-data text-table-data">98.5%</td>
+<td class="px-6 py-3 font-table-data text-table-data text-secondary">0.45%</td>
+<td class="px-6 py-3 font-table-data text-table-data">
+<div class="flex items-center gap-2">
+<div class="w-16 h-1.5 bg-surface-container-low rounded-full">
+<div class="bg-primary h-full rounded-full" style="width: 94%"></div>
+</div>
+<span>94</span>
+</div>
+</td>
+<td class="px-6 py-3 text-right">
+<button class="text-primary-container font-bold text-xs hover:underline uppercase tracking-wider">View Details</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-3 font-table-data text-table-data font-semibold">Riverdale Tanners</td>
+<td class="px-6 py-3 font-table-data text-table-data">Southern Valley</td>
+<td class="px-6 py-3 font-table-data text-table-data">2023-11-18</td>
+<td class="px-6 py-3 font-table-data text-table-data">94.1%</td>
+<td class="px-6 py-3 font-table-data text-table-data text-error">4.88%</td>
+<td class="px-6 py-3 font-table-data text-table-data">
+<div class="flex items-center gap-2">
+<div class="w-16 h-1.5 bg-surface-container-low rounded-full">
+<div class="bg-warning-orange h-full rounded-full" style="width: 76%"></div>
+</div>
+<span>76</span>
+</div>
+</td>
+<td class="px-6 py-3 text-right">
+<button class="text-primary-container font-bold text-xs hover:underline uppercase tracking-wider">View Details</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-3 font-table-data text-table-data font-semibold">Northern Refinery Group</td>
+<td class="px-6 py-3 font-table-data text-table-data">Central District</td>
+<td class="px-6 py-3 font-table-data text-table-data">2023-11-25</td>
+<td class="px-6 py-3 font-table-data text-table-data">98.9%</td>
+<td class="px-6 py-3 font-table-data text-table-data text-secondary">0.11%</td>
+<td class="px-6 py-3 font-table-data text-table-data">
+<div class="flex items-center gap-2">
+<div class="w-16 h-1.5 bg-surface-container-low rounded-full">
+<div class="bg-secondary h-full rounded-full" style="width: 97%"></div>
+</div>
+<span>97</span>
+</div>
+</td>
+<td class="px-6 py-3 text-right">
+<button class="text-primary-container font-bold text-xs hover:underline uppercase tracking-wider">View Details</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="px-6 py-3 border-t border-border-gray bg-surface-bright flex items-center justify-between">
+<span class="text-body-sm text-on-surface-variant">Showing 5 of 124 factories</span>
+<div class="flex gap-1">
+<button class="w-8 h-8 rounded border border-border-gray flex items-center justify-center text-on-surface-variant hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-sm">chevron_left</span>
+</button>
+<button class="w-8 h-8 rounded border border-primary bg-primary text-on-primary text-sm font-bold">1</button>
+<button class="w-8 h-8 rounded border border-border-gray flex items-center justify-center text-sm font-bold hover:bg-surface-container-low transition-colors">2</button>
+<button class="w-8 h-8 rounded border border-border-gray flex items-center justify-center text-sm font-bold hover:bg-surface-container-low transition-colors">3</button>
+<button class="w-8 h-8 rounded border border-border-gray flex items-center justify-center text-on-surface-variant hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+</button>
+</div>
+</div>
+</section>
+</div>
+</main>
+<script>
+        // Simple micro-interaction for KPI cards
+        document.querySelectorAll('.bg-surface-white.p-5').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-2px)';
+                card.classList.add('shadow-sm');
+                card.style.transition = 'all 0.2s ease-out';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0)';
+                card.classList.remove('shadow-sm');
+            });
+        });
+
+        // Heatmap Tooltip placeholder logic
+        const heatmapCells = document.querySelectorAll('#heatmap-grid > div');
+        heatmapCells.forEach(cell => {
+            cell.addEventListener('mouseover', (e) => {
+                const status = cell.classList.contains('bg-danger-red') ? 'Critical Outage' : (cell.classList.contains('bg-warning-orange') ? 'Minor Gap' : 'Healthy');
+                cell.setAttribute('title', `Status: ${status} | Timestamp: Nov 24, 14:00`);
+            });
+        });
+    </script>
+</body></html>

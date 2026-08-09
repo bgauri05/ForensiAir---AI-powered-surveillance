@@ -64,6 +64,8 @@ def main():
     
     # 3. Open CSV file
     csv_path = "c:/Users/gauri/OneDrive/Desktop/mpcb_scraper/mpcb_etp_data.csv"
+    if not os.path.exists(csv_path):
+        csv_path = os.path.join(os.path.dirname(__file__), "mpcb_etp_data.csv")
     print("Opening CSV file:", csv_path)
     
     with open(csv_path, 'r', encoding='utf-8', errors='ignore') as f:

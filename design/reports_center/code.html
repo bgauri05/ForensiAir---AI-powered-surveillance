@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ForensiAir | Reports Center</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-variant": "#e1e2e4",
+                    "on-surface": "#191c1e",
+                    "background": "#f8f9fb",
+                    "surface-bright": "#f8f9fb",
+                    "primary-container": "#0f4c81",
+                    "on-primary-fixed-variant": "#07497d",
+                    "tertiary-container": "#743b00",
+                    "warning-orange": "#F57C00",
+                    "on-secondary": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "inverse-on-surface": "#f0f1f3",
+                    "surface": "#f8f9fb",
+                    "on-secondary-fixed-variant": "#005312",
+                    "on-secondary-fixed": "#002204",
+                    "on-error-container": "#93000a",
+                    "tertiary-fixed": "#ffdcc4",
+                    "on-primary": "#ffffff",
+                    "danger-red": "#D32F2F",
+                    "text-main": "#1F2937",
+                    "on-tertiary-fixed-variant": "#6f3800",
+                    "surface-container-high": "#e7e8ea",
+                    "tertiary": "#532800",
+                    "border-gray": "#E5E7EB",
+                    "surface-dim": "#d9dadc",
+                    "primary-fixed-dim": "#a0c9ff",
+                    "primary": "#00355f",
+                    "on-primary-container": "#8ebdf9",
+                    "surface-container-lowest": "#ffffff",
+                    "on-tertiary-fixed": "#2f1400",
+                    "on-surface-variant": "#42474f",
+                    "tertiary-fixed-dim": "#ffb780",
+                    "error": "#ba1a1a",
+                    "inverse-primary": "#a0c9ff",
+                    "outline-variant": "#c2c7d1",
+                    "surface-container-low": "#f2f4f6",
+                    "secondary-fixed": "#a3f69c",
+                    "on-primary-fixed": "#001c37",
+                    "secondary-container": "#a0f399",
+                    "surface-container-highest": "#e1e2e4",
+                    "outline": "#727780",
+                    "inverse-surface": "#2e3132",
+                    "error-container": "#ffdad6",
+                    "on-tertiary-container": "#f9a767",
+                    "primary-fixed": "#d2e4ff",
+                    "on-secondary-container": "#217128",
+                    "surface-container": "#edeef0",
+                    "secondary": "#1b6d24",
+                    "surface-tint": "#2d6197",
+                    "surface-white": "#FFFFFF",
+                    "secondary-fixed-dim": "#88d982",
+                    "on-error": "#ffffff",
+                    "on-background": "#191c1e"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "stack-sm": "0.5rem",
+                    "stack-md": "1rem",
+                    "sidebar-width": "280px",
+                    "gutter": "1.5rem",
+                    "container-padding": "2rem"
+            },
+            "fontFamily": {
+                    "display-kpi": ["IBM Plex Sans"],
+                    "body-sm": ["IBM Plex Sans"],
+                    "table-data": ["IBM Plex Sans"],
+                    "headline-lg": ["IBM Plex Sans"],
+                    "body-md": ["IBM Plex Sans"],
+                    "label-caps": ["IBM Plex Sans"],
+                    "headline-md": ["IBM Plex Sans"]
+            },
+            "fontSize": {
+                    "display-kpi": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "table-data": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                    "headline-lg": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'IBM Plex Sans', sans-serif; background-color: #f8f9fb; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .pdf-shadow { box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1); }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #d1d5db; }
+        .border-l-active { border-left: 2px solid #0f4c81; }
+    </style>
+</head>
+<body class="text-on-surface">
+<!-- SideNavBar (Shared Component) -->
+<aside class="w-[280px] h-screen fixed left-0 top-0 bg-primary-container text-on-primary-container border-r border-outline-variant flex flex-col h-full py-6 z-50">
+<div class="px-6 mb-8 flex items-center gap-3">
+<div class="w-10 h-10 bg-on-primary rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-primary-container" style="font-variation-settings: 'FILL' 1;">security</span>
+</div>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-on-primary leading-none">ForensiAir</h1>
+<p class="text-[10px] uppercase tracking-widest text-on-primary/60 mt-1">Government Inspectorate</p>
+</div>
+</div>
+<nav class="flex-1 overflow-y-auto custom-scrollbar">
+<div class="px-4 mb-2 text-label-caps font-label-caps text-on-primary/40">Surveillance Modules</div>
+<a class="text-on-primary/70 hover:text-on-primary px-4 py-3 flex items-center gap-3 hover:bg-primary-fixed-dim/10 transition-colors duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-caps text-label-caps">Dashboard</span>
+</a>
+<a class="text-on-primary/70 hover:text-on-primary px-4 py-3 flex items-center gap-3 hover:bg-primary-fixed-dim/10 transition-colors duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined">factory</span>
+<span class="font-label-caps text-label-caps">Factories</span>
+</a>
+<a class="text-on-primary/70 hover:text-on-primary px-4 py-3 flex items-center gap-3 hover:bg-primary-fixed-dim/10 transition-colors duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined">sensors</span>
+<span class="font-label-caps text-label-caps">Monitoring</span>
+</a>
+<a class="text-on-primary/70 hover:text-on-primary px-4 py-3 flex items-center gap-3 hover:bg-primary-fixed-dim/10 transition-colors duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined">psychology</span>
+<span class="font-label-caps text-label-caps">AI Analysis</span>
+</a>
+<a class="text-on-primary/70 hover:text-on-primary px-4 py-3 flex items-center gap-3 hover:bg-primary-fixed-dim/10 transition-colors duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined">notifications_active</span>
+<span class="font-label-caps text-label-caps">Alerts</span>
+</a>
+<!-- Active State: Reports -->
+<a class="bg-surface-container-lowest/10 text-on-primary border-l-2 border-on-primary-container px-4 py-3 flex items-center gap-3 transition-colors duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">description</span>
+<span class="font-label-caps text-label-caps">Reports</span>
+</a>
+<a class="text-on-primary/70 hover:text-on-primary px-4 py-3 flex items-center gap-3 hover:bg-primary-fixed-dim/10 transition-colors duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-label-caps text-label-caps">Dataset Quality</span>
+</a>
+<div class="px-4 mt-6 mb-2 text-label-caps font-label-caps text-on-primary/40">System</div>
+<a class="text-on-primary/70 hover:text-on-primary px-4 py-3 flex items-center gap-3 hover:bg-primary-fixed-dim/10 transition-colors duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined">admin_panel_settings</span>
+<span class="font-label-caps text-label-caps">Administration</span>
+</a>
+<a class="text-on-primary/70 hover:text-on-primary px-4 py-3 flex items-center gap-3 hover:bg-primary-fixed-dim/10 transition-colors duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-caps text-label-caps">Settings</span>
+</a>
+</nav>
+<div class="px-6 pt-6 border-t border-on-primary/10">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary-fixed-dim flex items-center justify-center text-primary font-bold text-xs">JD</div>
+<div class="overflow-hidden">
+<p class="text-xs font-bold text-on-primary truncate">Inspector J. Doe</p>
+<p class="text-[10px] text-on-primary/60 truncate">District 7 Office</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- TopNavBar (Shared Component) -->
+<header class="h-16 fixed top-0 right-0 w-[calc(100%-280px)] bg-surface-white border-b border-border-gray z-40 flex justify-between items-center px-gutter ml-[280px]">
+<div class="flex items-center gap-4 flex-1">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-sm">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-lg pl-10 pr-4 py-2 text-body-md focus:ring-1 focus:ring-primary" placeholder="Search facilities, report IDs, or timestamps..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-colors relative">
+<span class="material-symbols-outlined text-outline">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-danger-red rounded-full"></span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-outline">schedule</span>
+</button>
+</div>
+<div class="h-8 w-[1px] bg-border-gray"></div>
+<div class="flex items-center gap-3 cursor-pointer group">
+<div class="text-right">
+<p class="font-body-md text-sm font-bold text-primary group-hover:text-on-primary-fixed-variant transition-colors">Inspector Profile</p>
+<p class="text-[10px] text-outline uppercase tracking-wider">Level 4 Clearance</p>
+</div>
+<div class="w-10 h-10 rounded-lg overflow-hidden border border-border-gray">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a middle-aged government official with a clean-cut appearance, wearing a formal navy suit. The background is a blurred office environment with a neutral color palette. The lighting is soft and directional, emphasizing professional reliability and authority." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCSrBVEoWw1NNn-JT4YXi-GQGdevm0ZnsyrdJNRxRXs6kAhTavYjwVDqHIvc10A5-4a4zQYfvZlSRVSTheEphraXCs7uOXPQWifaXAHjCiA2hxWwePE9ouxlD52ivCt5i6QDSbzdEmAcCdbuTw3IAiEy2E3ppla89UzIxqx6oGCz3HxezbI30UtvEAlgz27VcgQBjk5n69ttSqmVUCgglJ3o8tBldEhKiN4a5_rgYFliygwzWcRNU7QgQ"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="ml-[280px] pt-16 h-screen flex overflow-hidden">
+<!-- Left Column: Reports Archive (1/3) -->
+<section class="w-1/3 border-r border-border-gray flex flex-col bg-surface-container-low">
+<div class="p-4 border-b border-border-gray space-y-4">
+<div class="flex items-center justify-between">
+<h2 class="font-headline-md text-headline-md text-primary">Reports Center</h2>
+<span class="bg-primary/10 text-primary text-[10px] font-bold px-2 py-1 rounded">2,482 TOTAL</span>
+</div>
+<div class="flex flex-wrap gap-2">
+<button class="px-3 py-1 bg-primary text-on-primary rounded-full text-xs font-medium">All</button>
+<button class="px-3 py-1 bg-surface-white text-outline border border-border-gray rounded-full text-xs font-medium hover:border-primary hover:text-primary transition-colors">Critical</button>
+<button class="px-3 py-1 bg-surface-white text-outline border border-border-gray rounded-full text-xs font-medium hover:border-primary hover:text-primary transition-colors">Routine</button>
+<button class="px-3 py-1 bg-surface-white text-outline border border-border-gray rounded-full text-xs font-medium hover:border-primary hover:text-primary transition-colors">Archive</button>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto custom-scrollbar">
+<!-- Report Cards -->
+<div class="divide-y divide-border-gray">
+<!-- Active Card -->
+<div class="p-4 bg-surface-white border-l-4 border-primary cursor-pointer">
+<div class="flex justify-between items-start mb-1">
+<span class="text-[10px] font-bold text-outline uppercase tracking-tight">FR-2024-0402</span>
+<span class="bg-danger-red/10 text-danger-red text-[10px] font-bold px-2 py-0.5 rounded">CRITICAL</span>
+</div>
+<h3 class="font-body-md font-bold text-primary mb-1">North Basin #402</h3>
+<div class="flex justify-between items-center text-xs text-outline">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">calendar_today</span>
+<span>Oct 14, 2024</span>
+</div>
+<div class="flex items-center gap-1 text-secondary">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span>PDF Generated</span>
+</div>
+</div>
+</div>
+<!-- Other Cards -->
+<div class="p-4 hover:bg-surface-container-high transition-colors cursor-pointer border-l-4 border-transparent">
+<div class="flex justify-between items-start mb-1">
+<span class="text-[10px] font-bold text-outline uppercase tracking-tight">FR-2024-0398</span>
+<span class="bg-warning-orange/10 text-warning-orange text-[10px] font-bold px-2 py-0.5 rounded">HIGH</span>
+</div>
+<h3 class="font-body-md font-bold text-on-surface mb-1">East Valley Chemical Co.</h3>
+<div class="flex justify-between items-center text-xs text-outline">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">calendar_today</span>
+<span>Oct 13, 2024</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">history</span>
+<span>Processing...</span>
+</div>
+</div>
+</div>
+<div class="p-4 hover:bg-surface-container-high transition-colors cursor-pointer border-l-4 border-transparent">
+<div class="flex justify-between items-start mb-1">
+<span class="text-[10px] font-bold text-outline uppercase tracking-tight">FR-2024-0395</span>
+<span class="bg-secondary/10 text-secondary text-[10px] font-bold px-2 py-0.5 rounded">ROUTINE</span>
+</div>
+<h3 class="font-body-md font-bold text-on-surface mb-1">Southern Delta Refineries</h3>
+<div class="flex justify-between items-center text-xs text-outline">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">calendar_today</span>
+<span>Oct 13, 2024</span>
+</div>
+<div class="flex items-center gap-1 text-secondary">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span>PDF Generated</span>
+</div>
+</div>
+</div>
+<div class="p-4 hover:bg-surface-container-high transition-colors cursor-pointer border-l-4 border-transparent">
+<div class="flex justify-between items-start mb-1">
+<span class="text-[10px] font-bold text-outline uppercase tracking-tight">FR-2024-0391</span>
+<span class="bg-danger-red/10 text-danger-red text-[10px] font-bold px-2 py-0.5 rounded">CRITICAL</span>
+</div>
+<h3 class="font-body-md font-bold text-on-surface mb-1">Inland Bio-processing Unit 3</h3>
+<div class="flex justify-between items-center text-xs text-outline">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">calendar_today</span>
+<span>Oct 12, 2024</span>
+</div>
+<div class="flex items-center gap-1 text-secondary">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span>Archived</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Right Column: Report Preview (2/3) -->
+<section class="flex-1 flex flex-col bg-surface-container overflow-hidden">
+<!-- Action Bar -->
+<div class="h-14 border-b border-border-gray px-6 flex items-center justify-between bg-surface-white">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-outline">description</span>
+<span class="font-body-md text-sm font-bold">FR-2024-0402_Summary_v1.pdf</span>
+</div>
+<div class="flex items-center gap-3">
+<button class="flex items-center gap-2 px-3 py-1.5 border border-border-gray rounded-lg text-xs font-bold text-on-surface hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-sm">share</span> Share
+                    </button>
+<button class="flex items-center gap-2 px-3 py-1.5 border border-border-gray rounded-lg text-xs font-bold text-on-surface hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-sm">print</span> Print
+                    </button>
+<button class="flex items-center gap-2 px-4 py-1.5 bg-primary text-on-primary rounded-lg text-xs font-bold hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-sm">download</span> Download PDF
+                    </button>
+</div>
+</div>
+<!-- PDF Viewer Scroll Area -->
+<div class="flex-1 overflow-y-auto p-8 custom-scrollbar">
+<div class="max-w-[850px] mx-auto bg-surface-white pdf-shadow p-12 min-h-[1100px] text-on-surface relative border border-border-gray">
+<!-- Paper Header -->
+<div class="flex justify-between items-start border-b-2 border-primary pb-6 mb-8">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-primary-container text-on-primary flex items-center justify-center rounded">
+<span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">security</span>
+</div>
+<div>
+<h1 class="font-headline-md text-2xl font-bold text-primary tracking-tight">AI Investigation Report</h1>
+<p class="text-[10px] uppercase font-bold text-outline tracking-widest mt-0.5">ForensiAir | National Surveillance Bureau</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-xs font-bold text-primary">REPORT ID: FR-2024-0402</p>
+<p class="text-[11px] text-outline mt-1">ISSUED: OCT 14, 2024 • 14:22:10 GMT</p>
+<p class="text-[10px] text-danger-red font-bold mt-1 tracking-tighter">RESTRICTED ACCESS LEVEL 3</p>
+</div>
+</div>
+<!-- Executive Summary -->
+<div class="mb-8">
+<h2 class="text-xs font-bold text-primary uppercase tracking-wider mb-2 flex items-center gap-2">
+<span class="w-1.5 h-1.5 bg-primary rounded-full"></span> Executive Summary
+                        </h2>
+<p class="text-sm leading-relaxed text-on-surface-variant font-light italic">
+                            Automated forensic analysis has detected significant deviations in the effluent filtration parameters at North Basin #402. The AI forensic engine flagged a coordinated pattern of sensor calibration drift starting at 03:00 GMT, suggesting a deliberate attempt to mask excessive COD levels during peak processing hours. Immediate onsite verification is recommended to ensure compliance with the Environmental Protection Protocol (v4.2).
+                        </p>
+</div>
+<!-- Meta Data & Stats Grid -->
+<div class="grid grid-cols-2 gap-8 mb-8">
+<!-- Factory Info -->
+<div>
+<h2 class="text-xs font-bold text-primary uppercase tracking-wider mb-3">Facility Metadata</h2>
+<table class="w-full text-xs border-collapse">
+<tbody><tr class="border-b border-border-gray">
+<td class="py-2 text-outline font-medium">Industry</td>
+<td class="py-2 text-right font-bold">Industrial Chemical Processing</td>
+</tr>
+<tr class="border-b border-border-gray">
+<td class="py-2 text-outline font-medium">District</td>
+<td class="py-2 text-right font-bold">Northern Basin Zone 7</td>
+</tr>
+<tr class="border-b border-border-gray">
+<td class="py-2 text-outline font-medium">License No.</td>
+<td class="py-2 text-right font-bold">AQ-8892-XPC</td>
+</tr>
+<tr>
+<td class="py-2 text-outline font-medium">Last Audit</td>
+<td class="py-2 text-right font-bold">Aug 12, 2024 (Pass)</td>
+</tr>
+</tbody></table>
+</div>
+<!-- Dataset Quality -->
+<div class="bg-surface-container-low p-4 rounded border border-border-gray">
+<h2 class="text-xs font-bold text-primary uppercase tracking-wider mb-4">Dataset Integrity</h2>
+<div class="flex items-end justify-between mb-2">
+<span class="text-display-kpi font-display-kpi text-primary leading-none">92.4%</span>
+<span class="text-[10px] font-bold text-secondary flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]" style="font-variation-settings: 'FILL' 1;">verified</span> VALIDATED
+                                </span>
+</div>
+<div class="w-full h-2 bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-secondary w-[92.4%]"></div>
+</div>
+<p class="text-[10px] text-outline mt-3 leading-tight">
+                                Analysis covers 168 hours of continuous monitoring. Missing data packets: 0.2%. Signal-to-noise ratio: Optimal.
+                            </p>
+</div>
+</div>
+<!-- Monitoring Stats -->
+<div class="mb-8">
+<h2 class="text-xs font-bold text-primary uppercase tracking-wider mb-3">24-Hour Average Metrics</h2>
+<div class="grid grid-cols-3 gap-0 border border-border-gray divide-x divide-border-gray">
+<div class="p-4 text-center">
+<p class="text-[10px] font-bold text-outline uppercase">BOD (Avg)</p>
+<p class="text-xl font-bold mt-1">42.5 <span class="text-[10px] font-normal text-outline">mg/L</span></p>
+<p class="text-[10px] text-danger-red mt-1">+12% over limit</p>
+</div>
+<div class="p-4 text-center">
+<p class="text-[10px] font-bold text-outline uppercase">COD (Avg)</p>
+<p class="text-xl font-bold mt-1">118.2 <span class="text-[10px] font-normal text-outline">mg/L</span></p>
+<p class="text-[10px] text-warning-orange mt-1">Critical threshold</p>
+</div>
+<div class="p-4 text-center">
+<p class="text-[10px] font-bold text-outline uppercase">Flow Rate</p>
+<p class="text-xl font-bold mt-1">842 <span class="text-[10px] font-normal text-outline">m³/h</span></p>
+<p class="text-[10px] text-secondary mt-1">Stable</p>
+</div>
+</div>
+</div>
+<!-- AI Prediction Section -->
+<div class="bg-primary/5 p-6 border-l-4 border-primary mb-8">
+<div class="flex justify-between items-start mb-6">
+<div>
+<h2 class="text-xs font-bold text-primary uppercase tracking-wider mb-1">AI Forensic Prediction Model</h2>
+<p class="text-[10px] text-outline italic">Forensic Engine v9.1.2 • Neural Network Confidence</p>
+</div>
+<div class="bg-primary text-on-primary text-[10px] font-bold px-2 py-1 rounded">PROBABILITY MAP</div>
+</div>
+<div class="grid grid-cols-2 gap-10">
+<div class="space-y-4">
+<div class="flex justify-between items-center border-b border-primary/10 pb-2">
+<span class="text-xs font-medium">Isolation Forest Score</span>
+<span class="text-lg font-bold text-danger-red">0.88</span>
+</div>
+<div class="flex justify-between items-center border-b border-primary/10 pb-2">
+<span class="text-xs font-medium">XGBoost Tampering Prob.</span>
+<span class="text-lg font-bold text-danger-red">94.2%</span>
+</div>
+</div>
+<div>
+<p class="text-[10px] font-bold text-primary uppercase mb-3">Top SHAP Features (Tampering Impact)</p>
+<div class="space-y-2">
+<div class="space-y-1">
+<div class="flex justify-between text-[9px] font-bold uppercase">
+<span>Night-shift Flow Anomaly</span>
+<span>42%</span>
+</div>
+<div class="w-full h-1.5 bg-primary/10 rounded-full">
+<div class="h-full bg-primary w-[42%]"></div>
+</div>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between text-[9px] font-bold uppercase">
+<span>Ph Calibration Lag</span>
+<span>28%</span>
+</div>
+<div class="w-full h-1.5 bg-primary/10 rounded-full">
+<div class="h-full bg-primary-fixed-dim w-[28%]"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Charts Area -->
+<div class="mb-8">
+<h2 class="text-xs font-bold text-primary uppercase tracking-wider mb-4">Metric Trends (Past 24h)</h2>
+<div class="grid grid-cols-2 gap-4 h-32">
+<div class="border border-border-gray p-2 flex flex-col">
+<p class="text-[9px] font-bold text-outline mb-2">BOD DYNAMICS</p>
+<div class="flex-1 flex items-end gap-[1px]">
+<div class="bg-primary/20 w-full h-[40%]"></div>
+<div class="bg-primary/20 w-full h-[45%]"></div>
+<div class="bg-primary/20 w-full h-[38%]"></div>
+<div class="bg-primary/20 w-full h-[60%]"></div>
+<div class="bg-danger-red w-full h-[90%]"></div>
+<div class="bg-danger-red w-full h-[85%]"></div>
+<div class="bg-primary/20 w-full h-[50%]"></div>
+<div class="bg-primary/20 w-full h-[45%]"></div>
+<div class="bg-primary/20 w-full h-[42%]"></div>
+<div class="bg-primary/20 w-full h-[48%]"></div>
+</div>
+</div>
+<div class="border border-border-gray p-2 flex flex-col">
+<p class="text-[9px] font-bold text-outline mb-2">COD DYNAMICS</p>
+<div class="flex-1 flex items-end gap-[1px]">
+<div class="bg-primary/20 w-full h-[30%]"></div>
+<div class="bg-primary/20 w-full h-[32%]"></div>
+<div class="bg-primary/20 w-full h-[35%]"></div>
+<div class="bg-primary/20 w-full h-[55%]"></div>
+<div class="bg-primary/20 w-full h-[65%]"></div>
+<div class="bg-warning-orange w-full h-[88%]"></div>
+<div class="bg-warning-orange w-full h-[82%]"></div>
+<div class="bg-primary/20 w-full h-[60%]"></div>
+<div class="bg-primary/20 w-full h-[55%]"></div>
+<div class="bg-primary/20 w-full h-[50%]"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Recommendations & Timeline -->
+<div class="grid grid-cols-2 gap-8 mb-12">
+<div>
+<h2 class="text-xs font-bold text-primary uppercase tracking-wider mb-3">Suspicious Timeline</h2>
+<div class="space-y-3 border-l-2 border-border-gray ml-2 pl-4">
+<div class="relative">
+<div class="absolute -left-[21px] top-1 w-3 h-3 bg-danger-red rounded-full ring-4 ring-surface-white"></div>
+<p class="text-[10px] font-bold text-on-surface">03:12 GMT</p>
+<p class="text-[11px] text-outline">Sensor 'P7' recalibration bypass detected.</p>
+</div>
+<div class="relative">
+<div class="absolute -left-[21px] top-1 w-3 h-3 bg-warning-orange rounded-full ring-4 ring-surface-white"></div>
+<p class="text-[10px] font-bold text-on-surface">03:45 GMT</p>
+<p class="text-[11px] text-outline">Abnormal BOD/COD ratio detected (1:4.2).</p>
+</div>
+<div class="relative">
+<div class="absolute -left-[21px] top-1 w-3 h-3 bg-primary rounded-full ring-4 ring-surface-white"></div>
+<p class="text-[10px] font-bold text-on-surface">05:20 GMT</p>
+<p class="text-[11px] text-outline">Internal pump telemetry data gap (120s).</p>
+</div>
+</div>
+</div>
+<div>
+<h2 class="text-xs font-bold text-primary uppercase tracking-wider mb-3">Required Actions</h2>
+<ul class="space-y-2">
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-sm text-primary">priority_high</span>
+<span class="text-xs leading-tight">Initiate emergency onsite sensor calibration audit.</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-sm text-primary">history_edu</span>
+<span class="text-xs leading-tight">Secure physical effluent samples for lab validation.</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-sm text-primary">forward_to_inbox</span>
+<span class="text-xs leading-tight">Notify facility manager regarding Level 2 violation.</span>
+</li>
+</ul>
+</div>
+</div>
+<!-- Footer / Audit Trail -->
+<div class="pt-8 border-t border-border-gray flex justify-between items-center mt-auto">
+<div class="flex gap-12">
+<div>
+<p class="text-[10px] font-bold text-outline uppercase mb-4">Signed (Electronic)</p>
+<div class="w-32 h-[1px] bg-outline-variant mb-2"></div>
+<p class="text-[10px] font-bold text-primary">AI FORENSIC ENGINE v9.1</p>
+<p class="text-[9px] text-outline italic">Algorithm ID: FF-98-X2</p>
+</div>
+<div>
+<p class="text-[10px] font-bold text-outline uppercase mb-4">Approval (Seal)</p>
+<div class="w-32 h-[1px] bg-outline-variant mb-2"></div>
+<p class="text-[10px] font-bold text-primary">INSPECTOR J. DOE</p>
+<p class="text-[9px] text-outline">District Lead Commissioner</p>
+</div>
+</div>
+<div class="w-16 h-16 flex items-center justify-center border-2 border-primary/20 rounded-full opacity-30 rotate-12">
+<span class="text-[8px] font-bold text-primary text-center leading-tight">OFFICIAL<br/>GOVT<br/>SEAL</span>
+</div>
+</div>
+</div>
+<!-- Pagination / Info -->
+<div class="mt-4 text-center pb-8">
+<p class="text-[11px] text-outline italic">Page 1 of 1 • System Generated Report • Confidential</p>
+</div>
+</div>
+</section>
+</main>
+<script>
+        // Simple micro-interaction for active cards
+        document.querySelectorAll('section:first-of-type .divide-y > div').forEach(card => {
+            card.addEventListener('click', function() {
+                // Remove active classes
+                document.querySelectorAll('section:first-of-type .divide-y > div').forEach(c => {
+                    c.classList.remove('bg-surface-white', 'border-primary');
+                    c.classList.add('hover:bg-surface-container-high', 'border-transparent');
+                });
+                // Add active classes to clicked
+                this.classList.add('bg-surface-white', 'border-primary');
+                this.classList.remove('hover:bg-surface-container-high', 'border-transparent');
+            });
+        });
+
+        // Search bar focus effect
+        const topSearch = document.querySelector('header input');
+        topSearch.addEventListener('focus', () => {
+            topSearch.parentElement.classList.add('ring-2', 'ring-primary/20');
+        });
+        topSearch.addEventListener('blur', () => {
+            topSearch.parentElement.classList.remove('ring-2', 'ring-primary/20');
+        });
+    </script>
+</body></html>

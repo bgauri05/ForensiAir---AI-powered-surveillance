@@ -4,11 +4,11 @@ import pandas as pd
 
 def main():
     # Resolve parquet path
-    parquet_path = '../output/synthetic_features.parquet'
-    if not os.path.exists(parquet_path) and os.path.exists('output/synthetic_features.parquet'):
-        parquet_path = 'output/synthetic_features.parquet'
-    elif not os.path.exists(parquet_path) and os.path.exists('forensiair_features/output/synthetic_features.parquet'):
-        parquet_path = 'forensiair_features/output/synthetic_features.parquet'
+    parquet_path = '../../Data/SynData/synthetic_features.parquet'
+    if not os.path.exists(parquet_path) and os.path.exists('Data/SynData/synthetic_features.parquet'):
+        parquet_path = 'Data/SynData/synthetic_features.parquet'
+    elif not os.path.exists(parquet_path) and os.path.exists('../output/synthetic_features.parquet'):
+        parquet_path = '../output/synthetic_features.parquet'
         
     if not os.path.exists(parquet_path):
         raise FileNotFoundError(f"Parquet file not found at {parquet_path}. Run run_synthetic.py first.")

@@ -1,0 +1,87 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: 'IBM Plex Sans', sans-serif;
+    background-color: #f8f9fb;
+    color: #191c1e;
+  }
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* Custom design system typography */
+.font-display-kpi, .text-display-kpi {
+  font-family: 'IBM Plex Sans', sans-serif !important;
+  font-size: 36px !important;
+  line-height: 44px !important;
+  letter-spacing: -0.02em !important;
+  font-weight: 600 !important;
+}
+
+.font-headline-lg, .text-headline-lg {
+  font-family: 'IBM Plex Sans', sans-serif !important;
+  font-size: 28px !important;
+  line-height: 36px !important;
+  font-weight: 600 !important;
+}
+
+.font-headline-md, .text-headline-md {
+  font-family: 'IBM Plex Sans', sans-serif !important;
+  font-size: 20px !important;
+  line-height: 28px !important;
+  font-weight: 600 !important;
+}
+
+.font-body-md, .text-body-md {
+  font-family: 'IBM Plex Sans', sans-serif !important;
+  font-size: 16px !important;
+  line-height: 24px !important;
+  font-weight: 400 !important;
+}
+
+.font-body-sm, .text-body-sm {
+  font-family: 'IBM Plex Sans', sans-serif !important;
+  font-size: 14px !important;
+  line-height: 20px !important;
+  font-weight: 400 !important;
+}
+
+.font-label-caps, .text-label-caps {
+  font-family: 'IBM Plex Sans', sans-serif !important;
+  font-size: 12px !important;
+  line-height: 16px !important;
+  letter-spacing: 0.05em !important;
+  font-weight: 700 !important;
+}
+
+.text-table-data {
+  font-family: 'IBM Plex Sans', sans-serif !important;
+  font-size: 13px !important;
+  line-height: 18px !important;
+  font-weight: 400 !important;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #0f4c81;
+}
+
+.table-row-hover:hover {
+  background-color: rgba(15, 76, 129, 0.02);
+}

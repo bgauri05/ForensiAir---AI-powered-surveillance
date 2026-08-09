@@ -167,29 +167,54 @@ def main():
     # Resolve paths
     # --------------------------------------------------
 
-    if (
-        not os.path.exists(args.monitoring_csv)
-        and os.path.exists('output/monitoring_data.csv')
-    ):
-        args.monitoring_csv = 'output/monitoring_data.csv'
+    # --------------------------------------------------
+    # Resolve paths
+    # --------------------------------------------------
 
-    if (
-        not os.path.exists(args.labels_csv)
-        and os.path.exists('output/labels.csv')
-    ):
-        args.labels_csv = 'output/labels.csv'
+    # Fallback paths for running from script directory or workspace root
+    if not os.path.exists(args.monitoring_csv):
+        candidates = [
+            '../../Data/SynData/monitoring_data.csv',
+            'Data/SynData/monitoring_data.csv',
+            'output/monitoring_data.csv'
+        ]
+        for c in candidates:
+            if os.path.exists(c):
+                args.monitoring_csv = c
+                break
 
-    if (
-        not os.path.exists(args.cto_csv)
-        and os.path.exists('output/consent_limits.csv')
-    ):
-        args.cto_csv = 'output/consent_limits.csv'
+    if not os.path.exists(args.labels_csv):
+        candidates = [
+            '../../Data/SynData/labels.csv',
+            'Data/SynData/labels.csv',
+            'output/labels.csv'
+        ]
+        for c in candidates:
+            if os.path.exists(c):
+                args.labels_csv = c
+                break
 
-    if (
-        not os.path.exists(args.output_parquet)
-        and os.path.exists('output')
-    ):
-        args.output_parquet = 'output/synthetic_features.parquet'
+    if not os.path.exists(args.cto_csv):
+        candidates = [
+            '../../Original Data/consent_limits.csv',
+            'Original Data/consent_limits.csv',
+            'output/consent_limits.csv'
+        ]
+        for c in candidates:
+            if os.path.exists(c):
+                args.cto_csv = c
+                break
+
+    if not os.path.exists(args.output_parquet):
+        candidates = [
+            '../../Data/SynData/synthetic_features.parquet',
+            'Data/SynData/synthetic_features.parquet'
+        ]
+        for c in candidates:
+            out_dir = os.path.dirname(c)
+            if not out_dir or os.path.exists(out_dir):
+                args.output_parquet = c
+                break
 
     # --------------------------------------------------
     # Load datasets
@@ -243,18 +268,14 @@ def main():
     matched_events_count = 0
 
     for _, row in labels_df.iterrows():
-
         mask = (
-
             (feature_matrix["factory_id"] == row["factory_id"]) &
-
-            (feature_matrix["parameter_id"] == row["parameter_id"]) &
-
             (feature_matrix["timestamp"] >= row["start_timestamp"]) &
-
             (feature_matrix["timestamp"] <= row["end_timestamp"])
-
         )
+        if pd.notna(row["parameter_id"]):
+            mask = mask & (feature_matrix["parameter_id"] == row["parameter_id"])
+
 
         if mask.any():
 
@@ -312,7 +333,7 @@ def main():
     print("\n================ DIAGNOSTICS ================\n")
 
     print(
-        f"Rows: {len(feature_matrix)}"
+        f"Total Rows: {len(feature_matrix)}"
     )
 
     print(
@@ -325,7 +346,7 @@ def main():
     )
 
     print(
-        "\nTamper types:"
+        "\nTamper types in feature matrix:"
     )
 
     print(
@@ -342,17 +363,29 @@ def main():
         .value_counts()
     )
 
-    print(
-        "\nAutocorrelation infinities:"
-    )
+    num_cols = feature_matrix.select_dtypes(include=[np.number]).columns
+    inf_counts = {col: int(np.isinf(feature_matrix[col]).sum()) for col in num_cols if np.isinf(feature_matrix[col]).sum() > 0}
+    print("\nInfinities across numeric feature columns:")
+    if inf_counts:
+        print(inf_counts)
+    else:
+        print("  [PASS] Zero infinite values found across all numeric features.")
 
-    print(
+    print("\nNegative values count by parameter:")
+    neg_counts = feature_matrix[feature_matrix['value'] < 0].groupby('parameter_id').size()
+    if not neg_counts.empty:
+        print(neg_counts)
+    else:
+        print("  None")
 
-        np.isinf(
-            feature_matrix["autocorrelation"]
-        ).sum()
-
-    )
+    print("\nNew Feature Column Summaries:")
+    new_cols = ['bdl_rate', 'duplicate_run_length', 'cov_severity', 'bod_cod_ratio', 'bod_cod_ratio_volatility']
+    for col in new_cols:
+        if col in feature_matrix.columns:
+            if feature_matrix[col].dtype == object:
+                print(f"  {col}:\n{feature_matrix[col].value_counts(dropna=False)}")
+            else:
+                print(f"  {col}: mean={feature_matrix[col].mean():.4f}, std={feature_matrix[col].std():.4f}, non-nulls={feature_matrix[col].notna().sum()}")
 
     print(
         "\nSanity Check:"
@@ -378,4 +411,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main()

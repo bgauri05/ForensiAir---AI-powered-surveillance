@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Administration Portal - ForensiAir</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary": "#532800",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary-container": "#217128",
+                    "border-gray": "#E5E7EB",
+                    "on-secondary": "#ffffff",
+                    "warning-orange": "#F57C00",
+                    "surface-white": "#FFFFFF",
+                    "on-primary-fixed": "#001c37",
+                    "secondary-container": "#a0f399",
+                    "surface-variant": "#e1e2e4",
+                    "on-tertiary-fixed": "#2f1400",
+                    "error": "#ba1a1a",
+                    "on-tertiary-container": "#f9a767",
+                    "on-tertiary": "#ffffff",
+                    "surface-tint": "#2d6197",
+                    "outline": "#727780",
+                    "inverse-on-surface": "#f0f1f3",
+                    "on-error": "#ffffff",
+                    "surface-container": "#edeef0",
+                    "inverse-surface": "#2e3132",
+                    "on-secondary-fixed": "#002204",
+                    "on-surface-variant": "#42474f",
+                    "danger-red": "#D32F2F",
+                    "tertiary-fixed": "#ffdcc4",
+                    "surface": "#f8f9fb",
+                    "primary-fixed": "#d2e4ff",
+                    "on-background": "#191c1e",
+                    "tertiary-fixed-dim": "#ffb780",
+                    "outline-variant": "#c2c7d1",
+                    "primary-container": "#0f4c81",
+                    "surface-container-high": "#e7e8ea",
+                    "surface-container-low": "#f2f4f6",
+                    "secondary-fixed-dim": "#88d982",
+                    "primary": "#00355f",
+                    "surface-dim": "#d9dadc",
+                    "error-container": "#ffdad6",
+                    "on-tertiary-fixed-variant": "#6f3800",
+                    "inverse-primary": "#a0c9ff",
+                    "surface-container-highest": "#e1e2e4",
+                    "surface-bright": "#f8f9fb",
+                    "secondary-fixed": "#a3f69c",
+                    "on-primary-fixed-variant": "#07497d",
+                    "on-primary-container": "#8ebdf9",
+                    "on-primary": "#ffffff",
+                    "tertiary-container": "#743b00",
+                    "background": "#f8f9fb",
+                    "on-surface": "#191c1e",
+                    "on-secondary-fixed-variant": "#005312",
+                    "on-error-container": "#93000a",
+                    "text-main": "#1F2937",
+                    "secondary": "#1b6d24",
+                    "primary-fixed-dim": "#a0c9ff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "stack-sm": "0.5rem",
+                    "gutter": "1.5rem",
+                    "container-padding": "2rem",
+                    "stack-md": "1rem",
+                    "sidebar-width": "280px"
+            },
+            "fontFamily": {
+                    "headline-lg": ["IBM Plex Sans"],
+                    "display-kpi": ["IBM Plex Sans"],
+                    "body-sm": ["IBM Plex Sans"],
+                    "headline-md": ["IBM Plex Sans"],
+                    "table-data": ["IBM Plex Sans"],
+                    "label-caps": ["IBM Plex Sans"],
+                    "body-md": ["IBM Plex Sans"]
+            },
+            "fontSize": {
+                    "headline-lg": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                    "display-kpi": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "table-data": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                    "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'IBM Plex Sans', sans-serif; background-color: #F7F8FA; color: #191c1e; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .active-tab-border { border-bottom: 2px solid #0f4c81; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #c2c7d1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #0f4c81; }
+    </style>
+</head>
+<body class="flex min-h-screen overflow-hidden">
+<!-- SideNavBar (The Anchor) -->
+<nav class="fixed left-0 top-0 h-full w-[280px] bg-primary flex flex-col py-gutter px-4 border-r border-border-gray z-50">
+<div class="mb-10 px-4">
+<h1 class="font-headline-lg text-headline-lg font-bold text-surface-white tracking-tight">ForensiAir</h1>
+<p class="text-primary-fixed opacity-70 text-xs font-label-caps uppercase tracking-widest mt-1">Environmental Surveillance</p>
+</div>
+<div class="flex-1 space-y-1 overflow-y-auto">
+<a class="flex items-center space-x-3 px-4 py-3 rounded-lg text-primary-fixed opacity-70 hover:opacity-100 hover:bg-primary-container transition-colors duration-150" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-caps text-label-caps">Dashboard</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-3 rounded-lg text-primary-fixed opacity-70 hover:opacity-100 hover:bg-primary-container transition-colors duration-150" href="#">
+<span class="material-symbols-outlined">factory</span>
+<span class="font-label-caps text-label-caps">Factories</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-3 rounded-lg text-primary-fixed opacity-70 hover:opacity-100 hover:bg-primary-container transition-colors duration-150" href="#">
+<span class="material-symbols-outlined">sensors</span>
+<span class="font-label-caps text-label-caps">Monitoring</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-3 rounded-lg text-primary-fixed opacity-70 hover:opacity-100 hover:bg-primary-container transition-colors duration-150" href="#">
+<span class="material-symbols-outlined">psychology</span>
+<span class="font-label-caps text-label-caps">AI Analysis</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-3 rounded-lg text-primary-fixed opacity-70 hover:opacity-100 hover:bg-primary-container transition-colors duration-150" href="#">
+<span class="material-symbols-outlined">warning</span>
+<span class="font-label-caps text-label-caps">Alerts</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-3 rounded-lg text-primary-fixed opacity-70 hover:opacity-100 hover:bg-primary-container transition-colors duration-150" href="#">
+<span class="material-symbols-outlined">assessment</span>
+<span class="font-label-caps text-label-caps">Reports</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-3 rounded-lg text-primary-fixed opacity-70 hover:opacity-100 hover:bg-primary-container transition-colors duration-150" href="#">
+<span class="material-symbols-outlined">high_quality</span>
+<span class="font-label-caps text-label-caps">Dataset Quality</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-3 rounded-lg bg-primary-container text-on-primary-container border-l-2 border-primary-fixed-dim" href="#">
+<span class="material-symbols-outlined">admin_panel_settings</span>
+<span class="font-label-caps text-label-caps">Administration</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-3 rounded-lg text-primary-fixed opacity-70 hover:opacity-100 hover:bg-primary-container transition-colors duration-150" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-caps text-label-caps">Settings</span>
+</a>
+</div>
+<div class="mt-auto border-t border-primary-container/30 pt-4 px-4">
+<div class="flex items-center space-x-3">
+<div class="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center text-primary font-bold">AD</div>
+<div>
+<p class="text-surface-white text-sm font-semibold">Admin Panel</p>
+<p class="text-primary-fixed text-xs opacity-60">System Controller</p>
+</div>
+</div>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="ml-[280px] flex-1 flex flex-col h-screen overflow-hidden">
+<!-- TopAppBar -->
+<header class="flex justify-between items-center h-16 px-gutter w-full sticky top-0 z-40 bg-surface-white border-b border-border-gray">
+<div class="flex items-center flex-1">
+<div class="relative w-96">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full bg-surface-container-low border border-border-gray rounded-lg pl-10 pr-4 py-2 text-body-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none" placeholder="Search facilities or users..." type="text"/>
+</div>
+</div>
+<div class="flex items-center space-x-6 text-on-surface-variant">
+<button class="hover:text-primary transition-opacity cursor-pointer flex items-center">
+<span class="material-symbols-outlined">cloud_done</span>
+</button>
+<button class="relative hover:text-primary transition-opacity cursor-pointer flex items-center">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute -top-1 -right-1 w-2 h-2 bg-danger-red rounded-full"></span>
+</button>
+<div class="h-8 w-px bg-border-gray"></div>
+<div class="flex items-center space-x-3 cursor-pointer group">
+<div class="text-right">
+<p class="text-sm font-semibold text-primary">Administrator</p>
+<p class="text-[10px] uppercase font-bold text-on-surface-variant">Global Oversight</p>
+</div>
+<img class="w-10 h-10 rounded-full border border-border-gray object-cover" data-alt="A professional headshot of a corporate administrator in a modern office, featuring soft studio lighting and a clean white-label aesthetic consistent with a government dashboard." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBTytQbbNtF_sF_ocdn56BHWlG810p-dwOCLuJh_IO9NG6YEhM6eSaaxc3Hunram0BIJey0wuMaRvfSrEpJycNx6jyEJXRP29M2U_3VkYNbuv0t_0ajdh4j3GVyVx8fHHAGg2ucakG-5a5qOxiQCMdmqQQD2Hut7t9yG7RCGdN99eIaOwBtMaj_GkuBfT89KS-GvIdhBhQ0Swoaxc1a6LlJbAbxSMe775NaasKkRKqqlHGiu9yxzlS7Ng"/>
+</div>
+</div>
+</header>
+<!-- Main Workspace -->
+<div class="flex-1 overflow-y-auto p-gutter bg-surface">
+<!-- Breadcrumbs & Heading -->
+<div class="mb-8">
+<nav class="flex text-xs font-label-caps text-on-surface-variant space-x-2 mb-2">
+<a class="hover:text-primary" href="#">Platform</a>
+<span>/</span>
+<span class="text-primary font-bold">Administration Portal</span>
+</nav>
+<div class="flex justify-between items-center">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-primary">Administration Portal</h2>
+<p class="text-on-surface-variant text-body-sm mt-1">Global management of facility metadata, access levels, and AI model parameters.</p>
+</div>
+<button class="bg-primary-container text-on-primary-container px-6 py-2.5 rounded-lg font-label-caps text-label-caps flex items-center space-x-2 hover:bg-primary-fixed-dim transition-all shadow-sm">
+<span class="material-symbols-outlined text-lg">add</span>
+<span>Add New Factory</span>
+</button>
+</div>
+</div>
+<!-- Tabbed Interface -->
+<div class="bg-surface-white border border-border-gray rounded-xl overflow-hidden flex flex-col shadow-sm">
+<div class="flex border-b border-border-gray bg-surface-container-low px-4">
+<button class="px-6 py-4 font-label-caps text-label-caps text-primary active-tab-border">Factories</button>
+<button class="px-6 py-4 font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors">Users</button>
+<button class="px-6 py-4 font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors">Consent Limits</button>
+<button class="px-6 py-4 font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors">Model Versions</button>
+<button class="px-6 py-4 font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors">Threshold Settings</button>
+<button class="px-6 py-4 font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors">Notification Rules</button>
+</div>
+<!-- Filters Area -->
+<div class="p-4 flex justify-between items-center bg-surface-white border-b border-border-gray">
+<div class="flex space-x-4">
+<select class="border-border-gray rounded-lg text-body-sm px-3 py-1.5 focus:ring-primary focus:border-primary">
+<option>All Districts</option>
+<option>Northern Industrial Zone</option>
+<option>Coastal Sector</option>
+<option>Urban Fringe</option>
+</select>
+<select class="border-border-gray rounded-lg text-body-sm px-3 py-1.5 focus:ring-primary focus:border-primary">
+<option>All Industries</option>
+<option>Chemical Processing</option>
+<option>Textile &amp; Dyeing</option>
+<option>Heavy Metallurgy</option>
+</select>
+</div>
+<div class="flex items-center space-x-2 text-on-surface-variant text-xs font-label-caps">
+<span>Showing 1-12 of 124 Factories</span>
+<div class="flex border border-border-gray rounded">
+<button class="p-1 hover:bg-surface-container"><span class="material-symbols-outlined text-sm">chevron_left</span></button>
+<button class="p-1 hover:bg-surface-container border-l border-border-gray"><span class="material-symbols-outlined text-sm">chevron_right</span></button>
+</div>
+</div>
+</div>
+<!-- Data Table -->
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-highest/30">
+<th class="px-6 py-3 font-label-caps text-label-caps text-on-surface-variant border-b border-border-gray">Factory ID</th>
+<th class="px-6 py-3 font-label-caps text-label-caps text-on-surface-variant border-b border-border-gray">Name</th>
+<th class="px-6 py-3 font-label-caps text-label-caps text-on-surface-variant border-b border-border-gray">District</th>
+<th class="px-6 py-3 font-label-caps text-label-caps text-on-surface-variant border-b border-border-gray">Industry</th>
+<th class="px-6 py-3 font-label-caps text-label-caps text-on-surface-variant border-b border-border-gray">Compliance Status</th>
+<th class="px-6 py-3 font-label-caps text-label-caps text-on-surface-variant border-b border-border-gray text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="text-table-data font-table-data divide-y divide-border-gray">
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-4 font-mono text-xs text-on-surface-variant">FA-88921</td>
+<td class="px-6 py-4 font-semibold text-primary">BlueWave Chemicals</td>
+<td class="px-6 py-4">Northern Industrial Zone</td>
+<td class="px-6 py-4">Chemical Manufacturing</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-secondary/10 text-secondary">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary mr-1.5"></span>
+                                        Compliant
+                                    </span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 hover:bg-primary-fixed rounded text-primary transition-colors"><span class="material-symbols-outlined text-lg">edit</span></button>
+<button class="p-1.5 hover:bg-error-container rounded text-danger-red transition-colors"><span class="material-symbols-outlined text-lg">delete</span></button>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-4 font-mono text-xs text-on-surface-variant">FA-77210</td>
+<td class="px-6 py-4 font-semibold text-primary">IronForge Foundry</td>
+<td class="px-6 py-4">Coastal Sector</td>
+<td class="px-6 py-4">Heavy Metallurgy</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-warning-orange/10 text-warning-orange">
+<span class="w-1.5 h-1.5 rounded-full bg-warning-orange mr-1.5"></span>
+                                        Under Review
+                                    </span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 hover:bg-primary-fixed rounded text-primary transition-colors"><span class="material-symbols-outlined text-lg">edit</span></button>
+<button class="p-1.5 hover:bg-error-container rounded text-danger-red transition-colors"><span class="material-symbols-outlined text-lg">delete</span></button>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-4 font-mono text-xs text-on-surface-variant">FA-44102</td>
+<td class="px-6 py-4 font-semibold text-primary">Apex Textile Ltd.</td>
+<td class="px-6 py-4">Urban Fringe</td>
+<td class="px-6 py-4">Garment &amp; Dyeing</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-danger-red/10 text-danger-red">
+<span class="w-1.5 h-1.5 rounded-full bg-danger-red mr-1.5"></span>
+                                        Critical Breach
+                                    </span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 hover:bg-primary-fixed rounded text-primary transition-colors"><span class="material-symbols-outlined text-lg">edit</span></button>
+<button class="p-1.5 hover:bg-error-container rounded text-danger-red transition-colors"><span class="material-symbols-outlined text-lg">delete</span></button>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-4 font-mono text-xs text-on-surface-variant">FA-90112</td>
+<td class="px-6 py-4 font-semibold text-primary">Z-Tech Polymers</td>
+<td class="px-6 py-4">Northern Industrial Zone</td>
+<td class="px-6 py-4">Synthetic Rubber</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-secondary/10 text-secondary">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary mr-1.5"></span>
+                                        Compliant
+                                    </span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 hover:bg-primary-fixed rounded text-primary transition-colors"><span class="material-symbols-outlined text-lg">edit</span></button>
+<button class="p-1.5 hover:bg-error-container rounded text-danger-red transition-colors"><span class="material-symbols-outlined text-lg">delete</span></button>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-4 font-mono text-xs text-on-surface-variant">FA-11234</td>
+<td class="px-6 py-4 font-semibold text-primary">GreenLeaf Paper</td>
+<td class="px-6 py-4">Coastal Sector</td>
+<td class="px-6 py-4">Pulp &amp; Paper</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-secondary/10 text-secondary">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary mr-1.5"></span>
+                                        Compliant
+                                    </span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 hover:bg-primary-fixed rounded text-primary transition-colors"><span class="material-symbols-outlined text-lg">edit</span></button>
+<button class="p-1.5 hover:bg-error-container rounded text-danger-red transition-colors"><span class="material-symbols-outlined text-lg">delete</span></button>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-4 font-mono text-xs text-on-surface-variant">FA-22561</td>
+<td class="px-6 py-4 font-semibold text-primary">Global Glass Works</td>
+<td class="px-6 py-4">Urban Fringe</td>
+<td class="px-6 py-4">Glass Manufacturing</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-warning-orange/10 text-warning-orange">
+<span class="w-1.5 h-1.5 rounded-full bg-warning-orange mr-1.5"></span>
+                                        Under Review
+                                    </span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 hover:bg-primary-fixed rounded text-primary transition-colors"><span class="material-symbols-outlined text-lg">edit</span></button>
+<button class="p-1.5 hover:bg-error-container rounded text-danger-red transition-colors"><span class="material-symbols-outlined text-lg">delete</span></button>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-4 font-mono text-xs text-on-surface-variant">FA-55310</td>
+<td class="px-6 py-4 font-semibold text-primary">Titan Cement</td>
+<td class="px-6 py-4">Northern Industrial Zone</td>
+<td class="px-6 py-4">Construction Materials</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-secondary/10 text-secondary">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary mr-1.5"></span>
+                                        Compliant
+                                    </span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 hover:bg-primary-fixed rounded text-primary transition-colors"><span class="material-symbols-outlined text-lg">edit</span></button>
+<button class="p-1.5 hover:bg-error-container rounded text-danger-red transition-colors"><span class="material-symbols-outlined text-lg">delete</span></button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Footer Stats / Meta -->
+<div class="p-4 bg-surface-container-low flex justify-between items-center text-xs text-on-surface-variant font-label-caps">
+<div class="flex items-center space-x-4">
+<span>Total Factories: 124</span>
+<span class="h-1 w-1 bg-on-surface-variant rounded-full"></span>
+<span class="text-danger-red">3 Critical Alerts</span>
+<span class="h-1 w-1 bg-on-surface-variant rounded-full"></span>
+<span class="text-secondary">92 Fully Compliant</span>
+</div>
+<div class="flex items-center space-x-2">
+<span>Rows per page:</span>
+<select class="bg-transparent border-none p-0 text-xs font-bold focus:ring-0">
+<option>10</option>
+<option>25</option>
+<option>50</option>
+</select>
+</div>
+</div>
+</div>
+<!-- Bento Dashboard for Admin Quick Info -->
+<div class="mt-8 grid grid-cols-1 md:grid-cols-4 gap-6">
+<div class="md:col-span-1 bg-surface-white border border-border-gray p-5 rounded-xl flex flex-col justify-between">
+<div>
+<p class="text-label-caps font-label-caps text-on-surface-variant mb-1">Active AI Model</p>
+<h4 class="font-headline-md text-headline-md text-primary">v4.2.1-Stable</h4>
+</div>
+<div class="mt-4 flex items-center text-xs text-secondary">
+<span class="material-symbols-outlined text-sm mr-1">check_circle</span>
+                        Health: 99.8%
+                    </div>
+</div>
+<div class="md:col-span-1 bg-surface-white border border-border-gray p-5 rounded-xl flex flex-col justify-between">
+<div>
+<p class="text-label-caps font-label-caps text-on-surface-variant mb-1">Users Online</p>
+<h4 class="font-headline-md text-headline-md text-primary">14 Staff</h4>
+</div>
+<div class="mt-4 flex items-center text-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-sm mr-1">history</span>
+                        Last sync: 2m ago
+                    </div>
+</div>
+<div class="md:col-span-2 bg-primary-container p-5 rounded-xl relative overflow-hidden text-surface-white">
+<div class="relative z-10">
+<p class="text-label-caps font-label-caps opacity-70 mb-1">Compliance Thresholds</p>
+<h4 class="font-headline-md text-headline-md">Regulatory BOD Limit: 30mg/L</h4>
+<p class="text-body-sm mt-1 opacity-80">Modified by Regional Director on Oct 12, 2023.</p>
+</div>
+<span class="material-symbols-outlined absolute -bottom-4 -right-4 text-9xl opacity-10 rotate-12">gavel</span>
+</div>
+</div>
+</div>
+</main>
+<!-- Micro-interaction Scripts -->
+<script>
+        // Simple tab switching logic simulation
+        const tabs = document.querySelectorAll('button[class*="font-label-caps"]');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                if(tab.innerText === 'Factories' || tab.innerText === 'Users' || tab.innerText === 'Consent Limits' || tab.innerText === 'Model Versions' || tab.innerText === 'Threshold Settings' || tab.innerText === 'Notification Rules') {
+                    tabs.forEach(t => {
+                        t.classList.remove('active-tab-border', 'text-primary');
+                        t.classList.add('text-on-surface-variant');
+                    });
+                    tab.classList.add('active-tab-border', 'text-primary');
+                    tab.classList.remove('text-on-surface-variant');
+                }
+            });
+        });
+
+        // Search Bar Focus Effect
+        const searchInput = document.querySelector('input[type="text"]');
+        searchInput.addEventListener('focus', () => {
+            searchInput.parentElement.classList.add('ring-2', 'ring-primary/20');
+        });
+        searchInput.addEventListener('blur', () => {
+            searchInput.parentElement.classList.remove('ring-2', 'ring-primary/20');
+        });
+    </script>
+</body></html>

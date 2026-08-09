@@ -1,0 +1,23 @@
+# Node / Frontend
+node_modules/
+dist/
+.vite/
+
+# Python / Cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# Environment & Temp Files
+.env
+.env.local
+*.log
+*.zip
+original_index.css.txt
+saved_index_854.css
+Data/SynData/monitoring_data_temp.csv
+
+# SQLite DB
+*.db

@@ -7,8 +7,9 @@ def get_window_periods(window_str: str) -> int:
     """
     Computes the number of 15-minute periods in a window string.
     """
-    td = pd.to_timedelta(window_str)
+    td = pd.to_timedelta(window_str.replace('H', 'h'))
     return int(td / pd.Timedelta(minutes=15))
+
 
 
 def compute_rolling_stats(df: pd.DataFrame, config: dict) -> pd.DataFrame:
@@ -49,9 +50,11 @@ def compute_rolling_stats(df: pd.DataFrame, config: dict) -> pd.DataFrame:
 
         st = roll.std()
 
-        cv = st / m
+        m_abs = m.abs()
+        cv = np.where(m_abs < 1e-6, np.nan, st / m_abs)
+        cv = np.where(cv > 10.0, np.nan, cv)
 
-        cv = cv.replace(
+        cv = pd.Series(cv, index=group.index).replace(
             [np.inf, -np.inf],
             np.nan
         )
@@ -147,7 +150,7 @@ def compute_flatline_flag(
                 )
 
                 result[i] = float(
-                    std < threshold
+                    std <= 0.0 if threshold == 0 else (std < threshold or std == 0.0)
                 )
 
         # -----------------------------------------
@@ -167,7 +170,7 @@ def compute_flatline_flag(
                 )
 
                 result[i] = float(
-                    std < threshold
+                    std <= 0.0 if threshold == 0 else (std < threshold or std == 0.0)
                 )
 
         # -----------------------------------------
@@ -275,7 +278,7 @@ def compute_autocorrelation(
 
     lag = config["windows"]["autocorr_lag"]
 
-    w_str = config["windows"]["missing_rate_window"]
+    w_str = config["windows"]["correlation_window"]
 
     w_size = get_window_periods(w_str)
 
@@ -445,6 +448,231 @@ def compute_limit_hugging(
     )
 
 
+def compute_bdl_rate(
+    df: pd.DataFrame,
+    config: dict
+) -> pd.Series:
+    """
+    Computes rolling percentage of BDL (Below Detection Limit) values.
+    BDL values are identified where quality_code == 'L'.
+    Window logic matches missing_rate.
+    """
+    w_str = config["windows"]["missing_rate_window"]
+    w_size = get_window_periods(w_str)
+
+    df_sorted = df.sort_values(
+        ["factory_id", "parameter_id", "timestamp"]
+    )
+
+    rates = []
+
+    for (_, _), group in df_sorted.groupby(
+        ["factory_id", "parameter_id"]
+    ):
+        if "quality_code" in group.columns:
+            is_bdl = (group["quality_code"] == "L").astype(float)
+        else:
+            is_bdl = pd.Series(0.0, index=group.index)
+
+        rate = (
+            is_bdl
+            .rolling(
+                window=w_size,
+                min_periods=w_size
+            )
+            .mean()
+            * 100.0
+        )
+
+        rates.append(rate)
+
+    bdl_rate = (
+        pd.concat(rates)
+        .reindex(df_sorted.index)
+    )
+
+    return pd.Series(
+        bdl_rate,
+        index=df_sorted.index,
+        name="bdl_rate"
+    )
+
+
+def compute_duplicate_run_length(
+    df: pd.DataFrame
+) -> pd.Series:
+    """
+    Computes the length of current exact-duplicate-value run per row per factory/parameter.
+    Resets to 1 whenever value changes.
+    """
+    df_sorted = df.sort_values(
+        ["factory_id", "parameter_id", "timestamp"]
+    )
+
+    all_lengths = []
+
+    for (_, _), group in df_sorted.groupby(
+        ["factory_id", "parameter_id"]
+    ):
+        vals = group["value"].to_numpy()
+        n = len(vals)
+        lengths = np.ones(n, dtype=float)
+
+        for i in range(1, n):
+            v_curr = vals[i]
+            v_prev = vals[i - 1]
+            if pd.notna(v_curr) and pd.notna(v_prev) and (v_curr == v_prev):
+                lengths[i] = lengths[i - 1] + 1.0
+            else:
+                lengths[i] = 1.0
+
+        all_lengths.append(
+            pd.Series(
+                lengths,
+                index=group.index
+            )
+        )
+
+    duplicate_run_length = (
+        pd.concat(all_lengths)
+        .reindex(df_sorted.index)
+    )
+
+    return pd.Series(
+        duplicate_run_length,
+        index=df_sorted.index,
+        name="duplicate_run_length"
+    )
+
+
+def compute_cov_severity(
+    df: pd.DataFrame
+) -> pd.Series:
+    """
+    Computes graded severity tiers ('none', 'low', 'medium', 'high') of rolling_cov vs factory-param baseline.
+    """
+    df_sorted = df.sort_values(
+        ["factory_id", "parameter_id", "timestamp"]
+    )
+
+    all_severities = []
+
+    for (_, _), group in df_sorted.groupby(
+        ["factory_id", "parameter_id"]
+    ):
+        cov = group["rolling_cov"].to_numpy()
+        flatline = group["flatline_flag"].to_numpy() if "flatline_flag" in group.columns else np.zeros(len(group))
+        valid_cov = cov[~np.isnan(cov)]
+
+        if len(valid_cov) == 0 or np.nanmedian(valid_cov) <= 0:
+            baseline = 1e-6
+        else:
+            baseline = float(np.nanmedian(valid_cov))
+
+        ratio = cov / baseline
+        result = np.full(len(group), np.nan, dtype=object)
+
+        for i in range(len(group)):
+            if flatline[i] == 1.0:
+                result[i] = "high"
+            elif np.isnan(cov[i]):
+                result[i] = np.nan
+            elif ratio[i] <= 0.1 or ratio[i] >= 6.0:
+                result[i] = "high"
+            elif ratio[i] <= 0.25 or ratio[i] >= 3.0:
+                result[i] = "medium"
+            elif ratio[i] <= 0.5 or ratio[i] >= 1.5:
+                result[i] = "low"
+            else:
+                result[i] = "none"
+
+        all_severities.append(
+            pd.Series(
+                result,
+                index=group.index,
+                dtype=object
+            )
+        )
+
+    cov_severity = (
+        pd.concat(all_severities)
+        .reindex(df_sorted.index)
+    )
+
+    return pd.Series(
+        cov_severity,
+        index=df_sorted.index,
+        name="cov_severity"
+    )
+
+
+def compute_bod_cod_ratio_and_volatility(
+    df: pd.DataFrame,
+    config: dict
+) -> pd.DataFrame:
+    """
+    Pivots BOD/COD to align by (factory_id, timestamp), computes BOD/COD ratio (guarded against div-by-~0),
+    and computes rolling 7-day std as volatility. Joins back to long format (NaN for non-BOD/COD rows).
+    """
+    w_str = config["windows"]["missing_rate_window"]
+    w_size = get_window_periods(w_str)
+
+    bod_cod_df = df[df["parameter_id"].isin(["ETP-BOD", "ETP-COD"])]
+
+    if bod_cod_df.empty:
+        res = pd.DataFrame(index=df.index)
+        res["bod_cod_ratio"] = np.nan
+        res["bod_cod_ratio_volatility"] = np.nan
+        return res
+
+    piv = bod_cod_df.pivot(
+        index=["factory_id", "timestamp"],
+        columns="parameter_id",
+        values="value"
+    )
+
+    for c in ["ETP-BOD", "ETP-COD"]:
+        if c not in piv.columns:
+            piv[c] = np.nan
+
+    bod = piv["ETP-BOD"]
+    cod = piv["ETP-COD"]
+
+    ratio = np.where(
+        (cod.isna()) | (bod.isna()) | (cod <= 1e-6),
+        np.nan,
+        bod / cod
+    )
+    ratio = pd.Series(ratio, index=piv.index).replace([np.inf, -np.inf], np.nan)
+
+    vols = []
+    piv["ratio"] = ratio
+    for fac_id, grp in piv.groupby("factory_id"):
+        vol = grp["ratio"].rolling(window=w_size, min_periods=w_size).std()
+        vol = vol.replace([np.inf, -np.inf], np.nan)
+        vols.append(vol)
+
+    volatility = pd.concat(vols) if vols else pd.Series(np.nan, index=piv.index)
+
+    ratio_df = pd.DataFrame({
+        "bod_cod_ratio": ratio,
+        "bod_cod_ratio_volatility": volatility
+    }, index=piv.index).reset_index()
+
+    merged = df[["factory_id", "parameter_id", "timestamp"]].merge(
+        ratio_df,
+        on=["factory_id", "timestamp"],
+        how="left"
+    )
+
+    is_bod_cod = df["parameter_id"].isin(["ETP-BOD", "ETP-COD"]).values
+    merged.loc[~is_bod_cod, "bod_cod_ratio"] = np.nan
+    merged.loc[~is_bod_cod, "bod_cod_ratio_volatility"] = np.nan
+
+    merged.index = df.index
+    return merged[["bod_cod_ratio", "bod_cod_ratio_volatility"]]
+
+
 def assemble_feature_matrix(
     raw_df: pd.DataFrame,
     limits_df: pd.DataFrame,
@@ -506,13 +734,46 @@ def assemble_feature_matrix(
     )
 
     # -----------------------------
-    # Missing rate
+    # Missing rate & BDL rate
     # -----------------------------
 
     df["missing_rate"] = compute_missing_rate(
         df,
         config
     )
+
+    df["bdl_rate"] = compute_bdl_rate(
+        df,
+        config
+    )
+
+    # -----------------------------
+    # Duplicate run length
+    # -----------------------------
+
+    df["duplicate_run_length"] = compute_duplicate_run_length(
+        df
+    )
+
+    # -----------------------------
+    # CoV severity
+    # -----------------------------
+
+    df["cov_severity"] = compute_cov_severity(
+        df
+    )
+
+    # -----------------------------
+    # BOD/COD ratio & volatility
+    # -----------------------------
+
+    bod_cod_features = compute_bod_cod_ratio_and_volatility(
+        df,
+        config
+    )
+
+    df["bod_cod_ratio"] = bod_cod_features["bod_cod_ratio"]
+    df["bod_cod_ratio_volatility"] = bod_cod_features["bod_cod_ratio_volatility"]
 
     # -----------------------------
     # Limit hugging

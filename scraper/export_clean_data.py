@@ -26,7 +26,7 @@ def main():
     print(f"Retrieved {len(factories)} factories to process.")
     
     # Create output directory
-    output_dir = "c:/Users/gauri/OneDrive/Desktop/mpcb_scraper/clean_factory_data"
+    output_dir = os.path.join(os.path.dirname(__file__), "clean_factory_data")
     os.makedirs(output_dir, exist_ok=True)
     print("Output directory created:", output_dir)
     

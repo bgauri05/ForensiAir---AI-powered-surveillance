@@ -19,11 +19,18 @@ def load_synthetic(monitoring_csv_path: str, labels_csv_path: str):
     # is_valid column indicating non-null values
     df['is_valid'] = df['value'].notnull()
     
+    # Handle quality_code column if present
+    if 'quality_code' in df.columns:
+        df['quality_code'] = df['quality_code'].astype('string')
+    else:
+        df['quality_code'] = 'Raw'
+        df['quality_code'] = df['quality_code'].astype('string')
+    
     # Sort
     df = df.sort_values(by=['factory_id', 'parameter_id', 'timestamp']).reset_index(drop=True)
     
-    # Ensure exact columns: factory_id, parameter_id, timestamp, value, is_valid
-    df = df[['factory_id', 'parameter_id', 'timestamp', 'value', 'is_valid']]
+    # Ensure exact columns
+    df = df[['factory_id', 'parameter_id', 'timestamp', 'value', 'quality_code', 'is_valid']]
     
     # Load labels
     labels_df = pd.read_csv(labels_csv_path)

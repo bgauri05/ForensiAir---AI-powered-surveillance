@@ -15,7 +15,8 @@ CMS_BASE_URL = "https://www.ecmpcb.in/cms/"
 CMS_IP_PATCH = "123.252.232.205"
 
 # Directories
-PROJECT_ROOT = Path("c:/Users/gauri/OneDrive/Desktop/mpcb_scraper")
+_local_root = Path(__file__).resolve().parents[2]
+PROJECT_ROOT = _local_root if (_local_root / "consents").exists() else Path("c:/Users/gauri/OneDrive/Desktop/mpcb_scraper")
 CONSENTS_DIR = PROJECT_ROOT / "consents"
 
 # Reference / local cache settings
