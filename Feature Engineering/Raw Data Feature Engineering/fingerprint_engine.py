@@ -24,9 +24,15 @@ def main():
     missing_summary_path = r"Original Data/dataset_missing_summary.csv"
     missing_summary = pd.read_csv(missing_summary_path)
     
-    # Exclude holdout sites from baseline / typical calculation
-    holdouts = ["site_1232", "site_1281"]
-    
+    # QC FIX (2026-08): this file used to exclude site_1232/site_1281 from
+    # every "typical" baseline calculation below, on the premise they were
+    # confirmed-tampered "forensic exhibit" factories. That premise had no
+    # actual evidence anywhere in this repo (no inspection finding, no
+    # violation record, nothing) -- it traced back to an unverified
+    # assertion in an old prompt file. Confirmed with the project owner
+    # these are NOT known-tampered; they're ordinary factories like the
+    # other 31 and should be included in baselines like everyone else.
+
     # Get all 33 unique factory IDs
     factories = sorted(df['factory_id'].unique().tolist())
     print(f"Total factories to process: {len(factories)}")
@@ -190,14 +196,14 @@ def main():
         else:
             results[fac]['correlation_break'] = np.nan
             
-    # Calculate dataset-wide typical range (excluding holdouts)
-    non_holdout_corrs = [
+    # Calculate dataset-wide typical range across all 33 factories
+    all_corrs = [
         results[fac]['correlation_break']
         for fac in factories
-        if fac not in holdouts and not np.isnan(results[fac]['correlation_break'])
+        if not np.isnan(results[fac]['correlation_break'])
     ]
-    typical_mean = np.mean(non_holdout_corrs)
-    typical_std = np.std(non_holdout_corrs)
+    typical_mean = np.mean(all_corrs)
+    typical_std = np.std(all_corrs)
     corr_threshold = typical_mean - 1.0 * typical_std
 
     # -------------------------------------------------------------
@@ -223,14 +229,10 @@ def main():
         else:
             raw_missing_rates[fac] = 0.0
             
-    # Calculate typical range for missing data outlier detection (excluding holdouts)
-    non_holdout_missing = [
-        raw_missing_rates[fac]
-        for fac in factories
-        if fac not in holdouts
-    ]
-    typical_median_missing = np.median(non_holdout_missing)
-    typical_std_missing = np.std(non_holdout_missing)
+    # Calculate typical range for missing data outlier detection across all 33 factories
+    all_missing = [raw_missing_rates[fac] for fac in factories]
+    typical_median_missing = np.median(all_missing)
+    typical_std_missing = np.std(all_missing)
     
     # Store standard deviations above the typical dataset median
     for fac in factories:
@@ -253,14 +255,10 @@ def main():
         else:
             raw_error_rates[fac] = 0.0
 
-    # Calculate typical range for error-rate outlier detection (excluding holdouts)
-    non_holdout_error = [
-        raw_error_rates[fac]
-        for fac in factories
-        if fac not in holdouts
-    ]
-    typical_median_error = np.median(non_holdout_error)
-    typical_std_error = np.std(non_holdout_error)
+    # Calculate typical range for error-rate outlier detection across all 33 factories
+    all_error = [raw_error_rates[fac] for fac in factories]
+    typical_median_error = np.median(all_error)
+    typical_std_error = np.std(all_error)
 
     # Store standard deviations above the typical dataset median
     for fac in factories:

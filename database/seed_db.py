@@ -111,17 +111,22 @@ def seed():
     pg_mapping = get_pg_factory_mapping()
 
     # --------------------------------------------------
-    # Real per-factory risk scoring (replaces the old fake
-    # xgb_prob/iso_score formula below).
+    # Real per-factory risk scoring.
     #
-    # The trained models score one READING at a time, not one
-    # factory. So every real reading for a factory is scored
-    # individually with the actual model, and only the resulting
-    # scores are averaged into a single per-factory number --
-    # never the raw feature values themselves (averaging features
-    # like autocorrelation or rolling_std across readings taken at
-    # different times would create a synthetic "reading" that never
-    # actually happened).
+    # Isolation Forest scores one READING at a time -- every real reading
+    # for a factory is scored individually, and only the resulting scores
+    # are averaged into a single per-factory number (never the raw feature
+    # values themselves; averaging features like autocorrelation or
+    # rolling_std across readings taken at different times would create a
+    # synthetic "reading" that never actually happened).
+    #
+    # QC FIX (2026-08, Phase 2): the tamper-probability model is now a
+    # factory-level model (replacing the retired per-reading synthetic
+    # XGBoost) -- it was trained on aggregated real-telemetry stats per
+    # factory with proxy labels from the fingerprint engine, and only makes
+    # sense evaluated once per factory on that same aggregation, not
+    # averaged from per-reading predictions. See
+    # ml_pipeline/train_xgboost_weak_supervision.py and ml_strategy_plan.md.
     # --------------------------------------------------
 
     real_path = "Data/RawData/real_features.parquet"
@@ -132,9 +137,12 @@ def seed():
     inference_engine = get_inference_engine()
 
     def score_factory(fid: str):
-        """Scores every real reading for a factory with the actual
-        trained models, then returns the mean xgb tamper probability
-        and mean isolation-forest anomaly score across those readings.
+        """Returns (tamper_probability, mean_isolation_forest_anomaly_score)
+        for a factory. tamper_probability comes from the factory-level
+        proxy-label model (Phase 2), evaluated once on this factory's
+        aggregated real readings. anomaly_score is Isolation Forest's
+        per-reading score, averaged across all of the factory's real
+        readings.
         """
         if df_real is None:
             return 0.02, 0.0
@@ -143,14 +151,14 @@ def seed():
         if len(rows) == 0:
             return 0.02, 0.0
 
+        xgb_prob = inference_engine.predict_factory_tamper_probability(rows)
+
         X = rows.reindex(columns=inference_engine.feature_cols)
         X = X.fillna(0.0)
-        X_scaled = inference_engine.scaler.transform(X)
+        X_iso_scaled = inference_engine.iso_scaler.transform(X)
+        iso_scores = inference_engine.iso_forest.score_samples(X_iso_scaled)
 
-        xgb_probs = inference_engine.xgb.predict_proba(X_scaled)[:, 1]
-        iso_scores = inference_engine.iso_forest.score_samples(X_scaled)
-
-        return float(np.mean(xgb_probs)), float(np.mean(iso_scores))
+        return xgb_prob, float(np.mean(iso_scores))
 
     for idx, row in fp_df.iterrows():
         fid = row['factory_id']

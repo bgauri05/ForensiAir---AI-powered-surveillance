@@ -10,9 +10,12 @@ Authoritative Reference Inputs (read directly from ChData/):
 - dataset_statistics_summary.csv (or _v2.csv)
 - dataset_parameter_summary.csv (or _v2.csv)
 
-Forensic Exhibit Holdouts:
-- site_1232 and site_1281 are excluded when computing normalization scalers, dataset-wide baselines,
-  or similarity metrics defining "normal" behavior.
+QC FIX (2026-08): this file used to exclude site_1232/site_1281 from every
+normalization scaler, dataset-wide baseline, and similarity metric below,
+on the premise they were confirmed-tampered "forensic exhibit" factories.
+That premise had no actual evidence anywhere in this repo -- confirmed
+with the project owner these are NOT known-tampered; they're ordinary
+factories like the other 31 and are now treated identically.
 """
 
 import os
@@ -21,9 +24,6 @@ import numpy as np
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics.pairwise import cosine_similarity
-
-# Define holdout factory IDs
-HOLDOUT_FACTORIES = ['site_1232', 'site_1281']
 
 # Target parameters for Parameter Distributions module (excluding Flow)
 TARGET_PARAMETERS = ['pH', 'COD', 'BOD', 'TSS']
@@ -178,26 +178,22 @@ def compute_sensor_health_score(df_qual):
 def compute_inter_factory_similarity(df_dist):
     """
     Module 4: Inter-Factory Similarity
-    Fits StandardScaler on non-holdout factories only, transforms all factories,
+    Fits StandardScaler on all factories, transforms all factories,
     and calculates Cosine Similarity to assign the top 3 similar factories per factory.
     """
     df_feat = df_dist.set_index('factory_id').copy()
-    
-    # Exclude holdout factories when fitting scaler
-    non_holdouts_df = df_feat[~df_feat.index.isin(HOLDOUT_FACTORIES)]
-    
-    # Compute non-holdout feature means for imputation
-    non_holdout_means = non_holdouts_df.mean()
-    
-    # Impute missing values (parameters not measured by a factory) using non-holdout mean
-    df_imputed = df_feat.fillna(non_holdout_means)
-    non_holdouts_imputed = non_holdouts_df.fillna(non_holdout_means)
-    
-    # Fit scaler strictly on non-holdouts
+
+    # Compute feature means for imputation
+    feat_means = df_feat.mean()
+
+    # Impute missing values (parameters not measured by a factory) using the dataset mean
+    df_imputed = df_feat.fillna(feat_means)
+
+    # Fit scaler on all factories
     scaler = StandardScaler()
-    scaler.fit(non_holdouts_imputed)
-    
-    # Transform all factories (including holdouts)
+    scaler.fit(df_imputed)
+
+    # Transform all factories
     scaled_matrix = scaler.transform(df_imputed)
     scaled_df = pd.DataFrame(scaled_matrix, index=df_feat.index, columns=df_feat.columns)
     
@@ -297,7 +293,7 @@ def generate_factory_profiles(chdata_dir='ChData'):
     if len(factories) != 33:
         raise ValueError(f"Expected 33 factories in dataset, found {len(factories)}")
         
-    print(f"Dataset contains {len(factories)} factories (Holdouts: {HOLDOUT_FACTORIES})")
+    print(f"Dataset contains {len(factories)} factories")
     
     print("Computing Module 1: Data Availability...")
     m1 = compute_data_availability(df_cov, df_qual)
@@ -308,7 +304,7 @@ def generate_factory_profiles(chdata_dir='ChData'):
     print("Computing Module 3: Sensor Health Score...")
     m3 = compute_sensor_health_score(df_qual)
     
-    print("Computing Module 4: Inter-Factory Similarity (Holdouts excluded during scaler fit)...")
+    print("Computing Module 4: Inter-Factory Similarity...")
     m4 = compute_inter_factory_similarity(m2)
     
     print("Computing Module 5: Temporal Stability...")
@@ -322,11 +318,8 @@ def generate_factory_profiles(chdata_dir='ChData'):
                  
     if len(profiles) != 33:
         raise ValueError(f"Output dataframe row count error! Expected 33 rows, got {len(profiles)}")
-        
-    for holdout in HOLDOUT_FACTORIES:
-        if holdout not in profiles['factory_id'].values:
-            raise ValueError(f"Holdout factory '{holdout}' missing from output profiles!")
-            
+
+
     return profiles
 
 def save_and_display_profiles(profiles):
