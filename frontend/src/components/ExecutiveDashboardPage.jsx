@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Download, ChevronRight, Filter, Calendar } from 'lucide-react';
+import { API_BASE_URL } from '../config';
 
 export function ExecutiveDashboardPage({ onNavigate }) {
   const [data, setData] = useState(null);
@@ -16,8 +17,8 @@ export function ExecutiveDashboardPage({ onNavigate }) {
   const fetchDashboard = async () => {
     try {
       const [sumRes, facRes] = await Promise.all([
-        fetch('http://127.0.0.1:8000/api/dashboard/summary'),
-        fetch('http://127.0.0.1:8000/api/factories')
+        fetch(`${API_BASE_URL}/api/dashboard/summary`),
+        fetch(`${API_BASE_URL}/api/factories`)
       ]);
 
       if (sumRes.ok && facRes.ok) {

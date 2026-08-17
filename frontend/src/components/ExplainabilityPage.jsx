@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Download, Gavel, ChevronRight, HelpCircle } from 'lucide-react';
+import { API_BASE_URL } from '../config';
 
 export function ExplainabilityPage({ onNavigate }) {
   const [factories, setFactories] = useState([]);
@@ -13,7 +14,7 @@ export function ExplainabilityPage({ onNavigate }) {
 
   const fetchInitialData = async () => {
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/factories');
+      const res = await fetch(`${API_BASE_URL}/api/factories`);
       if (res.ok) {
         const data = await res.json();
         setFactories(data);
@@ -33,9 +34,9 @@ export function ExplainabilityPage({ onNavigate }) {
   const fetchShap = async (fid) => {
     try {
       const [sRes, fRes, pRes] = await Promise.all([
-        fetch(`http://127.0.0.1:8000/api/factories/${fid}/shap`),
-        fetch(`http://127.0.0.1:8000/api/factories/${fid}`),
-        fetch(`http://127.0.0.1:8000/api/factories/${fid}/predictions`)
+        fetch(`${API_BASE_URL}/api/factories/${fid}/shap`),
+        fetch(`${API_BASE_URL}/api/factories/${fid}`),
+        fetch(`${API_BASE_URL}/api/factories/${fid}/predictions`)
       ]);
 
       let shapList = null;

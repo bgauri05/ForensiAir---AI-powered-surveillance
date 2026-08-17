@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Download, FileText, Calendar, CheckCircle, Search } from 'lucide-react';
+import { API_BASE_URL } from '../config';
 
 export function ReportsCenterPage({ onNavigate }) {
   const [factories, setFactories] = useState([]);
@@ -13,7 +14,7 @@ export function ReportsCenterPage({ onNavigate }) {
 
   const fetchFactories = async () => {
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/factories');
+      const res = await fetch(`${API_BASE_URL}/api/factories`);
       if (res.ok) {
         const data = await res.json();
         setFactories(data);
@@ -30,7 +31,7 @@ export function ReportsCenterPage({ onNavigate }) {
 
   const fetchFactoryReport = async (fObj) => {
     try {
-      const res = await fetch(`http://127.0.0.1:8000/api/factories/${fObj.factory_id}`);
+      const res = await fetch(`${API_BASE_URL}/api/factories/${fObj.factory_id}`);
       if (res.ok) {
         const data = await res.json();
         setSelectedFactory(data);

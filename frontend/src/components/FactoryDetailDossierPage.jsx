@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Download, ShieldAlert, ArrowLeft, Factory, FileText, CheckCircle } from 'lucide-react';
+import { API_BASE_URL } from '../config';
 
 export function FactoryDetailDossierPage({ onNavigate }) {
   const [factoriesList, setFactoriesList] = useState([]);
@@ -13,7 +14,7 @@ export function FactoryDetailDossierPage({ onNavigate }) {
 
   const fetchFactories = async () => {
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/factories');
+      const res = await fetch(`${API_BASE_URL}/api/factories`);
       if (res.ok) {
         const data = await res.json();
         setFactoriesList(data);
@@ -31,7 +32,7 @@ export function FactoryDetailDossierPage({ onNavigate }) {
 
   const fetchFactoryDetail = async (fid) => {
     try {
-      const res = await fetch(`http://127.0.0.1:8000/api/factories/${fid}`);
+      const res = await fetch(`${API_BASE_URL}/api/factories/${fid}`);
       if (res.ok) {
         const data = await res.json();
         setFactoryData(data);

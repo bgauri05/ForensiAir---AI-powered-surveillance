@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { API_BASE_URL } from '../config';
 
 export function AddFactoryModal({ isOpen, onClose, onFactoryAdded }) {
   const [name, setName] = useState('');
@@ -15,7 +16,7 @@ export function AddFactoryModal({ isOpen, onClose, onFactoryAdded }) {
     
     setSubmitting(true);
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/admin/factories', {
+      const res = await fetch(`${API_BASE_URL}/api/admin/factories`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

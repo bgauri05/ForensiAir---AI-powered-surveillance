@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Bolt, CheckCircle, AlertTriangle, ShieldCheck, ChevronRight } from 'lucide-react';
+import { API_BASE_URL } from '../config';
 
 export function AIAnalysisPage({ onNavigate }) {
   const [factories, setFactories] = useState([]);
@@ -14,7 +15,7 @@ export function AIAnalysisPage({ onNavigate }) {
 
   const fetchInitialData = async () => {
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/factories');
+      const res = await fetch(`${API_BASE_URL}/api/factories`);
       if (res.ok) {
         const data = await res.json();
         setFactories(data);
@@ -34,8 +35,8 @@ export function AIAnalysisPage({ onNavigate }) {
   const fetchFactoryPredictions = async (fid, factoryObj) => {
     try {
       const [predRes, facDetailRes] = await Promise.all([
-        fetch(`http://127.0.0.1:8000/api/factories/${fid}/predictions`),
-        fetch(`http://127.0.0.1:8000/api/factories/${fid}`)
+        fetch(`${API_BASE_URL}/api/factories/${fid}/predictions`),
+        fetch(`${API_BASE_URL}/api/factories/${fid}`)
       ]);
 
       let predictions = null;

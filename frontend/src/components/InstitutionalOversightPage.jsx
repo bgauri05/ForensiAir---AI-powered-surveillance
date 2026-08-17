@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ShieldAlert, AlertTriangle, ChevronRight, CheckCircle, RefreshCw } from 'lucide-react';
+import { API_BASE_URL } from '../config';
 
 export function InstitutionalOversightPage({ onNavigate }) {
   const [oversightData, setOversightData] = useState(null);
@@ -11,7 +12,7 @@ export function InstitutionalOversightPage({ onNavigate }) {
 
   const fetchOversight = async () => {
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/oversight');
+      const res = await fetch(`${API_BASE_URL}/api/oversight`);
       if (res.ok) {
         const data = await res.json();
         setOversightData(data);

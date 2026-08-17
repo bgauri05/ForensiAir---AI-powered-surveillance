@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Download, Calendar, TrendingUp, TrendingDown, AlertTriangle, ShieldCheck } from 'lucide-react';
+import { API_BASE_URL } from '../config';
 
 export function DatasetQualityPage({ onNavigate }) {
   const [qualityData, setQualityData] = useState(null);
@@ -11,7 +12,7 @@ export function DatasetQualityPage({ onNavigate }) {
 
   const fetchDataQuality = async () => {
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/data-quality');
+      const res = await fetch(`${API_BASE_URL}/api/data-quality`);
       if (res.ok) {
         const data = await res.json();
         setQualityData(data);

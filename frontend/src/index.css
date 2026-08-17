@@ -1,11 +1,69 @@
 @import "tailwindcss";
 
+/*
+ * Design tokens -- formalizes the palette that was already established
+ * across the app (navy institutional primary, semantic risk colors) but
+ * scattered as raw hex literals in every component. Centralizing here
+ * means a palette tweak is a one-line change instead of a find-replace
+ * across 8+ files, and keeps new components visually consistent by
+ * default. Values match what's actually in use today -- no colors were
+ * invented or swapped out, just named.
+ */
+:root {
+  /* Brand / structure */
+  --color-primary: #00355f;       /* sidebar, primary actions, focus rings */
+  --color-primary-active: #0f4c81; /* active nav item / accent surfaces */
+  --color-primary-light: #8ebdf9;  /* active nav text/icon on dark surfaces */
+
+  /* Surfaces */
+  --color-bg: #f8f9fb;
+  --color-surface: #ffffff;
+  --color-surface-alt: #f2f4f6;
+  --color-border: #E5E7EB;
+  --color-border-strong: #c2c7d1;
+
+  /* Text */
+  --color-text: #191c1e;
+  --color-text-secondary: #42474f;
+  --color-text-muted: #727780;
+
+  /* Semantic risk / status colors */
+  --color-success: #1b6d24;
+  --color-success-bg: #eaf6ec;
+  --color-warning: #F57C00;
+  --color-warning-bg: #fff3e6;
+  --color-danger: #D32F2F;
+  --color-danger-bg: #fdecec;
+  --color-danger-strong: #ba1a1a;
+
+  /* Spacing scale (px) */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-xxl: 48px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
 @layer base {
   body {
     font-family: 'IBM Plex Sans', sans-serif;
-    background-color: #f8f9fb;
-    color: #191c1e;
+    background-color: var(--color-bg);
+    color: var(--color-text);
   }
+}
+
+/* Reusable card pattern -- most pages hand-roll this with inline styles;
+   available as a class going forward for new/refactored components. */
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  box-shadow: var(--shadow-sm);
 }
 
 .material-symbols-outlined {

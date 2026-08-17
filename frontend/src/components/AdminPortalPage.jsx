@@ -3,6 +3,7 @@ import { Plus, Edit2, Trash2, Shield, Settings, Check, AlertCircle } from 'lucid
 import { AddFactoryModal } from './AddFactoryModal';
 import { ModelVersionsTab } from './ModelVersionsTab';
 import { ThresholdSettingsTab } from './ThresholdSettingsTab';
+import { API_BASE_URL } from '../config';
 
 export function AdminPortalPage({ onNavigate }) {
   const [activeTab, setActiveTab] = useState('factories');
@@ -26,7 +27,7 @@ export function AdminPortalPage({ onNavigate }) {
   const fetchAdminData = async () => {
     setLoading(true);
     try {
-      const fRes = await fetch(`http://127.0.0.1:8000/api/admin/factories?district=${districtFilter}&industry=${industryFilter}`);
+      const fRes = await fetch(`${API_BASE_URL}/api/admin/factories?district=${districtFilter}&industry=${industryFilter}`);
       if (fRes.ok) {
         const fData = await fRes.json();
         setFactories(fData);
@@ -34,23 +35,23 @@ export function AdminPortalPage({ onNavigate }) {
         setFactories(getFallbackFactories());
       }
 
-      const uRes = await fetch('http://127.0.0.1:8000/api/admin/users');
+      const uRes = await fetch(`${API_BASE_URL}/api/admin/users`);
       if (uRes.ok) setUsers(await uRes.json());
       else setUsers(getFallbackUsers());
 
-      const cRes = await fetch('http://127.0.0.1:8000/api/admin/consent-limits');
+      const cRes = await fetch(`${API_BASE_URL}/api/admin/consent-limits`);
       if (cRes.ok) setConsentLimits(await cRes.json());
       else setConsentLimits(getFallbackConsentLimits());
 
-      const mRes = await fetch('http://127.0.0.1:8000/api/admin/models');
+      const mRes = await fetch(`${API_BASE_URL}/api/admin/models`);
       if (mRes.ok) setModels(await mRes.json());
       else setModels(getFallbackModels());
 
-      const tRes = await fetch('http://127.0.0.1:8000/api/admin/thresholds');
+      const tRes = await fetch(`${API_BASE_URL}/api/admin/thresholds`);
       if (tRes.ok) setThresholds(await tRes.json());
       else setThresholds(getFallbackThresholds());
 
-      const nRes = await fetch('http://127.0.0.1:8000/api/admin/notifications');
+      const nRes = await fetch(`${API_BASE_URL}/api/admin/notifications`);
       if (nRes.ok) setNotifications(await nRes.json());
       else setNotifications(getFallbackNotifications());
 
@@ -69,7 +70,7 @@ export function AdminPortalPage({ onNavigate }) {
   const handleDeleteFactory = async (factoryId) => {
     if (!window.confirm(`Are you sure you want to remove factory ${factoryId}?`)) return;
     try {
-      await fetch(`http://127.0.0.1:8000/api/admin/factories/${factoryId}`, { method: 'DELETE' });
+      await fetch(`${API_BASE_URL}/api/admin/factories/${factoryId}`, { method: 'DELETE' });
       fetchAdminData();
     } catch (err) {
       setFactories(prev => prev.filter(f => f.factory_id !== factoryId));
