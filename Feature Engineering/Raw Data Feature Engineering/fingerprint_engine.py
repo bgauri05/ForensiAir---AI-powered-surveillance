@@ -237,6 +237,39 @@ def main():
         results[fac]['coordinated_missing_data'] = (raw_missing_rates[fac] - typical_median_missing) / typical_std_missing
 
     # -------------------------------------------------------------
+    # 8. DATA_INTEGRITY (Error / Out-of-Range quality-code rate)
+    # -------------------------------------------------------------
+    # Added 2026-08: a factory whose telemetry is disproportionately tagged
+    # Error/Out-of-Range by the source system either has failing equipment or
+    # is having its bad readings excluded from the record -- either way it's
+    # a data-integrity signal that was previously computed (quality_error_rate,
+    # from loaders.py's per-factory QC report) but never fed into scoring.
+    print("Computing DATA_INTEGRITY...")
+    raw_error_rates = {}
+    for fac in factories:
+        fac_df = df[(df['factory_id'] == fac) & (df['quality_error_rate'].notna())]
+        if len(fac_df) > 0:
+            raw_error_rates[fac] = 100.0 * float(fac_df['quality_error_rate'].iloc[0])
+        else:
+            raw_error_rates[fac] = 0.0
+
+    # Calculate typical range for error-rate outlier detection (excluding holdouts)
+    non_holdout_error = [
+        raw_error_rates[fac]
+        for fac in factories
+        if fac not in holdouts
+    ]
+    typical_median_error = np.median(non_holdout_error)
+    typical_std_error = np.std(non_holdout_error)
+
+    # Store standard deviations above the typical dataset median
+    for fac in factories:
+        if typical_std_error > 0:
+            results[fac]['data_integrity'] = (raw_error_rates[fac] - typical_median_error) / typical_std_error
+        else:
+            results[fac]['data_integrity'] = 0.0
+
+    # -------------------------------------------------------------
     # Flagging triggers & aggregating
     # -------------------------------------------------------------
     print("Aggregating scores and flagging triggers...")
@@ -268,9 +301,15 @@ def main():
         
         # 7. COORDINATED_MISSING_DATA: > 1.5 standard deviations above the median
         trig_missing = 1 if r['coordinated_missing_data'] > 1.5 else 0
-        
-        total_triggered = trig_ph + trig_dip + trig_flat + trig_hug + trig_corr + trig_copy + trig_missing
-        
+
+        # 8. DATA_INTEGRITY: > 1.5 standard deviations above the median error rate
+        trig_integrity = 1 if r['data_integrity'] > 1.5 else 0
+
+        total_triggered = (
+            trig_ph + trig_dip + trig_flat + trig_hug + trig_corr +
+            trig_copy + trig_missing + trig_integrity
+        )
+
         final_rows.append({
             'factory_id': fac,
             'impossible_ph_range': r['impossible_ph_range'],
@@ -280,6 +319,22 @@ def main():
             'correlation_break': r['correlation_break'],
             'copy_paste': r['copy_paste'],
             'coordinated_missing_data': r['coordinated_missing_data'],
+            'data_integrity': r['data_integrity'],
+            # QC FIX: the raw values above are magnitudes/percentages/z-scores on
+            # completely different scales -- a downstream reader can't safely turn
+            # them into a yes/no trigger decision without redoing the thresholding
+            # logic above (which is what calculate_composite_risk() used to do
+            # badly, via a naive "value > 0" check). Save the actual 0/1 decisions
+            # this script already computed correctly, so downstream code just
+            # reads the answer instead of re-guessing it.
+            'trig_impossible_ph_range': trig_ph,
+            'trig_inspection_dip': trig_dip,
+            'trig_flatline': trig_flat,
+            'trig_limit_hugging': trig_hug,
+            'trig_correlation_break': trig_corr,
+            'trig_copy_paste': trig_copy,
+            'trig_coordinated_missing_data': trig_missing,
+            'trig_data_integrity': trig_integrity,
             'total_fingerprints_triggered': total_triggered
         })
         
@@ -303,6 +358,7 @@ def main():
     print(f"5. CORRELATION_BREAK: Triggered if average correlation < {corr_threshold:.4f} (typical mean - 1.0 * typical std)")
     print(f"6. COPY_PASTE: Triggered if score > 1.0% (fraction of readings with autocorrelation > 0.95)")
     print(f"7. COORDINATED_MISSING_DATA: Triggered if score > 1.5 (deviations above dataset median missing rate)")
+    print(f"8. DATA_INTEGRITY: Triggered if score > 1.5 (deviations above dataset median Error/Out-of-Range rate)")
     print("==========================================================================\n")
     
     # Sort and print

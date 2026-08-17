@@ -207,7 +207,7 @@ def main():
 
     print("\nLoading raw telemetry...")
 
-    telemetry_df = load_raw(
+    telemetry_df, quality_report_df = load_raw(
         args.monitoring_csv
     )
 
@@ -234,6 +234,24 @@ def main():
     )
 
     # --------------------------------------------------
+    # Attach per-factory data-quality signal
+    # --------------------------------------------------
+    # error_rate = share of this factory's raw readings that were
+    # dropped by the Error/Out-of-Range quality-code filter in
+    # load_raw(). Carried into the feature matrix as its own column
+    # (not silently discarded) so downstream characterization/ML
+    # stages can treat an unusually high error rate as a signal in
+    # its own right rather than losing the information entirely.
+
+    feature_matrix = feature_matrix.merge(
+        quality_report_df[["factory_id", "error_rate"]].rename(
+            columns={"error_rate": "quality_error_rate"}
+        ),
+        on="factory_id",
+        how="left"
+    )
+
+    # --------------------------------------------------
     # Save output
     # --------------------------------------------------
 
@@ -246,6 +264,13 @@ def main():
         args.output_parquet,
         index=False
     )
+
+    quality_report_path = os.path.join(
+        os.path.dirname(args.output_parquet),
+        "data_quality_report.csv"
+    )
+    quality_report_df.to_csv(quality_report_path, index=False)
+    print(f"\nPer-factory data quality report saved to:\n{quality_report_path}")
 
     # --------------------------------------------------
     # Diagnostics

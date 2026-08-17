@@ -34,6 +34,117 @@ app.add_middleware(
 # Cache data in memory for sub-millisecond responses
 _data_cache = {}
 
+# QC FIX (2026-08): this used to load Data/RawData/tsi_scores.csv -- a file
+# with no generator script anywhere in this repo, meaning nothing
+# reproduced it and it did not reflect the quality-filter fix, the real
+# model inference wiring, or the fingerprint trigger fixes made this
+# session. The live API now reads forensiair.db, the same database
+# database/seed_db.py populates from the real, fixed pipeline. This
+# function reshapes that data into the column names the rest of this file
+# already expects, so the rest of the API code didn't need a rewrite.
+def _load_factory_scores() -> pd.DataFrame:
+    import sqlite3
+    db_path = os.path.join(os.path.dirname(__file__), "..", "forensiair.db")
+    if not os.path.exists(db_path):
+        db_path = "forensiair.db"
+    if not os.path.exists(db_path):
+        return pd.DataFrame()
+
+    conn = sqlite3.connect(db_path)
+    try:
+        factories = pd.read_sql_query(
+            "SELECT factory_id, risk_score, risk_category, total_fingerprints_triggered, "
+            "xgb_probability, anomaly_score_norm FROM factories",
+            conn
+        )
+        fingerprints = pd.read_sql_query("SELECT * FROM fingerprint_scores", conn)
+    finally:
+        conn.close()
+
+    if factories.empty:
+        return pd.DataFrame()
+
+    df = factories.merge(fingerprints, on="factory_id", how="left", suffixes=("", "_fp"))
+
+    # risk_category is the real 4-tier system (LOW/MEDIUM/HIGH/CRITICAL);
+    # the rest of this file was built around a 3-tier system (Low/Medium/
+    # High). Collapse CRITICAL into High so nothing downstream breaks, but
+    # keep the true 4-tier value available under true_risk_category for
+    # anything that wants the un-collapsed answer.
+    tier_map = {"LOW": "Low", "MEDIUM": "Medium", "HIGH": "High", "CRITICAL": "High"}
+    df["risk_tier"] = df["risk_category"].map(tier_map).fillna("Low")
+    df["true_risk_category"] = df["risk_category"]
+
+    # tsi_score used to come from an unknown formula in the orphaned CSV;
+    # risk_score (0-100, from calculate_composite_risk()) is the real,
+    # reproducible equivalent on the same 0-100 scale.
+    df["tsi_score"] = df["risk_score"]
+
+    df = df.sort_values("risk_score", ascending=False).reset_index(drop=True)
+    df["rank"] = df.index + 1
+
+    # Map fingerprint magnitudes onto the raw-signal field names the rest
+    # of this file already reads. Percentages stored 0-100 in the DB are
+    # converted to the 0-1 fractions this file's threshold checks (e.g.
+    # "> 0.05") expect.
+    df["anomaly_score"] = df["anomaly_score_norm"]
+    df["flatline_rate"] = df["flatline"] / 100.0
+    df["autocorr_high_rate"] = df["copy_paste"] / 100.0
+    df["limit_hugging_mean"] = df["limit_hugging"] / 100.0
+    df["impossible_val_rate"] = df["impossible_ph_range"] / 100.0
+    df["pre_dip_mean"] = df["inspection_dip"].fillna(0.0)
+    df["coordinated_missing_flag"] = df["trig_coordinated_missing_data"].fillna(0)
+    # No real equivalent measured for these -- default same as this file
+    # already did when a CSV column was missing.
+    df["dup_run_rate"] = 0.0
+    df["bdl_rate_mean"] = 0.0
+    df["cov_high_rate"] = 0.0
+    df["bod_cod_vol_mean"] = np.nan
+
+    return df
+
+
+def _classify_tamper(risk_category: str, risk_score: float, pred_cls: str, pred_conf: float,
+                      raw_signals: Dict[str, float]) -> Dict[str, Any]:
+    """
+    QC FIX (2026-08): this replaces two copy-pasted blocks that fabricated
+    a tamper_probability from tsi_score with hand-picked multipliers/clamps
+    (e.g. "tsi_score * 0.95, clamped 68.5-98.8") and invented a specific
+    tamper-type label like 'Severe Signal Suppression' whenever the real
+    stage-2 model said NONE/COMPLIANT/NORMAL but the tier said otherwise.
+
+    tamper_probability is now just the real composite risk_score (already
+    0-100, already the honest answer). predicted_tamper_type is left as
+    whatever the real stage-2 model actually predicted -- if that
+    disagrees with a HIGH/CRITICAL risk score, that's surfaced as a note
+    naming which real fingerprint checks are driving the risk, instead of
+    silently overwriting the model's answer with a guess.
+    """
+    tamper_probability = round(float(risk_score), 1)
+    note = None
+    if pred_cls.upper() in ['NONE', 'COMPLIANT', 'NORMAL'] and risk_category in ['HIGH', 'CRITICAL']:
+        drivers = []
+        if raw_signals.get('flatline_rate', 0) and raw_signals.get('flatline_rate', 0) > 0.05:
+            drivers.append('flatline')
+        if raw_signals.get('limit_hugging_mean', 0) and raw_signals.get('limit_hugging_mean', 0) > 0.05:
+            drivers.append('limit hugging')
+        if raw_signals.get('coordinated_missing_flag', 0):
+            drivers.append('coordinated missing data')
+        if raw_signals.get('impossible_val_rate', 0):
+            drivers.append('impossible values')
+        note = (
+            "Stage-2 classifier did not identify a specific tamper pattern for this "
+            "factory, but the risk score above is being driven by fingerprint checks: "
+            + (', '.join(drivers) if drivers else "see raw_fingerprint_signals for detail") + "."
+        )
+    return {
+        "predicted_tamper_type": pred_cls,
+        "confidence_percentage": round(float(pred_conf), 1),
+        "tamper_probability": tamper_probability,
+        "note": note
+    }
+
+
 def get_data_cache():
     if "quality" not in _data_cache:
         q_path = "Original Data/dataset_quality_summary_v2.csv"
@@ -62,11 +173,7 @@ def get_data_cache():
         _data_cache["name_mapping"] = mapping
 
     if "tsi" not in _data_cache:
-        tsi_path = "Data/RawData/tsi_scores.csv"
-        if not os.path.exists(tsi_path):
-            tsi_path = os.path.join(os.path.dirname(__file__), "..", tsi_path)
-        df_tsi = pd.read_csv(tsi_path) if os.path.exists(tsi_path) else pd.DataFrame()
-        _data_cache["tsi"] = df_tsi
+        _data_cache["tsi"] = _load_factory_scores()
 
     if "shap" not in _data_cache:
         shap_path = "Data/RawData/factory_shap_attributions.csv"
@@ -380,31 +487,14 @@ def get_factory_detail(factory_id: str):
     pred_conf = round(float(probs[top_idx]) * 100, 1)
     
     risk_tier = str(row.get('risk_tier', 'Low'))
+    risk_category = str(row.get('true_risk_category', 'LOW'))
     tsi_score = float(row.get('tsi_score', 0.0))
-    
-    # Domain-Harmonized Risk Tier & Tamper Probability Logic
-    if risk_tier == 'High':
-        tamper_prob = round(min(98.8, max(68.5, tsi_score * 0.95)), 1)
-        if pred_cls.upper() in ['NONE', 'COMPLIANT', 'NORMAL']:
-            if float(row.get('flatline_rate', 0)) > 0.05:
-                pred_cls = 'BOD Flatline'
-            elif float(row.get('limit_hugging_mean', 0)) > 0.05:
-                pred_cls = 'Limit Hugging'
-            elif float(row.get('coordinated_missing_flag', 0)) > 0:
-                pred_cls = 'Coordinated Outage'
-            else:
-                pred_cls = 'Severe Signal Suppression'
-        pred_conf = tamper_prob
-    elif risk_tier == 'Medium':
-        tamper_prob = round(min(58.0, max(28.0, tsi_score * 0.70)), 1)
-        if pred_cls.upper() in ['NONE', 'COMPLIANT', 'NORMAL']:
-            pred_cls = 'Telemetry Drift'
-        pred_conf = tamper_prob
-    else:
-        tamper_prob = round(max(1.0, min(12.5, tsi_score * 0.25)), 1)
-        pred_cls = 'NONE'
-        pred_conf = round(100.0 - tamper_prob, 1)
-    
+
+    classification = _classify_tamper(risk_category, tsi_score, pred_cls, pred_conf, raw_signals)
+    tamper_prob = classification['tamper_probability']
+    pred_cls = classification['predicted_tamper_type']
+    pred_conf = classification['confidence_percentage']
+
     # Calculate effluent averages from row features
     val = row_feat_dict.get('value', 20.0)
     rmean = row_feat_dict.get('rolling_mean', 120.0)
@@ -436,11 +526,7 @@ def get_factory_detail(factory_id: str):
         "peak_variance": peak_variance,
         "tamper_probability": tamper_prob,
         "raw_fingerprint_signals": raw_signals,
-        "stage2_prediction": {
-            "predicted_tamper_type": pred_cls,
-            "confidence_percentage": pred_conf,
-            "tamper_probability": tamper_prob
-        }
+        "stage2_prediction": classification
     }
 
 # -------------------------------------------------------------
@@ -510,35 +596,26 @@ def get_factory_predictions(factory_id: str):
     probs = xgb2.predict_proba(f_scaled)[0]
     top_idx = int(np.argmax(probs))
     pred_cls = str(le.classes_[top_idx])
-    
+    pred_conf = round(float(probs[top_idx]) * 100, 1)
+
     df_tsi = cache["tsi"]
     sub_tsi = df_tsi[df_tsi['factory_id'] == factory_id]
     r_row = sub_tsi.iloc[0] if not sub_tsi.empty else {}
     risk_tier = str(r_row.get('risk_tier', 'Low'))
+    risk_category = str(r_row.get('true_risk_category', 'LOW'))
     tsi_score = float(r_row.get('tsi_score', 0.0))
     iso_score = float(r_row.get('anomaly_score', 0.42))
 
-    if risk_tier == 'High':
-        tamper_prob = round(min(98.8, max(68.5, tsi_score * 0.95)), 1)
-        if pred_cls.upper() in ['NONE', 'COMPLIANT', 'NORMAL']:
-            if float(r_row.get('flatline_rate', 0)) > 0.05:
-                pred_cls = 'BOD Flatline'
-            elif float(r_row.get('limit_hugging_mean', 0)) > 0.05:
-                pred_cls = 'Limit Hugging'
-            elif float(r_row.get('coordinated_missing_flag', 0)) > 0:
-                pred_cls = 'Coordinated Outage'
-            else:
-                pred_cls = 'Severe Signal Suppression'
-        pred_conf = tamper_prob
-    elif risk_tier == 'Medium':
-        tamper_prob = round(min(58.0, max(28.0, tsi_score * 0.70)), 1)
-        if pred_cls.upper() in ['NONE', 'COMPLIANT', 'NORMAL']:
-            pred_cls = 'Telemetry Drift'
-        pred_conf = tamper_prob
-    else:
-        tamper_prob = round(max(1.0, min(12.5, tsi_score * 0.25)), 1)
-        pred_cls = 'NONE'
-        pred_conf = round(100.0 - tamper_prob, 1)
+    raw_signals_for_note = {
+        'flatline_rate': float(r_row.get('flatline_rate', 0) or 0),
+        'limit_hugging_mean': float(r_row.get('limit_hugging_mean', 0) or 0),
+        'coordinated_missing_flag': float(r_row.get('coordinated_missing_flag', 0) or 0),
+        'impossible_val_rate': float(r_row.get('impossible_val_rate', 0) or 0),
+    }
+    classification = _classify_tamper(risk_category, tsi_score, pred_cls, pred_conf, raw_signals_for_note)
+    tamper_prob = classification['tamper_probability']
+    pred_cls = classification['predicted_tamper_type']
+    pred_conf = classification['confidence_percentage']
 
     iso_summary = cache["iso_summary"]
     stabs_dict = iso_summary.get("per_factory_seed_stability", {})
@@ -554,7 +631,8 @@ def get_factory_predictions(factory_id: str):
         "stage2_model": {
             "predicted_tamper_type": pred_cls,
             "confidence_percentage": pred_conf,
-            "tamper_probability": tamper_prob
+            "tamper_probability": tamper_prob,
+            "note": classification['note']
         },
         "isolation_forest": {
             "anomaly_score": round(iso_score, 4),

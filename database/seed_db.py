@@ -2,12 +2,14 @@ import os
 import sys
 import pandas as pd
 import numpy as np
+from urllib.parse import quote_plus
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 from backend.database import SessionLocal, init_db, engine
 from backend.models import Factory, FingerprintScore, InspectionEvent, TelemetryRecord, Alert, ConsentLimit, SystemThreshold, UserAccess, Base
 from ml_pipeline.risk_engine import calculate_composite_risk
+from ml_pipeline.inference import get_inference_engine
 
 DISTRICTS = ["Northern Industrial Zone", "Coastal Sector", "Urban Fringe"]
 INDUSTRIES = [
@@ -56,7 +58,28 @@ def get_pg_factory_mapping():
     mapping = dict(NAME_MAPPING)
     try:
         import psycopg2
-        PG_URL = "postgresql://postgres:Gauri%40123@localhost:5434/forensiair"
+
+        # QC FIX (2026-08): this used to be a hardcoded connection string with
+        # a real username/password committed directly in source. Credentials
+        # now come from environment variables -- PG_PASSWORD has no default,
+        # so if it isn't set this raises and falls through to the existing
+        # except block below, which already handles "no live Postgres
+        # available" gracefully via the hardcoded NAME_MAPPING fallback above.
+        pg_host = os.getenv("PG_HOST", "localhost")
+        pg_port = os.getenv("PG_PORT", "5434")
+        pg_database = os.getenv("PG_DATABASE", "forensiair")
+        pg_user = os.getenv("PG_USER", "postgres")
+        pg_password = os.getenv("PG_PASSWORD")
+
+        if not pg_password:
+            raise RuntimeError(
+                "PG_PASSWORD environment variable is not set."
+            )
+
+        PG_URL = (
+            f"postgresql://{pg_user}:{quote_plus(pg_password)}"
+            f"@{pg_host}:{pg_port}/{pg_database}"
+        )
         conn = psycopg2.connect(PG_URL, connect_timeout=3)
         cur = conn.cursor()
         cur.execute("SELECT site_id, name, category, city FROM factories;")
@@ -69,83 +92,79 @@ def get_pg_factory_mapping():
         print(f"Using default PostgreSQL factory dictionary mapping (PostgreSQL connect notice: {e})")
     return mapping
 
-MOCK_INITIAL = [
-    {"factory_id": "FA-88921", "name": "BlueWave Chemicals", "district": "Northern Industrial Zone", "industry": "Chemical Manufacturing", "status": "Compliant", "risk": 12.0, "risk_cat": "LOW"},
-    {"factory_id": "FA-77210", "name": "IronForge Foundry", "district": "Coastal Sector", "industry": "Heavy Metallurgy", "status": "Under Review", "risk": 58.5, "risk_cat": "HIGH"},
-    {"factory_id": "FA-44182", "name": "Apex Textile Ltd.", "district": "Urban Fringe", "industry": "Garment & Dyeing", "status": "Critical Breach", "risk": 94.2, "risk_cat": "CRITICAL"},
-    {"factory_id": "FA-90112", "name": "Z-Tech Polymers", "district": "Northern Industrial Zone", "industry": "Synthetic Rubber", "status": "Compliant", "risk": 18.4, "risk_cat": "LOW"},
-    {"factory_id": "FA-11234", "name": "GreenLeaf Paper", "district": "Coastal Sector", "industry": "Pulp & Paper", "status": "Compliant", "risk": 8.1, "risk_cat": "LOW"},
-    {"factory_id": "FA-22561", "name": "Global Glass Works", "district": "Urban Fringe", "industry": "Glass Manufacturing", "status": "Under Review", "risk": 62.0, "risk_cat": "HIGH"},
-    {"factory_id": "FA-55310", "name": "Titan Cement", "district": "Northern Industrial Zone", "industry": "Construction Materials", "status": "Compliant", "risk": 14.5, "risk_cat": "LOW"}
-]
-
 def seed():
     print("--- 1. Initializing Database Schema ---")
     Base.metadata.drop_all(bind=engine)
     init_db()
     
     db = SessionLocal()
-    
-    # 1. Add standard mock factories first
+
+    # 1. Add real CSV factories
     factories_to_add = []
     fingerprints_to_add = []
-    
-    for m in MOCK_INITIAL:
-        f_obj = Factory(
-            factory_id=m['factory_id'],
-            name=m['name'],
-            industry_type=m['industry'],
-            location=m['district'],
-            total_fingerprints_triggered=0 if m['risk_cat'] == 'LOW' else (2 if m['risk_cat'] == 'HIGH' else 4),
-            risk_score=m['risk'],
-            risk_category=m['risk_cat'],
-            status="Active" if m['risk_cat'] != "CRITICAL" else "Under Review"
-        )
-        factories_to_add.append(f_obj)
-        
-        fp_obj = FingerprintScore(
-            factory_id=m['factory_id'],
-            impossible_ph_range=0.0,
-            inspection_dip=0.0,
-            flatline=0.42 if m['risk_cat'] == 'CRITICAL' else 0.0,
-            limit_hugging=0.28 if m['risk_cat'] == 'CRITICAL' else 0.0,
-            correlation_break=0.15 if m['risk_cat'] == 'CRITICAL' else 0.0,
-            copy_paste=0.0,
-            coordinated_missing_data=0.08 if m['risk_cat'] == 'CRITICAL' else 0.0,
-            total_fingerprints_triggered=0 if m['risk_cat'] == 'LOW' else (2 if m['risk_cat'] == 'HIGH' else 4)
-        )
-        fingerprints_to_add.append(fp_obj)
 
-        if m['risk_cat'] in ["HIGH", "CRITICAL"]:
-            alert = Alert(
-                factory_id=m['factory_id'],
-                alert_type="Effluent Threshold Breach",
-                severity=m['risk_cat'],
-                message=f"{m['name']} triggered anomalous signal tampering flags. Mandatory audit required.",
-                timestamp="2024-12-30 14:00:00",
-                status="OPEN"
-            )
-            db.add(alert)
-
-    # 2. Add real CSV factories
     fp_path = "Data/RawData/factory_fingerprint_scores.csv"
     if not os.path.exists(fp_path):
         fp_path = os.path.join("..", fp_path)
     fp_df = pd.read_csv(fp_path)
-    
+
     pg_mapping = get_pg_factory_mapping()
-    
+
+    # --------------------------------------------------
+    # Real per-factory risk scoring (replaces the old fake
+    # xgb_prob/iso_score formula below).
+    #
+    # The trained models score one READING at a time, not one
+    # factory. So every real reading for a factory is scored
+    # individually with the actual model, and only the resulting
+    # scores are averaged into a single per-factory number --
+    # never the raw feature values themselves (averaging features
+    # like autocorrelation or rolling_std across readings taken at
+    # different times would create a synthetic "reading" that never
+    # actually happened).
+    # --------------------------------------------------
+
+    real_path = "Data/RawData/real_features.parquet"
+    if not os.path.exists(real_path):
+        real_path = os.path.join("..", real_path)
+    df_real = pd.read_parquet(real_path) if os.path.exists(real_path) else None
+
+    inference_engine = get_inference_engine()
+
+    def score_factory(fid: str):
+        """Scores every real reading for a factory with the actual
+        trained models, then returns the mean xgb tamper probability
+        and mean isolation-forest anomaly score across those readings.
+        """
+        if df_real is None:
+            return 0.02, 0.0
+
+        rows = df_real[df_real["factory_id"] == fid]
+        if len(rows) == 0:
+            return 0.02, 0.0
+
+        X = rows.reindex(columns=inference_engine.feature_cols)
+        X = X.fillna(0.0)
+        X_scaled = inference_engine.scaler.transform(X)
+
+        xgb_probs = inference_engine.xgb.predict_proba(X_scaled)[:, 1]
+        iso_scores = inference_engine.iso_forest.score_samples(X_scaled)
+
+        return float(np.mean(xgb_probs)), float(np.mean(iso_scores))
+
     for idx, row in fp_df.iterrows():
         fid = row['factory_id']
         site_num = fid.split('_')[-1]
-        
+
         if fid in pg_mapping:
             name, dist, ind_type = pg_mapping[fid]
         else:
             ind_type = INDUSTRIES[idx % len(INDUSTRIES)]
             dist = DISTRICTS[idx % len(DISTRICTS)]
             name = f"Industrial Plant {site_num} ({ind_type.split()[0]})"
-        
+
+        # Raw magnitude values -- kept for display (FingerprintScore table
+        # stores the actual percentages/z-scores, e.g. "flatline: 12.3%").
         fp_dict = {
             'impossible_ph_range': float(row.get('impossible_ph_range', 0)),
             'inspection_dip': float(row.get('inspection_dip', 0)),
@@ -154,13 +173,27 @@ def seed():
             'correlation_break': float(row.get('correlation_break', 0)),
             'copy_paste': float(row.get('copy_paste', 0)),
             'coordinated_missing_data': float(row.get('coordinated_missing_data', 0)),
+            'data_integrity': float(row.get('data_integrity', 0)),
         }
-        
+
+        # Already-thresholded 0/1 trigger decisions from fingerprint_engine.py
+        # -- this is what calculate_composite_risk() actually needs, since it
+        # has no way to know the right threshold for each raw magnitude above.
+        fp_trigger_dict = {
+            'impossible_ph_range': int(row.get('trig_impossible_ph_range', 0)),
+            'inspection_dip': int(row.get('trig_inspection_dip', 0)),
+            'flatline': int(row.get('trig_flatline', 0)),
+            'limit_hugging': int(row.get('trig_limit_hugging', 0)),
+            'correlation_break': int(row.get('trig_correlation_break', 0)),
+            'copy_paste': int(row.get('trig_copy_paste', 0)),
+            'coordinated_missing_data': int(row.get('trig_coordinated_missing_data', 0)),
+            'data_integrity': int(row.get('trig_data_integrity', 0)),
+        }
+
         triggered_cnt = int(row.get('total_fingerprints_triggered', 0))
-        xgb_prob = min(0.99, max(0.02, triggered_cnt * 0.28 + np.random.uniform(0.01, 0.15)))
-        iso_score = 0.1 if triggered_cnt >= 2 else 0.4
-        
-        risk_res = calculate_composite_risk(xgb_prob, iso_score, fp_dict)
+        xgb_prob, iso_score = score_factory(fid)
+
+        risk_res = calculate_composite_risk(xgb_prob, iso_score, fp_trigger_dict)
         
         f_obj = Factory(
             factory_id=fid,
@@ -170,6 +203,8 @@ def seed():
             total_fingerprints_triggered=triggered_cnt,
             risk_score=risk_res['risk_score'],
             risk_category=risk_res['risk_category'],
+            xgb_probability=risk_res['xgb_probability'],
+            anomaly_score_norm=risk_res['anomaly_score'],
             status="Active" if risk_res['risk_category'] != "CRITICAL" else "Under Review"
         )
         factories_to_add.append(f_obj)
@@ -183,6 +218,15 @@ def seed():
             correlation_break=fp_dict['correlation_break'],
             copy_paste=fp_dict['copy_paste'],
             coordinated_missing_data=fp_dict['coordinated_missing_data'],
+            data_integrity=fp_dict['data_integrity'],
+            trig_impossible_ph_range=fp_trigger_dict['impossible_ph_range'],
+            trig_inspection_dip=fp_trigger_dict['inspection_dip'],
+            trig_flatline=fp_trigger_dict['flatline'],
+            trig_limit_hugging=fp_trigger_dict['limit_hugging'],
+            trig_correlation_break=fp_trigger_dict['correlation_break'],
+            trig_copy_paste=fp_trigger_dict['copy_paste'],
+            trig_coordinated_missing_data=fp_trigger_dict['coordinated_missing_data'],
+            trig_data_integrity=fp_trigger_dict['data_integrity'],
             total_fingerprints_triggered=triggered_cnt
         )
         fingerprints_to_add.append(fp_obj)
@@ -221,12 +265,8 @@ def seed():
     
     # 4. Seed sampled telemetry records
     print("--- 2. Seeding Sampled Telemetry Records ---")
-    real_path = "Data/RawData/real_features.parquet"
-    if not os.path.exists(real_path):
-        real_path = os.path.join("..", real_path)
-    
-    if os.path.exists(real_path):
-        df_real = pd.read_parquet(real_path)
+
+    if df_real is not None:
         sample_factories = fp_df['factory_id'].tolist()[:8]
         df_sampled = df_real[df_real['factory_id'].isin(sample_factories)].iloc[::20]
         
