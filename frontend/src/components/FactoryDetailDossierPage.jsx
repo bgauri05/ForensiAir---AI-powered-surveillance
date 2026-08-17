@@ -2,15 +2,27 @@ import React, { useState, useEffect } from 'react';
 import { Download, ShieldAlert, ArrowLeft, Factory, FileText, CheckCircle } from 'lucide-react';
 import { API_BASE_URL } from '../config';
 
-export function FactoryDetailDossierPage({ onNavigate }) {
+export function FactoryDetailDossierPage({ onNavigate, selectedFactoryId }) {
   const [factoriesList, setFactoriesList] = useState([]);
-  const [selectedFid, setSelectedFid] = useState('');
+  const [selectedFid, setSelectedFid] = useState(selectedFactoryId || '');
   const [factoryData, setFactoryData] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchFactories();
   }, []);
+
+  // 'factories' and 'factory-detail' both render this same component, so
+  // switching between them doesn't remount it -- if the user clicks a
+  // different factory elsewhere while this page is already mounted, this
+  // catches the prop change and re-fetches instead of silently keeping the
+  // previously-loaded factory on screen.
+  useEffect(() => {
+    if (selectedFactoryId && selectedFactoryId !== selectedFid) {
+      setSelectedFid(selectedFactoryId);
+      fetchFactoryDetail(selectedFactoryId);
+    }
+  }, [selectedFactoryId]);
 
   const fetchFactories = async () => {
     try {
@@ -19,8 +31,11 @@ export function FactoryDetailDossierPage({ onNavigate }) {
         const data = await res.json();
         setFactoriesList(data);
         if (data.length > 0) {
-          setSelectedFid(data[0].factory_id);
-          fetchFactoryDetail(data[0].factory_id);
+          // Previously always defaulted to data[0] regardless of which
+          // factory the user actually clicked elsewhere in the app.
+          const initialFid = selectedFactoryId || data[0].factory_id;
+          setSelectedFid(initialFid);
+          fetchFactoryDetail(initialFid);
         }
       }
     } catch (err) {

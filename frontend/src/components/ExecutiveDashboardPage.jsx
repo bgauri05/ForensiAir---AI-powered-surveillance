@@ -40,6 +40,7 @@ export function ExecutiveDashboardPage({ onNavigate }) {
           ],
           factories: factories,
           recent_alerts: (factories || []).slice(0, 5).map(f => ({
+            factory_id: f.factory_id,
             factory_name: f.factory_name,
             district: f.region || 'North Industrial',
             risk_level: (f.risk_tier || 'Low').toUpperCase(),
@@ -293,7 +294,7 @@ export function ExecutiveDashboardPage({ onNavigate }) {
                   <tr 
                     key={idx} 
                     className="border-b border-[#E5E7EB] table-row-hover transition-colors cursor-pointer"
-                    onClick={() => onNavigate('factory-detail')}
+                    onClick={() => onNavigate('factory-detail', row.factory_id)}
                   >
                     <td className="py-3.5 px-4 font-bold text-[#00355f]">{row.factory_name}</td>
                     <td className="py-3.5 px-4 text-[#42474f]">{row.district}</td>

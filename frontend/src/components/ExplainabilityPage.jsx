@@ -200,7 +200,7 @@ export function ExplainabilityPage({ onNavigate }) {
 
           <button 
             className="w-full mt-6 py-2.5 bg-[#f8f9fb] border border-[#E5E7EB] text-[#00355f] font-bold text-body-sm rounded-lg hover:bg-[#edeef0] transition-colors"
-            onClick={() => onNavigate('factory-detail')}
+            onClick={() => onNavigate('factory-detail', fObj.factory_id)}
           >
             View Complete Factory Dossier →
           </button>

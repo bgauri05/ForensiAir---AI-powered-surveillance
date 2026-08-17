@@ -9,11 +9,24 @@ import { ReportsCenterPage } from './components/ReportsCenterPage';
 import { DatasetQualityPage } from './components/DatasetQualityPage';
 import { AdminPortalPage } from './components/AdminPortalPage';
 import { InstitutionalOversightPage } from './components/InstitutionalOversightPage';
+import { AlertsPage } from './components/AlertsPage';
+import { SettingsPage } from './components/SettingsPage';
 import { ShieldAlert } from 'lucide-react';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [userRole, setUserRole] = useState('admin'); // 'admin' or 'inspector'
+  // Which factory "View Details" / a table row click should open. Previously
+  // onNavigate only ever took a tab name, so FactoryDetailDossierPage had no
+  // idea which factory was clicked and always defaulted to the first one in
+  // the list. handleNavigate carries an optional factory id alongside the
+  // tab switch; pages that don't pass one (most of them) are unaffected.
+  const [selectedFactoryId, setSelectedFactoryId] = useState(null);
+
+  const handleNavigate = (tab, factoryId) => {
+    if (factoryId) setSelectedFactoryId(factoryId);
+    setActiveTab(tab);
+  };
 
   const renderActiveModule = () => {
     // Role-based gating check
@@ -34,26 +47,28 @@ export default function App() {
 
     switch (activeTab) {
       case 'dashboard':
-        return <ExecutiveDashboardPage onNavigate={setActiveTab} />;
+        return <ExecutiveDashboardPage onNavigate={handleNavigate} />;
       case 'ai-analysis':
-        return <AIAnalysisPage onNavigate={setActiveTab} />;
+        return <AIAnalysisPage onNavigate={handleNavigate} />;
       case 'explainability':
-        return <ExplainabilityPage onNavigate={setActiveTab} />;
+        return <ExplainabilityPage onNavigate={handleNavigate} />;
       case 'institutional-oversight':
-        return <InstitutionalOversightPage onNavigate={setActiveTab} />;
+        return <InstitutionalOversightPage onNavigate={handleNavigate} />;
       case 'factories':
       case 'factory-detail':
-        return <FactoryDetailDossierPage onNavigate={setActiveTab} />;
+        return <FactoryDetailDossierPage onNavigate={handleNavigate} selectedFactoryId={selectedFactoryId} />;
       case 'reports':
-        return <ReportsCenterPage onNavigate={setActiveTab} />;
+        return <ReportsCenterPage onNavigate={handleNavigate} />;
       case 'dataset-quality':
-        return <DatasetQualityPage onNavigate={setActiveTab} />;
+        return <DatasetQualityPage onNavigate={handleNavigate} />;
       case 'administration':
-        return <AdminPortalPage onNavigate={setActiveTab} />;
+        return <AdminPortalPage onNavigate={handleNavigate} />;
       case 'alerts':
+        return <AlertsPage onNavigate={handleNavigate} />;
       case 'settings':
+        return <SettingsPage onNavigate={handleNavigate} />;
       default:
-        return <ExecutiveDashboardPage onNavigate={setActiveTab} />;
+        return <ExecutiveDashboardPage onNavigate={handleNavigate} />;
     }
   };
 
