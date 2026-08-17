@@ -66,6 +66,45 @@
   box-shadow: var(--shadow-sm);
 }
 
+/*
+ * .btn / .btn-primary / .btn-secondary -- these were referenced in
+ * AddFactoryModal.jsx (Cancel/Save) and App.jsx (the inspector 403 role
+ * switch button) but never actually defined anywhere in the app, so those
+ * 3 buttons were rendering as completely unstyled default browser buttons.
+ * Defined here to match the visual pattern already used everywhere else
+ * (e.g. the "Export Report" button in ExecutiveDashboardPage.jsx).
+ */
+.btn {
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: 'IBM Plex Sans', sans-serif;
+  cursor: pointer;
+  transition: opacity 0.2s, background-color 0.2s;
+  border: none;
+}
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.btn-primary {
+  background: var(--color-primary);
+  color: #fff;
+  box-shadow: var(--shadow-sm);
+}
+.btn-primary:hover:not(:disabled) {
+  opacity: 0.9;
+}
+.btn-secondary {
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+}
+.btn-secondary:hover:not(:disabled) {
+  background: var(--color-surface-alt);
+}
+
 .material-symbols-outlined {
   font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
   display: inline-block;
