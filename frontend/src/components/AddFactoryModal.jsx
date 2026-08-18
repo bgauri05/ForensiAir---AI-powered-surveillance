@@ -33,19 +33,11 @@ export function AddFactoryModal({ isOpen, onClose, onFactoryAdded }) {
         onClose();
         setName('');
       } else {
-        alert("Failed to add factory. Please check backend.");
+        alert(`Failed to add factory. Server responded with ${res.status}.`);
       }
     } catch (err) {
       console.error("Error creating factory:", err);
-      // Fallback optimistic add
-      onFactoryAdded({
-        factory_id: `FA-${Math.floor(10000 + Math.random() * 90000)}`,
-        name,
-        district,
-        industry: industryType,
-        compliance_status: complianceStatus
-      });
-      onClose();
+      alert("Failed to add factory -- couldn't reach the backend. Nothing was saved.");
     } finally {
       setSubmitting(false);
     }

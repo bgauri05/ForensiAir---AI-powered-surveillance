@@ -19,6 +19,12 @@ export function AdminPortalPage({ onNavigate }) {
   const [industryFilter, setIndustryFilter] = useState('');
 
   const [showAddFactoryModal, setShowAddFactoryModal] = useState(false);
+  // Tracks which sections are showing fallback/demo data because their
+  // backend endpoint returned an error or doesn't exist yet (consent-limits,
+  // models, thresholds, notifications, and factories POST/DELETE aren't
+  // implemented in backend/main.py as of this session). Previously this
+  // was silent -- the UI looked identical whether data was live or fake.
+  const [demoFlags, setDemoFlags] = useState({});
 
   useEffect(() => {
     fetchAdminData();
@@ -26,6 +32,7 @@ export function AdminPortalPage({ onNavigate }) {
 
   const fetchAdminData = async () => {
     setLoading(true);
+    const flags = {};
     try {
       const fRes = await fetch(`${API_BASE_URL}/api/admin/factories?district=${districtFilter}&industry=${industryFilter}`);
       if (fRes.ok) {
@@ -33,28 +40,30 @@ export function AdminPortalPage({ onNavigate }) {
         setFactories(fData);
       } else {
         setFactories(getFallbackFactories());
+        flags.factories = true;
       }
 
       const uRes = await fetch(`${API_BASE_URL}/api/admin/users`);
       if (uRes.ok) setUsers(await uRes.json());
-      else setUsers(getFallbackUsers());
+      else { setUsers(getFallbackUsers()); flags.users = true; }
 
       const cRes = await fetch(`${API_BASE_URL}/api/admin/consent-limits`);
       if (cRes.ok) setConsentLimits(await cRes.json());
-      else setConsentLimits(getFallbackConsentLimits());
+      else { setConsentLimits(getFallbackConsentLimits()); flags.consentLimits = true; }
 
       const mRes = await fetch(`${API_BASE_URL}/api/admin/models`);
       if (mRes.ok) setModels(await mRes.json());
-      else setModels(getFallbackModels());
+      else { setModels(getFallbackModels()); flags.models = true; }
 
       const tRes = await fetch(`${API_BASE_URL}/api/admin/thresholds`);
       if (tRes.ok) setThresholds(await tRes.json());
-      else setThresholds(getFallbackThresholds());
+      else { setThresholds(getFallbackThresholds()); flags.thresholds = true; }
 
       const nRes = await fetch(`${API_BASE_URL}/api/admin/notifications`);
       if (nRes.ok) setNotifications(await nRes.json());
-      else setNotifications(getFallbackNotifications());
+      else { setNotifications(getFallbackNotifications()); flags.notifications = true; }
 
+      setDemoFlags(flags);
     } catch (err) {
       setFactories(getFallbackFactories());
       setUsers(getFallbackUsers());
@@ -62,6 +71,7 @@ export function AdminPortalPage({ onNavigate }) {
       setModels(getFallbackModels());
       setThresholds(getFallbackThresholds());
       setNotifications(getFallbackNotifications());
+      setDemoFlags({ factories: true, users: true, consentLimits: true, models: true, thresholds: true, notifications: true });
     } finally {
       setLoading(false);
     }
@@ -70,10 +80,15 @@ export function AdminPortalPage({ onNavigate }) {
   const handleDeleteFactory = async (factoryId) => {
     if (!window.confirm(`Are you sure you want to remove factory ${factoryId}?`)) return;
     try {
-      await fetch(`${API_BASE_URL}/api/admin/factories/${factoryId}`, { method: 'DELETE' });
-      fetchAdminData();
+      const res = await fetch(`${API_BASE_URL}/api/admin/factories/${factoryId}`, { method: 'DELETE' });
+      if (res.ok) {
+        fetchAdminData();
+      } else {
+        alert(`Failed to remove factory ${factoryId}. Server responded with ${res.status}.`);
+      }
     } catch (err) {
-      setFactories(prev => prev.filter(f => f.factory_id !== factoryId));
+      console.error('Error deleting factory:', err);
+      alert(`Failed to remove factory ${factoryId}. Couldn't reach the backend -- nothing was deleted.`);
     }
   };
 
@@ -124,6 +139,21 @@ export function AdminPortalPage({ onNavigate }) {
             </button>
           ))}
         </div>
+
+        {(() => {
+          const tabToFlag = {
+            factories: 'factories', users: 'users', 'consent-limits': 'consentLimits',
+            models: 'models', thresholds: 'thresholds', notifications: 'notifications',
+          };
+          const key = tabToFlag[activeTab];
+          if (!key || !demoFlags[key]) return null;
+          return (
+            <div className="flex items-center gap-2 px-6 py-3 bg-[#fff3e6] border-b border-[#F57C00]/20 text-[#8F6400] text-body-sm font-semibold">
+              <AlertCircle size={16} />
+              Showing demo data -- this section's backend endpoint isn't available right now, so nothing here reflects your live database.
+            </div>
+          );
+        })()}
 
         {/* Tab 1: Factories Table */}
         {activeTab === 'factories' && (
@@ -246,12 +276,42 @@ export function AdminPortalPage({ onNavigate }) {
         {activeTab === 'thresholds' && (
           <ThresholdSettingsTab />
         )}
+
+        {/* Tab 6: Notification Rules -- previously this tab was clickable
+            (listed above) but had no matching render case at all, so
+            clicking it just showed a blank content area with no
+            indication anything was wrong. */}
+        {activeTab === 'notifications' && (
+          <div className="p-6 space-y-4">
+            <h3 className="font-headline-md text-headline-md text-[#00355f]">Notification Rules</h3>
+            {notifications.length === 0 ? (
+              <div className="p-6 text-center text-body-sm text-[#42474f] border border-dashed border-[#E5E7EB] rounded-lg">
+                No notification rules configured yet.
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {notifications.map((n, i) => (
+                  <div key={i} className="p-4 border border-[#E5E7EB] rounded-lg bg-[#f8f9fb] flex items-center justify-between">
+                    <div>
+                      <div className="font-bold text-[#191c1e] text-body-sm">{n.name || n.trigger}</div>
+                      <div className="text-xs text-[#42474f] mt-1">{n.description || n.condition}</div>
+                    </div>
+                    <span className={`px-3 py-1 rounded-full text-[11px] font-bold uppercase ${n.enabled ? 'bg-[#eaf6ec] text-[#1b6d24]' : 'bg-[#edeef0] text-[#727780]'}`}>
+                      {n.enabled ? 'Active' : 'Disabled'}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {showAddFactoryModal && (
-        <AddFactoryModal 
+        <AddFactoryModal
+          isOpen={showAddFactoryModal}
           onClose={() => setShowAddFactoryModal(false)}
-          onSuccess={() => {
+          onFactoryAdded={() => {
             setShowAddFactoryModal(false);
             fetchAdminData();
           }}
