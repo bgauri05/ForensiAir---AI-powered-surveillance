@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Download, ShieldAlert, ArrowLeft, Factory, FileText, CheckCircle } from 'lucide-react';
+import { Download, ShieldAlert, ArrowLeft, Factory, Gauge, Target, Activity, CheckCircle, ClipboardList } from 'lucide-react';
 import { API_BASE_URL } from '../config';
 
 export function FactoryDetailDossierPage({ onNavigate, selectedFactoryId }) {
@@ -67,7 +67,12 @@ export function FactoryDetailDossierPage({ onNavigate, selectedFactoryId }) {
   };
 
   if (loading) {
-    return <div className="p-8 font-body-md text-[#42474f]">Loading Factory Dossier...</div>;
+    return (
+      <div className="min-h-[60vh] flex flex-col items-center justify-center gap-3 text-[var(--color-text-muted)]">
+        <span className="material-symbols-outlined animate-spin text-3xl text-[var(--color-primary)]">progress_activity</span>
+        <p className="font-body-sm text-body-sm">Loading Factory Dossier...</p>
+      </div>
+    );
   }
 
   const fObj = factoryData || factoriesList[0] || {};
@@ -102,42 +107,44 @@ export function FactoryDetailDossierPage({ onNavigate, selectedFactoryId }) {
 
   const tamperType = fObj.stage2_prediction?.predicted_tamper_type || 'Not available';
 
+  const riskColor = isHighRisk ? 'var(--color-danger)' : isMediumRisk ? 'var(--color-warning)' : 'var(--color-success)';
+
   return (
     <div className="space-y-6">
       {/* Top Header Banner */}
-      <div className="bg-white border-b border-[#E5E7EB] px-8 py-6">
+      <div className="bg-[var(--color-surface)] border-b border-[var(--color-border)] px-8 py-6">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
             <div className="flex items-center gap-3 mb-2">
-              <button 
+              <button
                 onClick={() => onNavigate('dashboard')}
-                className="p-1.5 hover:bg-[#f8f9fb] rounded-full transition-colors"
+                className="p-1.5 hover:bg-[var(--color-bg)] rounded-full transition-colors"
               >
-                <ArrowLeft size={18} className="text-[#00355f]" />
+                <ArrowLeft size={18} className="text-[var(--color-primary)]" />
               </button>
-              <h2 className="font-headline-lg text-headline-lg text-[#00355f]">{fObj.factory_name || fObj.name}</h2>
+              <h2 className="font-headline-lg text-headline-lg text-[var(--color-primary)]">{fObj.factory_name || fObj.name}</h2>
               <span className={`px-3 py-1 rounded text-[11px] font-bold uppercase ${
-                isHighRisk 
-                  ? 'bg-[#D32F2F]/10 text-[#D32F2F] border border-[#D32F2F]/20' 
-                  : isMediumRisk 
-                  ? 'bg-[#F57C00]/10 text-[#F57C00] border border-[#F57C00]/20' 
-                  : 'bg-[#1b6d24]/10 text-[#1b6d24] border border-[#1b6d24]/20'
+                isHighRisk
+                  ? 'bg-[var(--color-danger)]/10 text-[var(--color-danger)] border border-[var(--color-danger)]/20'
+                  : isMediumRisk
+                  ? 'bg-[var(--color-warning)]/10 text-[var(--color-warning)] border border-[var(--color-warning)]/20'
+                  : 'bg-[var(--color-success)]/10 text-[var(--color-success)] border border-[var(--color-success)]/20'
               }`}>
                 {fObj.risk_tier || 'LOW RISK'}
               </span>
             </div>
-            <div className="flex flex-wrap gap-6 text-[#42474f] text-body-sm">
-              <div>Industry: <span className="font-bold text-[#191c1e]">{fObj.industry || 'Chemical Manufacturing'}</span></div>
-              <div>District: <span className="font-bold text-[#191c1e]">{regionStr}</span></div>
-              <div>ID: <span className="font-bold text-[#191c1e]">#{fObj.factory_id}</span></div>
+            <div className="flex flex-wrap gap-6 text-[var(--color-text-secondary)] text-body-sm">
+              <div>Industry: <span className="font-bold text-[var(--color-text)]">{fObj.industry || 'Chemical Manufacturing'}</span></div>
+              <div>District: <span className="font-bold text-[var(--color-text)]">{regionStr}</span></div>
+              <div>ID: <span className="font-bold text-[var(--color-text)]">#{fObj.factory_id}</span></div>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
-            <select 
-              value={selectedFid} 
+            <select
+              value={selectedFid}
               onChange={(e) => handleSelectFactory(e.target.value)}
-              className="bg-white border border-[#E5E7EB] rounded-lg px-3 py-2 text-body-sm font-bold text-[#00355f] cursor-pointer"
+              className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg px-3 py-2 text-body-sm font-bold text-[var(--color-primary)] cursor-pointer transition-colors hover:border-[var(--color-border-strong)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)]"
             >
               {factoriesList.map(f => (
                 <option key={f.factory_id} value={f.factory_id}>
@@ -146,10 +153,10 @@ export function FactoryDetailDossierPage({ onNavigate, selectedFactoryId }) {
               ))}
             </select>
 
-            <button className="px-4 py-2 border border-[#E5E7EB] rounded-lg text-body-sm font-bold flex items-center gap-2 hover:bg-[#f8f9fb] bg-white text-[#191c1e]">
+            <button className="btn btn-secondary flex items-center gap-2">
               <Download size={16} /> Export Dossier
             </button>
-            <button className="px-4 py-2 bg-[#00355f] text-white rounded-lg text-body-sm font-bold flex items-center gap-2 hover:opacity-90 shadow-sm">
+            <button className="btn btn-primary flex items-center gap-2">
               <ShieldAlert size={16} /> Initiate Audit
             </button>
           </div>
@@ -160,47 +167,57 @@ export function FactoryDetailDossierPage({ onNavigate, selectedFactoryId }) {
       <div className="px-8 pb-12 max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Column: Dynamic Metadata & License Info */}
         <div className="lg:col-span-4 space-y-6">
-          <div className="bg-white border border-[#E5E7EB] p-6 rounded-xl shadow-xs">
-            <h3 className="font-label-caps text-label-caps text-[#727780] uppercase mb-4 font-bold">Core Facility Metadata</h3>
+          <div className="card p-6">
+            <h3 className="font-label-caps text-label-caps text-[var(--color-text-muted)] uppercase mb-4 font-bold flex items-center gap-2">
+              <Factory size={14} /> Core Facility Metadata
+            </h3>
             <div className="space-y-4 text-body-sm">
               <div>
-                <p className="text-[11px] text-[#727780] font-bold uppercase mb-0.5">Environmental License</p>
-                <p className="font-bold text-[#191c1e]">{licenseNo}</p>
+                <p className="text-[11px] text-[var(--color-text-muted)] font-bold uppercase mb-0.5">Environmental License</p>
+                <p className={licenseNo === 'Not available' ? 'value-unavailable' : 'font-bold text-[var(--color-text)]'}>{licenseNo}</p>
               </div>
               <div>
-                <p className="text-[11px] text-[#727780] font-bold uppercase mb-0.5">Location / Address</p>
-                <p className="font-medium text-[#191c1e]">{plotAddress}</p>
+                <p className="text-[11px] text-[var(--color-text-muted)] font-bold uppercase mb-0.5">Location / Address</p>
+                <p className={plotAddress === 'Not available' ? 'value-unavailable' : 'font-medium text-[var(--color-text)]'}>{plotAddress}</p>
               </div>
               <div>
-                <p className="text-[11px] text-[#727780] font-bold uppercase mb-0.5">Inspection Contact</p>
-                <p className="font-medium text-[#191c1e]">{plantHead}</p>
+                <p className="text-[11px] text-[var(--color-text-muted)] font-bold uppercase mb-0.5">Inspection Contact</p>
+                <p className={plantHead === 'Not available' ? 'value-unavailable' : 'font-medium text-[var(--color-text)]'}>{plantHead}</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white border border-[#E5E7EB] p-6 rounded-xl shadow-xs">
-            <h3 className="font-label-caps text-label-caps text-[#727780] uppercase mb-4 font-bold">Consent Limit Parameters</h3>
+          <div className="card p-6">
+            <h3 className="font-label-caps text-label-caps text-[var(--color-text-muted)] uppercase mb-4 font-bold flex items-center gap-2">
+              <Gauge size={14} /> Consent Limit Parameters
+            </h3>
             <div className="space-y-3.5">
-              <div className="p-3 bg-[#f8f9fb] rounded-lg border border-[#E5E7EB]">
+              <div className="p-3 bg-[var(--color-bg)] rounded-lg border border-[var(--color-border)]">
                 <div className="flex justify-between text-body-sm font-bold">
                   <span>BOD Concentration</span>
-                  <span className="text-[#D32F2F]">30 mg/L Max Limit</span>
+                  <span className="text-[var(--color-danger)]">30 mg/L Max Limit</span>
                 </div>
-                <div className="text-xs text-[#42474f] mt-1">Current telemetry average: <strong className="text-[#191c1e]">{bodAvg}</strong></div>
+                <div className="text-xs text-[var(--color-text-secondary)] mt-1">
+                  Current telemetry average: <strong className={bodAvg === 'Not available' ? 'value-unavailable' : 'text-[var(--color-text)]'}>{bodAvg}</strong>
+                </div>
               </div>
-              <div className="p-3 bg-[#f8f9fb] rounded-lg border border-[#E5E7EB]">
+              <div className="p-3 bg-[var(--color-bg)] rounded-lg border border-[var(--color-border)]">
                 <div className="flex justify-between text-body-sm font-bold">
                   <span>COD Concentration</span>
-                  <span className="text-[#F57C00]">250 mg/L Max Limit</span>
+                  <span className="text-[var(--color-warning)]">250 mg/L Max Limit</span>
                 </div>
-                <div className="text-xs text-[#42474f] mt-1">Current telemetry average: <strong className="text-[#191c1e]">{codAvg}</strong></div>
+                <div className="text-xs text-[var(--color-text-secondary)] mt-1">
+                  Current telemetry average: <strong className={codAvg === 'Not available' ? 'value-unavailable' : 'text-[var(--color-text)]'}>{codAvg}</strong>
+                </div>
               </div>
-              <div className="p-3 bg-[#f8f9fb] rounded-lg border border-[#E5E7EB]">
+              <div className="p-3 bg-[var(--color-bg)] rounded-lg border border-[var(--color-border)]">
                 <div className="flex justify-between text-body-sm font-bold">
                   <span>pH Tolerance Range</span>
-                  <span className="text-[#1b6d24]">5.5 - 9.0 pH</span>
+                  <span className="text-[var(--color-success)]">5.5 - 9.0 pH</span>
                 </div>
-                <div className="text-xs text-[#42474f] mt-1">Current telemetry average: <strong className="text-[#191c1e]">{phAvg}</strong></div>
+                <div className="text-xs text-[var(--color-text-secondary)] mt-1">
+                  Current telemetry average: <strong className={phAvg === 'Not available' ? 'value-unavailable' : 'text-[var(--color-text)]'}>{phAvg}</strong>
+                </div>
               </div>
             </div>
           </div>
@@ -208,30 +225,44 @@ export function FactoryDetailDossierPage({ onNavigate, selectedFactoryId }) {
 
         {/* Right Column: Dynamic AI Analysis Summary & History */}
         <div className="lg:col-span-8 space-y-6">
-          <div className="bg-white border border-[#E5E7EB] p-6 rounded-xl shadow-xs">
-            <h3 className="font-headline-md text-headline-md text-[#00355f] mb-4">AI Tamper Risk Evaluation</h3>
+          <div className="card p-6">
+            <h3 className="font-headline-md text-headline-md text-[var(--color-primary)] mb-4">AI Tamper Risk Evaluation</h3>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-              <div className="p-4 bg-[#f8f9fb] border border-[#E5E7EB] rounded-lg">
-                <span className="text-label-caps text-[#727780] font-bold">TAMPER PROBABILITY</span>
-                <div className={`font-display-kpi text-display-kpi mt-1 ${isHighRisk ? 'text-[#D32F2F]' : isMediumRisk ? 'text-[#F57C00]' : 'text-[#1b6d24]'}`}>
-                  {tamperProbVal}
-                </div>
+              <div className="p-4 bg-[var(--color-bg)] border border-[var(--color-border)] rounded-lg">
+                <span className="text-label-caps text-[var(--color-text-muted)] font-bold flex items-center gap-1.5">
+                  <Target size={12} /> TAMPER PROBABILITY
+                </span>
+                {tamperProbVal === 'Not available' ? (
+                  <div className="value-unavailable text-body-sm mt-2">{tamperProbVal}</div>
+                ) : (
+                  <div className="font-display-kpi text-display-kpi mt-1" style={{ color: riskColor }}>{tamperProbVal}</div>
+                )}
               </div>
-              <div className="p-4 bg-[#f8f9fb] border border-[#E5E7EB] rounded-lg">
-                <span className="text-label-caps text-[#727780] font-bold">ANOMALY SCORE</span>
-                <div className={`font-display-kpi text-display-kpi mt-1 ${isHighRisk ? 'text-[#D32F2F]' : isMediumRisk ? 'text-[#F57C00]' : 'text-[#1b6d24]'}`}>
-                  {anomalyScoreVal}
-                </div>
+              <div className="p-4 bg-[var(--color-bg)] border border-[var(--color-border)] rounded-lg">
+                <span className="text-label-caps text-[var(--color-text-muted)] font-bold flex items-center gap-1.5">
+                  <Activity size={12} /> ANOMALY SCORE
+                </span>
+                {anomalyScoreVal === 'Not available' ? (
+                  <div className="value-unavailable text-body-sm mt-2">{anomalyScoreVal}</div>
+                ) : (
+                  <div className="font-display-kpi text-display-kpi mt-1" style={{ color: riskColor }}>{anomalyScoreVal}</div>
+                )}
               </div>
-              <div className="p-4 bg-[#f8f9fb] border border-[#E5E7EB] rounded-lg">
-                <span className="text-label-caps text-[#727780] font-bold">CONFIDENCE</span>
-                <div className="font-display-kpi text-display-kpi text-[#1b6d24] mt-1">{confidenceVal}</div>
+              <div className="p-4 bg-[var(--color-bg)] border border-[var(--color-border)] rounded-lg">
+                <span className="text-label-caps text-[var(--color-text-muted)] font-bold flex items-center gap-1.5">
+                  <CheckCircle size={12} /> CONFIDENCE
+                </span>
+                {confidenceVal === 'Not available' ? (
+                  <div className="value-unavailable text-body-sm mt-2">{confidenceVal}</div>
+                ) : (
+                  <div className="font-display-kpi text-display-kpi text-[var(--color-success)] mt-1">{confidenceVal}</div>
+                )}
               </div>
             </div>
 
-            <div className="p-4 bg-[#f8f9fb] rounded-lg border border-[#E5E7EB]">
-              <div className="font-body-sm font-bold text-[#191c1e] mb-1">Inspector Recommendation</div>
-              <p className="text-xs text-[#42474f] leading-relaxed">
+            <div className="p-4 bg-[var(--color-bg)] rounded-lg border border-[var(--color-border)]">
+              <div className="font-body-sm font-bold text-[var(--color-text)] mb-1">Inspector Recommendation</div>
+              <p className="text-xs text-[var(--color-text-secondary)] leading-relaxed">
                 {fObj.stage2_prediction?.note
                   ? fObj.stage2_prediction.note
                   : isHighRisk
@@ -244,21 +275,26 @@ export function FactoryDetailDossierPage({ onNavigate, selectedFactoryId }) {
             </div>
           </div>
 
-          <div className="bg-white border border-[#E5E7EB] p-6 rounded-xl shadow-xs">
-            <h3 className="font-headline-md text-headline-md text-[#00355f] mb-4">Past Inspection History</h3>
+          <div className="card p-6">
+            <h3 className="font-headline-md text-headline-md text-[var(--color-primary)] mb-4 flex items-center gap-2">
+              <ClipboardList size={18} /> Past Inspection History
+            </h3>
             <div className="space-y-3 text-body-sm">
               {inspections.length === 0 ? (
-                <p className="text-xs text-[#727780]">No inspection history on record for this factory.</p>
+                <div className="empty-state">
+                  <span className="material-symbols-outlined">history_toggle_off</span>
+                  <p>No inspection history on record for this factory.</p>
+                </div>
               ) : inspections.map((insp, idx) => {
-                const borderColor = insp.inspection_type === 'High Risk' ? '#D32F2F' : insp.inspection_type === 'Medium Risk' ? '#F57C00' : '#1b6d24';
+                const borderColor = insp.inspection_type === 'High Risk' ? 'var(--color-danger)' : insp.inspection_type === 'Medium Risk' ? 'var(--color-warning)' : 'var(--color-success)';
                 const isCompleted = insp.status === 'Completed';
                 return (
-                  <div key={idx} className="p-3 rounded-r-lg flex justify-between items-center bg-[#f8f9fb]" style={{ borderLeft: `4px solid ${borderColor}` }}>
+                  <div key={idx} className="p-3 rounded-r-lg flex justify-between items-center bg-[var(--color-bg)]" style={{ borderLeft: `4px solid ${borderColor}` }}>
                     <div>
-                      <div className="font-bold text-[#191c1e]">{insp.inspection_type} Inspection</div>
-                      <div className="text-xs text-[#42474f]">{insp.inspection_date}</div>
+                      <div className="font-bold text-[var(--color-text)]">{insp.inspection_type} Inspection</div>
+                      <div className="text-xs text-[var(--color-text-secondary)]">{insp.inspection_date}</div>
                     </div>
-                    <span className={`px-2.5 py-1 text-xs font-bold rounded ${isCompleted ? 'text-[#1b6d24] bg-[#1b6d24]/10' : 'text-[#F57C00] bg-[#F57C00]/10'}`}>
+                    <span className={`px-2.5 py-1 text-xs font-bold rounded ${isCompleted ? 'text-[var(--color-success)] bg-[var(--color-success)]/10' : 'text-[var(--color-warning)] bg-[var(--color-warning)]/10'}`}>
                       {(insp.status || '').toUpperCase()}
                     </span>
                   </div>

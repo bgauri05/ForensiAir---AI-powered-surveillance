@@ -104,6 +104,13 @@
 .btn-secondary:hover:not(:disabled) {
   background: var(--color-surface-alt);
 }
+/* Wider horizontal padding for primary page-level CTAs (e.g. "Export
+   Report") that read better with more breathing room than .btn's default
+   20px -- an explicit modifier so it stays a deliberate choice per button
+   rather than a silent one-off override. */
+.btn-lg {
+  padding: 10px 24px;
+}
 
 /*
  * Modal system -- AddFactoryModal.jsx referenced .modal-overlay,
@@ -276,4 +283,70 @@
 
 .table-row-hover:hover {
   background-color: rgba(15, 76, 129, 0.02);
+}
+
+/*
+ * Icon chip for stat/KPI tiles -- a tinted rounded backdrop behind a glyph,
+ * color-coded to the tile's semantic meaning, instead of a bare floating
+ * icon. Shared across dashboard-style KPI cards (Executive Dashboard, AI
+ * Analysis, Factory Detail) so the same tile pattern looks the same
+ * everywhere.
+ */
+.stat-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+.stat-icon .material-symbols-outlined {
+  font-size: 20px;
+}
+.stat-icon-neutral { background: var(--color-surface-alt); color: var(--color-primary); }
+.stat-icon-danger { background: var(--color-danger-bg); color: var(--color-danger); }
+.stat-icon-warning { background: var(--color-warning-bg); color: var(--color-warning); }
+.stat-icon-success { background: var(--color-success-bg); color: var(--color-success); }
+
+/*
+ * Honest empty/error state -- Phase A replaced several fabricated panels
+ * (Dashboard's Data Integrity widget, fake Confidence Score tiles, hardcoded
+ * SHAP fallback, etc.) with real absence-of-data states. A dashed border +
+ * muted icon reads as "nothing here by design," distinct from a solid .card
+ * which would read as a broken/loading card. Reused wherever a real fetch
+ * legitimately returns nothing.
+ */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: var(--space-xl) var(--space-lg);
+  text-align: center;
+  border: 1px dashed var(--color-border-strong);
+  border-radius: 8px;
+  background: var(--color-bg);
+}
+.empty-state .material-symbols-outlined {
+  font-size: 28px;
+  color: var(--color-border-strong);
+}
+.empty-state p {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  max-width: 320px;
+  margin: 0;
+}
+
+/* Marks a single field's value as an honest "not available" rather than
+   styling it identically to a real one -- e.g. Factory Detail Dossier's
+   license/address/contact fields, or a KPI tile with no real number behind
+   it. Muted + italic reads as "we checked, there's nothing," distinct from
+   the bold dark text real data gets. */
+.value-unavailable {
+  color: var(--color-text-muted) !important;
+  font-style: italic;
+  font-weight: 400 !important;
 }
