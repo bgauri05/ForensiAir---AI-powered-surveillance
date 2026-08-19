@@ -60,11 +60,15 @@ export function AIAnalysisPage({ onNavigate }) {
     fetchFactoryPredictions(fid, fObj);
   };
 
-  const handleRunAnalysis = () => {
+  // Previously a fake setTimeout with no real effect. The underlying model
+  // inference is precomputed server-side, not something this button can
+  // trigger a live retrain of -- what it *can* honestly do is re-fetch this
+  // factory's current predictions, same endpoints already used on load.
+  const handleRunAnalysis = async () => {
     setAnalyzing(true);
-    setTimeout(() => {
-      setAnalyzing(false);
-    }, 1000);
+    const fObj = factories.find(f => f.factory_id === selectedFactoryId);
+    await fetchFactoryPredictions(selectedFactoryId, fObj);
+    setAnalyzing(false);
   };
 
   if (loading) {
@@ -250,41 +254,11 @@ export function AIAnalysisPage({ onNavigate }) {
         <div className="lg:col-span-2 bg-white border border-[#E5E7EB] p-6 rounded-xl">
           <h3 className="text-headline-md font-headline-md text-[#00355f] mb-6">Suspicious Events Timeline</h3>
           <div className="space-y-4">
-            {isHighRisk ? (
-              <>
-                <div className="p-4 bg-[#f8f9fb] rounded-lg border border-[#E5E7EB]">
-                  <div className="flex justify-between items-center mb-1">
-                    <span className="text-body-sm font-bold text-[#D32F2F]">08:45 AM - Severe Signal Anomaly ({predictedTamperType})</span>
-                    <span className="text-[10px] text-[#727780] font-bold uppercase">Critical Anomaly</span>
-                  </div>
-                  <p className="text-xs text-[#42474f]">Sensor recorded invariant readings for {fObj.factory_name} during active operational window.</p>
-                </div>
-                <div className="p-4 bg-[#f8f9fb] rounded-lg border border-[#E5E7EB]">
-                  <div className="flex justify-between items-center mb-1">
-                    <span className="text-body-sm font-bold text-[#F57C00]">05:12 AM - Telemetry Flow Divergence</span>
-                    <span className="text-[10px] text-[#727780] font-bold uppercase">Moderate Risk</span>
-                  </div>
-                  <p className="text-xs text-[#42474f]">Pump electrical draw variance detected vs effluent meter velocity in {fObj.region}.</p>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="p-4 bg-[#f8f9fb] rounded-lg border border-[#E5E7EB]">
-                  <div className="flex justify-between items-center mb-1">
-                    <span className="text-body-sm font-bold text-[#1b6d24]">10:00 AM - Nominal Telemetry Sync</span>
-                    <span className="text-[10px] text-[#727780] font-bold uppercase">System Nominal</span>
-                  </div>
-                  <p className="text-xs text-[#42474f]">All sensors at {fObj.factory_name} reporting within expected environmental compliance thresholds.</p>
-                </div>
-                <div className="p-4 bg-[#f8f9fb] rounded-lg border border-[#E5E7EB]">
-                  <div className="flex justify-between items-center mb-1">
-                    <span className="text-body-sm font-bold text-[#00355f]">Yesterday - Routine Heartbeat Verified</span>
-                    <span className="text-[10px] text-[#727780] font-bold uppercase">Routine Check</span>
-                  </div>
-                  <p className="text-xs text-[#42474f]">Stage 1 anomaly score within standard threshold (0.24). No intervention required.</p>
-                </div>
-              </>
-            )}
+            <div className="p-4 bg-[#f8f9fb] rounded-lg border border-[#E5E7EB]">
+              <p className="text-xs text-[#727780]">
+                A real-time telemetry event log isn't implemented yet -- this panel isn't backed by live sensor-level event data.
+              </p>
+            </div>
           </div>
         </div>
       </div>

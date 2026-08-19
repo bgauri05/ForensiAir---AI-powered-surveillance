@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Download, ChevronRight, Filter, Calendar } from 'lucide-react';
+import { ChevronRight, Filter, Calendar, Lock } from 'lucide-react';
 import { API_BASE_URL } from '../config';
 
 const REGIONS = ['Taloja', 'Mahad'];
@@ -117,6 +117,7 @@ export function ExecutiveDashboardPage({ onNavigate }) {
     .sort((a, b) => (b.tsi_score || 0) - (a.tsi_score || 0))
     .slice(0, 3)
     .map(f => ({
+      factory_id: f.factory_id,
       name: f.factory_name,
       avg_risk: f.tsi_score !== undefined ? `${f.tsi_score.toFixed(1)} (High)` : 'Not available'
     }));
@@ -134,8 +135,8 @@ export function ExecutiveDashboardPage({ onNavigate }) {
           <h2 className="font-headline-lg text-headline-lg text-[var(--color-primary)]">Executive Dashboard</h2>
           <p className="font-body-md text-body-md text-[var(--color-text-secondary)]">Central monitoring of national environmental compliance and risk metrics.</p>
         </div>
-        <button className="btn btn-primary btn-lg flex items-center gap-2">
-          <Download size={16} />
+        <button disabled title="Report export isn't implemented yet" className="btn btn-primary btn-lg flex items-center gap-2 cursor-not-allowed opacity-60">
+          <Lock size={14} />
           Export Report
         </button>
       </div>
@@ -230,7 +231,7 @@ export function ExecutiveDashboardPage({ onNavigate }) {
         <div className="lg:col-span-4 card p-6 flex flex-col justify-between">
           <h3 className="font-headline-md text-headline-md text-[var(--color-primary)] mb-4 flex items-center justify-between">
             Risk Distribution
-            <span className="material-symbols-outlined text-[var(--color-text-muted)] cursor-pointer">more_vert</span>
+            <span className="material-symbols-outlined text-[var(--color-text-muted)]" title="No additional actions available yet">more_vert</span>
           </h3>
 
           <div className="flex-1 flex flex-col items-center justify-center relative py-6">
@@ -348,7 +349,7 @@ export function ExecutiveDashboardPage({ onNavigate }) {
                 <div className="text-body-sm font-bold text-[var(--color-text)]">{item.name}</div>
                 <div className="text-xs text-[var(--color-text-secondary)]">Avg Risk Score: {item.avg_risk}</div>
               </div>
-              <button className="text-[var(--color-primary)] hover:underline text-xs font-bold" onClick={() => onNavigate('explainability')}>
+              <button className="text-[var(--color-primary)] hover:underline text-xs font-bold" onClick={() => onNavigate('explainability', item.factory_id)}>
                 Inspect
               </button>
             </div>

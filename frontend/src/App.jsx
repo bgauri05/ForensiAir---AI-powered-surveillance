@@ -51,7 +51,7 @@ export default function App() {
       case 'ai-analysis':
         return <AIAnalysisPage onNavigate={handleNavigate} />;
       case 'explainability':
-        return <ExplainabilityPage onNavigate={handleNavigate} />;
+        return <ExplainabilityPage onNavigate={handleNavigate} selectedFactoryId={selectedFactoryId} />;
       case 'institutional-oversight':
         return <InstitutionalOversightPage onNavigate={handleNavigate} />;
       case 'factories':

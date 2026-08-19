@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Download, Gavel, ChevronRight, HelpCircle } from 'lucide-react';
+import { ChevronRight, HelpCircle, Lock } from 'lucide-react';
 import { API_BASE_URL } from '../config';
 
-export function ExplainabilityPage({ onNavigate }) {
+export function ExplainabilityPage({ onNavigate, selectedFactoryId: initialFactoryId }) {
   const [factories, setFactories] = useState([]);
-  const [selectedFactoryId, setSelectedFactoryId] = useState('');
+  const [selectedFactoryId, setSelectedFactoryId] = useState(initialFactoryId || '');
   const [shapData, setShapData] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -19,9 +19,14 @@ export function ExplainabilityPage({ onNavigate }) {
         const data = await res.json();
         setFactories(data);
         if (data.length > 0) {
-          const firstHighRisk = data.find(f => f.risk_tier === 'High') || data[0];
-          setSelectedFactoryId(firstHighRisk.factory_id);
-          fetchShap(firstHighRisk.factory_id);
+          // Honor the factory clicked elsewhere in the app (e.g. Dashboard's
+          // Priority Risk Factors "Inspect") if it's a real match; otherwise
+          // fall back to the previous default behavior.
+          const target = (initialFactoryId && data.find(f => f.factory_id === initialFactoryId))
+            || data.find(f => f.risk_tier === 'High')
+            || data[0];
+          setSelectedFactoryId(target.factory_id);
+          fetchShap(target.factory_id);
         }
       }
     } catch (err) {
@@ -124,11 +129,11 @@ export function ExplainabilityPage({ onNavigate }) {
             ))}
           </select>
 
-          <button className="px-4 py-2 border border-[#E5E7EB] rounded-lg text-body-sm font-bold text-[#191c1e] flex items-center gap-2 hover:bg-[#f8f9fb] transition-all bg-white">
-            <Download size={16} /> Export Analysis
+          <button disabled title="Analysis export isn't implemented yet" className="px-4 py-2 border border-[#E5E7EB] rounded-lg text-body-sm font-bold text-[#727780] flex items-center gap-2 bg-white cursor-not-allowed opacity-60">
+            <Lock size={14} /> Export Analysis
           </button>
-          <button className="px-4 py-2 bg-[#00355f] text-white rounded-lg text-body-sm font-bold flex items-center gap-2 hover:opacity-90 transition-all shadow-sm">
-            <Gavel size={16} /> Escalate Case
+          <button disabled title="Case escalation isn't implemented yet" className="px-4 py-2 bg-[#00355f] text-white rounded-lg text-body-sm font-bold flex items-center gap-2 shadow-sm cursor-not-allowed opacity-60">
+            <Lock size={14} /> Escalate Case
           </button>
         </div>
       </div>

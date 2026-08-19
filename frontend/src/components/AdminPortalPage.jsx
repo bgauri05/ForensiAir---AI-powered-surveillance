@@ -36,7 +36,13 @@ export function AdminPortalPage({ onNavigate }) {
     setLoading(true);
     const flags = {};
     try {
-      const fRes = await fetch(`${API_BASE_URL}/api/admin/factories?district=${districtFilter}&industry=${industryFilter}`);
+      // BUG FIX: districtFilter/industryFilter were interpolated into the
+      // query string unencoded. Harmless while the industry dropdown only
+      // offered fake values, but real industries like "Garment & Dyeing" or
+      // "Drugs & Pharmaceuticals" contain a literal "&", which truncated the
+      // query param and silently returned zero results for the real value.
+      const params = new URLSearchParams({ district: districtFilter, industry: industryFilter });
+      const fRes = await fetch(`${API_BASE_URL}/api/admin/factories?${params.toString()}`);
       if (fRes.ok) {
         const fData = await fRes.json();
         setFactories(fData);
@@ -160,18 +166,21 @@ export function AdminPortalPage({ onNavigate }) {
                   <option value="">All Districts</option>
                   <option value="Taloja">Taloja</option>
                   <option value="Mahad">Mahad</option>
-                  <option value="Tarapur">Tarapur</option>
                 </select>
 
-                <select 
+                <select
                   value={industryFilter}
                   onChange={(e) => setIndustryFilter(e.target.value)}
                   className="border border-[#E5E7EB] bg-[#f8f9fb] rounded-lg text-body-sm px-3 py-1.5 focus:outline-none"
                 >
                   <option value="">All Industries</option>
                   <option value="Chemical Manufacturing">Chemical Manufacturing</option>
-                  <option value="Petrochemicals">Petrochemicals</option>
-                  <option value="Textile & Dyeing">Textile & Dyeing</option>
+                  <option value="Drugs & Pharmaceuticals">Drugs & Pharmaceuticals</option>
+                  <option value="Garment & Dyeing">Garment & Dyeing</option>
+                  <option value="Heavy Metallurgy">Heavy Metallurgy</option>
+                  <option value="Petrochemical Refinery">Petrochemical Refinery</option>
+                  <option value="Pharmaceutical Synthetics">Pharmaceutical Synthetics</option>
+                  <option value="Synthetic Rubber">Synthetic Rubber</option>
                 </select>
               </div>
 

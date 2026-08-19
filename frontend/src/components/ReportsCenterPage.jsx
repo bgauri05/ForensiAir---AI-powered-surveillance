@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Download, FileText, Calendar, CheckCircle, Search } from 'lucide-react';
+import { Download } from 'lucide-react';
 import { API_BASE_URL } from '../config';
 
 export function ReportsCenterPage({ onNavigate }) {
@@ -75,9 +75,10 @@ export function ReportsCenterPage({ onNavigate }) {
   const tamperType = activeFac.stage2_prediction?.predicted_tamper_type || 'Not available';
 
   return (
-    <div className="h-[calc(100vh-64px)] flex overflow-hidden">
-      {/* Left Sidebar: Report Archive List (1/3) */}
-      <section className="w-1/3 border-r border-[#E5E7EB] flex flex-col bg-[#f8f9fb]">
+    <div className="h-[calc(100vh-64px)] flex overflow-hidden print:h-auto print:block">
+      {/* Left Sidebar: Report Archive List (1/3) -- hidden when printing, only
+          the dossier preview on the right should end up in the exported PDF. */}
+      <section className="w-1/3 border-r border-[#E5E7EB] flex flex-col bg-[#f8f9fb] print:hidden">
         <div className="p-4 border-b border-[#E5E7EB] space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="font-headline-md text-headline-md text-[#00355f]">Reports Center</h2>
@@ -126,15 +127,8 @@ export function ReportsCenterPage({ onNavigate }) {
                   </span>
                 </div>
                 <h3 className="font-body-md font-bold text-[#00355f] mb-1">{fItem.factory_name || fItem.name}</h3>
-                <div className="flex justify-between items-center text-xs text-[#727780]">
-                  <div className="flex items-center gap-1">
-                    <Calendar size={12} />
-                    <span>Oct 14, 2024</span>
-                  </div>
-                  <div className="flex items-center gap-1 text-[#1b6d24] font-semibold">
-                    <CheckCircle size={12} />
-                    <span>PDF Generated</span>
-                  </div>
+                <div className="text-xs text-[#727780]">
+                  {fItem.region || fItem.district || 'Not available'}
                 </div>
               </div>
             );
@@ -143,15 +137,15 @@ export function ReportsCenterPage({ onNavigate }) {
       </section>
 
       {/* Right Column: Dynamic PDF Preview Canvas (2/3) */}
-      <section className="w-2/3 flex flex-col bg-[#edeef0] p-8 overflow-y-auto">
-        <div className="max-w-3xl mx-auto w-full bg-white border border-[#E5E7EB] rounded-xl p-8 shadow-md space-y-6">
+      <section className="w-2/3 flex flex-col bg-[#edeef0] p-8 overflow-y-auto print:w-full print:bg-white print:p-0 print:overflow-visible">
+        <div className="max-w-3xl mx-auto w-full bg-white border border-[#E5E7EB] rounded-xl p-8 shadow-md space-y-6 print:max-w-full print:border-none print:shadow-none print:rounded-none">
           <div className="flex justify-between items-start border-b border-[#E5E7EB] pb-6">
             <div>
               <span className="text-[10px] font-label-caps text-[#727780] uppercase">OFFICIAL COMPLIANCE DOSSIER</span>
               <h1 className="text-headline-lg font-headline-lg text-[#00355f] mt-1">{activeFac.factory_name || activeFac.name}</h1>
               <p className="text-body-sm text-[#42474f]">District: {regionStr} | License: #{licenseNo}</p>
             </div>
-            <button className="bg-[#00355f] text-white px-5 py-2 rounded-lg font-bold text-body-sm flex items-center gap-2 hover:opacity-90 shadow-xs">
+            <button onClick={() => window.print()} className="bg-[#00355f] text-white px-5 py-2 rounded-lg font-bold text-body-sm flex items-center gap-2 hover:opacity-90 shadow-xs print:hidden">
               <Download size={16} /> Download PDF
             </button>
           </div>

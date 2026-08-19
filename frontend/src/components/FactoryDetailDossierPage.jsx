@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Download, ShieldAlert, ArrowLeft, Factory, Gauge, Target, Activity, CheckCircle, ClipboardList } from 'lucide-react';
+import { ArrowLeft, Factory, Gauge, Target, Activity, CheckCircle, ClipboardList, Lock } from 'lucide-react';
 import { API_BASE_URL } from '../config';
 
 export function FactoryDetailDossierPage({ onNavigate, selectedFactoryId }) {
@@ -153,11 +153,11 @@ export function FactoryDetailDossierPage({ onNavigate, selectedFactoryId }) {
               ))}
             </select>
 
-            <button className="btn btn-secondary flex items-center gap-2">
-              <Download size={16} /> Export Dossier
+            <button disabled title="Dossier export isn't implemented yet" className="btn btn-secondary flex items-center gap-2 cursor-not-allowed opacity-60">
+              <Lock size={14} /> Export Dossier
             </button>
-            <button className="btn btn-primary flex items-center gap-2">
-              <ShieldAlert size={16} /> Initiate Audit
+            <button disabled title="Audit dispatch isn't implemented yet" className="btn btn-primary flex items-center gap-2 cursor-not-allowed opacity-60">
+              <Lock size={14} /> Initiate Audit
             </button>
           </div>
         </div>

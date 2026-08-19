@@ -1,10 +1,34 @@
 import React, { useState, useEffect } from 'react';
-import { Download, Calendar, TrendingUp, TrendingDown, AlertTriangle, ShieldCheck } from 'lucide-react';
+import { TrendingUp, TrendingDown, AlertTriangle, ShieldCheck, AlertCircle, Lock } from 'lucide-react';
 import { API_BASE_URL } from '../config';
 
+// BRIDGE FIX (2026-08): /api/data-quality is admin-gated
+// (require_role(["admin"])), and this frontend has no real login/auth flow
+// yet -- no request anywhere in this app ever sends an Authorization
+// header, regardless of the demo Role selector in TopHeader. That means
+// this fetch 401s on every single load today, and this page silently
+// showed fabricated fallback numbers 100% of the time with zero
+// disclosure -- worse than any other page audited this session. This adds
+// the same isDemoData banner pattern AdminPortalPage.jsx already uses.
+//
+// Separately: even a successful fetch wouldn't produce real numbers here
+// without further work -- the real endpoint's shape
+// ({dataset_summaries, total_records_processed, pipeline_health_status})
+// doesn't match what this page renders (coverage_by_factory,
+// parameter_stability, an "AI Readiness Grade" concept that doesn't exist
+// server-side at all). The shape check below treats a shape-mismatched
+// 200 response as demo data too, so this doesn't start silently showing
+// fake numbers with the banner hidden the moment auth is fixed.
+//
+// TODO(future auth phase): once real login exists, (1) send the real
+// Authorization header here, and (2) reshape this page around the real
+// dataset_summaries (per-factory coverage/missing/duplicate/quality_grade/
+// readiness_score) response instead of the aggregate/parameter-stability
+// shape assumed today -- they're not the same data model.
 export function DatasetQualityPage({ onNavigate }) {
   const [qualityData, setQualityData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isDemoData, setIsDemoData] = useState(false);
 
   useEffect(() => {
     fetchDataQuality();
@@ -15,12 +39,20 @@ export function DatasetQualityPage({ onNavigate }) {
       const res = await fetch(`${API_BASE_URL}/api/data-quality`);
       if (res.ok) {
         const data = await res.json();
-        setQualityData(data);
+        if (data && Array.isArray(data.coverage_by_factory)) {
+          setQualityData(data);
+          setIsDemoData(false);
+        } else {
+          setQualityData(getFallbackDataQuality());
+          setIsDemoData(true);
+        }
       } else {
         setQualityData(getFallbackDataQuality());
+        setIsDemoData(true);
       }
     } catch (err) {
       setQualityData(getFallbackDataQuality());
+      setIsDemoData(true);
     } finally {
       setLoading(false);
     }
@@ -43,6 +75,13 @@ export function DatasetQualityPage({ onNavigate }) {
 
   return (
     <div className="p-8 max-w-[1600px] mx-auto space-y-8">
+      {isDemoData && (
+        <div className="flex items-center gap-2 px-6 py-3 bg-[#fff3e6] border border-[#F57C00]/20 text-[#8F6400] text-body-sm font-semibold rounded-lg">
+          <AlertCircle size={16} />
+          Showing demo data -- this section's backend endpoint isn't available right now, so nothing here reflects your live database.
+        </div>
+      )}
+
       {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
@@ -55,12 +94,12 @@ export function DatasetQualityPage({ onNavigate }) {
           <p className="font-body-md text-[#42474f] mt-1">Institutional audit of environmental sensor network integrity and AI readiness.</p>
         </div>
         <div className="flex gap-3">
-          <button className="px-4 py-2 bg-white border border-[#E5E7EB] text-[#00355f] font-medium rounded-lg flex items-center gap-2 hover:bg-[#f8f9fb] transition-colors text-body-sm">
-            <Calendar size={16} />
+          <button disabled title="Date-range selection isn't implemented yet -- this is a static historical dataset, not a live daily feed" className="px-4 py-2 bg-white border border-[#E5E7EB] text-[#727780] font-medium rounded-lg flex items-center gap-2 text-body-sm cursor-not-allowed opacity-60">
+            <Lock size={14} />
             Last 30 Days
           </button>
-          <button className="px-4 py-2 bg-[#00355f] text-white font-medium rounded-lg flex items-center gap-2 transition-colors hover:opacity-90 text-body-sm shadow-sm">
-            <Download size={16} />
+          <button disabled title="Report export isn't implemented yet" className="px-4 py-2 bg-[#00355f] text-white font-medium rounded-lg flex items-center gap-2 text-body-sm shadow-sm cursor-not-allowed opacity-60">
+            <Lock size={14} />
             Export Audit Report
           </button>
         </div>
