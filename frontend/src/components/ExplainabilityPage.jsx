@@ -74,28 +74,24 @@ export function ExplainabilityPage({ onNavigate }) {
   // Format real SHAP features from database API response
   const rawShapList = Array.isArray(shapData?.shap) ? shapData.shap : [];
   
-  const topShap = rawShapList.length > 0 ? rawShapList.slice(0, 5).map(item => {
-    const sVal = Math.abs(item.shap_value || 0.1);
+  const topShap = rawShapList.slice(0, 5).map(item => {
+    const sVal = Math.abs(item.shap_value || 0);
     const pctVal = Math.min(95, Math.max(15, Math.round(sVal * 100)));
     return {
-      feature: item.fingerprint_name || 'Fingerprint Signal',
-      contribution: item.shap_value ? item.shap_value.toFixed(2) : '0.24',
+      feature: item.fingerprint_name || 'Not available',
+      contribution: item.shap_value !== undefined ? item.shap_value.toFixed(2) : 'Not available',
       pct: pctVal,
-      direction: item.direction || 'HIGH'
+      direction: item.direction || 'NEUTRAL'
     };
-  }) : [
-    { feature: "BOD Flatline Score", contribution: "0.42", pct: 85, direction: "HIGH" },
-    { feature: "COD Limit Hugging Ratio", contribution: "0.28", pct: 65, direction: "HIGH" },
-    { feature: "Flow vs Power Divergence", contribution: "0.18", pct: 45, direction: "MODERATE" },
-    { feature: "Impossible Value Rate", contribution: "0.08", pct: 25, direction: "LOW" }
-  ];
+  });
 
-  const predictedTamperClass = predObj.predicted_tamper_type 
-    || (isHighRisk ? 'Severe BOD Signal Suppression' : isMediumRisk ? 'Moderate COD Hugging' : 'Nominal Baseline');
+  const predictedTamperClass = predObj.predicted_tamper_type || 'Not available';
 
-  const tamperProbVal = predObj.confidence_percentage !== undefined
-    ? predObj.confidence_percentage.toFixed(1)
-    : (fObj.tsi_score ? Math.min(99.2, Math.max(14.2, fObj.tsi_score * 0.95)) : 88.4).toFixed(1);
+  const tamperProbVal = predObj.tamper_probability !== undefined
+    ? `${predObj.tamper_probability.toFixed(1)}%`
+    : fObj.tamper_probability !== undefined
+    ? `${fObj.tamper_probability.toFixed(1)}%`
+    : 'Not available';
 
   return (
     <div className="p-8 max-w-[1600px] mx-auto space-y-8">
@@ -147,12 +143,14 @@ export function ExplainabilityPage({ onNavigate }) {
               SHAP Feature Attributions ({fObj.factory_name || fObj.name})
             </h3>
             <span className="text-label-caps font-label-caps bg-[#00355f]/10 text-[#00355f] px-3 py-1 rounded-full font-bold">
-              XGBOOST EXPLAINER v4.2
+              LIGHTGBM SHAP EXPLAINER
             </span>
           </div>
 
           <div className="space-y-6">
-            {topShap.map((item, idx) => (
+            {topShap.length === 0 ? (
+              <p className="text-body-sm text-[#727780]">No SHAP attribution data available for this factory.</p>
+            ) : topShap.map((item, idx) => (
               <div key={idx} className="space-y-2">
                 <div className="flex justify-between text-body-sm font-bold text-[#191c1e]">
                   <span>{item.feature}</span>
@@ -188,12 +186,12 @@ export function ExplainabilityPage({ onNavigate }) {
               <div>
                 <div className="text-[10px] font-label-caps text-[#727780] uppercase font-bold">Tamper Probability</div>
                 <div className={`text-display-kpi font-display-kpi ${isHighRisk ? 'text-[#D32F2F]' : isMediumRisk ? 'text-[#F57C00]' : 'text-[#1b6d24]'}`}>
-                  {tamperProbVal}%
+                  {tamperProbVal}
                 </div>
               </div>
               <div>
                 <div className="text-[10px] font-label-caps text-[#727780] uppercase font-bold">TSI Score</div>
-                <div className="text-body-sm font-semibold text-[#191c1e]">{fObj.tsi_score ? fObj.tsi_score.toFixed(1) : '85.0'} / 100</div>
+                <div className="text-body-sm font-semibold text-[#191c1e]">{fObj.tsi_score !== undefined ? `${fObj.tsi_score.toFixed(1)} / 100` : 'Not available'}</div>
               </div>
             </div>
           </div>

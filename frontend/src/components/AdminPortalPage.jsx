@@ -10,8 +10,6 @@ export function AdminPortalPage({ onNavigate }) {
   const [factories, setFactories] = useState([]);
   const [users, setUsers] = useState([]);
   const [consentLimits, setConsentLimits] = useState([]);
-  const [models, setModels] = useState([]);
-  const [thresholds, setThresholds] = useState([]);
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -21,9 +19,13 @@ export function AdminPortalPage({ onNavigate }) {
   const [showAddFactoryModal, setShowAddFactoryModal] = useState(false);
   // Tracks which sections are showing fallback/demo data because their
   // backend endpoint returned an error or doesn't exist yet (consent-limits,
-  // models, thresholds, notifications, and factories POST/DELETE aren't
-  // implemented in backend/main.py as of this session). Previously this
-  // was silent -- the UI looked identical whether data was live or fake.
+  // notifications, and factories POST/DELETE aren't implemented in
+  // backend/main.py as of this session). Previously this was silent -- the
+  // UI looked identical whether data was live or fake.
+  // Model Versions and Threshold Settings are deliberately excluded: neither
+  // tab's content ever came from /api/admin/models or /api/admin/thresholds
+  // (those endpoints don't exist and were never consumed), so a failed fetch
+  // to them said nothing true about whether those tabs were live or fake.
   const [demoFlags, setDemoFlags] = useState({});
 
   useEffect(() => {
@@ -51,14 +53,6 @@ export function AdminPortalPage({ onNavigate }) {
       if (cRes.ok) setConsentLimits(await cRes.json());
       else { setConsentLimits(getFallbackConsentLimits()); flags.consentLimits = true; }
 
-      const mRes = await fetch(`${API_BASE_URL}/api/admin/models`);
-      if (mRes.ok) setModels(await mRes.json());
-      else { setModels(getFallbackModels()); flags.models = true; }
-
-      const tRes = await fetch(`${API_BASE_URL}/api/admin/thresholds`);
-      if (tRes.ok) setThresholds(await tRes.json());
-      else { setThresholds(getFallbackThresholds()); flags.thresholds = true; }
-
       const nRes = await fetch(`${API_BASE_URL}/api/admin/notifications`);
       if (nRes.ok) setNotifications(await nRes.json());
       else { setNotifications(getFallbackNotifications()); flags.notifications = true; }
@@ -68,10 +62,8 @@ export function AdminPortalPage({ onNavigate }) {
       setFactories(getFallbackFactories());
       setUsers(getFallbackUsers());
       setConsentLimits(getFallbackConsentLimits());
-      setModels(getFallbackModels());
-      setThresholds(getFallbackThresholds());
       setNotifications(getFallbackNotifications());
-      setDemoFlags({ factories: true, users: true, consentLimits: true, models: true, thresholds: true, notifications: true });
+      setDemoFlags({ factories: true, users: true, consentLimits: true, notifications: true });
     } finally {
       setLoading(false);
     }
@@ -143,7 +135,7 @@ export function AdminPortalPage({ onNavigate }) {
         {(() => {
           const tabToFlag = {
             factories: 'factories', users: 'users', 'consent-limits': 'consentLimits',
-            models: 'models', thresholds: 'thresholds', notifications: 'notifications',
+            notifications: 'notifications',
           };
           const key = tabToFlag[activeTab];
           if (!key || !demoFlags[key]) return null;
@@ -343,6 +335,4 @@ function getFallbackConsentLimits() {
   ];
 }
 
-function getFallbackModels() { return []; }
-function getFallbackThresholds() { return []; }
 function getFallbackNotifications() { return []; }

@@ -78,25 +78,28 @@ export function AIAnalysisPage({ onNavigate }) {
   const isMediumRisk = fObj.risk_tier === 'Medium' || fObj.risk_tier === 'Moderate Risk';
 
   const tamperProb = pred.stage2_model?.tamper_probability !== undefined
-    ? pred.stage2_model.tamper_probability.toFixed(1)
+    ? `${pred.stage2_model.tamper_probability.toFixed(1)}%`
     : fObj.stage2_prediction?.tamper_probability !== undefined
-    ? fObj.stage2_prediction.tamper_probability.toFixed(1)
+    ? `${fObj.stage2_prediction.tamper_probability.toFixed(1)}%`
     : fObj.tamper_probability !== undefined
-    ? fObj.tamper_probability.toFixed(1)
-    : (fObj.tsi_score ? Math.min(99.2, Math.max(1.2, fObj.tsi_score * 0.95)) : 88.4).toFixed(1);
+    ? `${fObj.tamper_probability.toFixed(1)}%`
+    : 'Not available';
 
   const isoScore = pred.isolation_forest?.anomaly_score !== undefined
     ? pred.isolation_forest.anomaly_score.toFixed(2)
     : fObj.raw_fingerprint_signals?.anomaly_score !== undefined
     ? fObj.raw_fingerprint_signals.anomaly_score.toFixed(2)
-    : (0.42 + (fObj.tsi_score || 30) * 0.005).toFixed(2);
+    : 'Not available';
 
-  const predictedTamperType = pred.stage2_model?.predicted_tamper_type 
-    || fObj.stage2_prediction?.predicted_tamper_type 
-    || (isHighRisk ? 'Severe Signal Suppression' : 'Telemetry Variance');
+  const predictedTamperType = pred.stage2_model?.predicted_tamper_type
+    || fObj.stage2_prediction?.predicted_tamper_type
+    || 'Not available';
 
-  const rankNum = fObj.rank || 1;
-  const confidenceVal = `${Math.min(98.8, 91.0 + (rankNum % 7) * 1.1).toFixed(1)}%`;
+  const confidenceVal = pred.stage2_model?.confidence_percentage !== undefined
+    ? `${pred.stage2_model.confidence_percentage.toFixed(1)}%`
+    : fObj.stage2_prediction?.confidence_percentage !== undefined
+    ? `${fObj.stage2_prediction.confidence_percentage.toFixed(1)}%`
+    : 'Not available';
 
   return (
     <div className="p-8 max-w-[1600px] mx-auto space-y-6">
@@ -158,10 +161,12 @@ export function AIAnalysisPage({ onNavigate }) {
             </span>
           </div>
           <p className="mt-3 text-body-sm text-[#42474f] italic">
-            {isHighRisk 
-              ? `Severe signal anomaly (${predictedTamperType}) detected.` 
-              : isMediumRisk 
-              ? `Moderate statistical deviation detected for ${fObj.factory_name}.` 
+            {pred.stage2_model?.note
+              ? pred.stage2_model.note
+              : isHighRisk
+              ? `Severe signal anomaly (${predictedTamperType}) detected.`
+              : isMediumRisk
+              ? `Moderate statistical deviation detected for ${fObj.factory_name}.`
               : `Nominal telemetry parameters detected for ${fObj.factory_name}.`
             }
           </p>
@@ -172,13 +177,13 @@ export function AIAnalysisPage({ onNavigate }) {
           <span className="text-label-caps text-[#727780] uppercase font-bold">Tampering Probability</span>
           <div className="mt-4 flex items-baseline gap-2">
             <span className={`text-display-kpi font-display-kpi ${isHighRisk ? 'text-[#D32F2F]' : isMediumRisk ? 'text-[#F57C00]' : 'text-[#1b6d24]'}`}>
-              {tamperProb}%
+              {tamperProb}
             </span>
           </div>
           <div className="w-full bg-[#edeef0] h-2 mt-4 rounded-full overflow-hidden">
-            <div 
-              className={`h-full rounded-full ${isHighRisk ? 'bg-[#D32F2F]' : isMediumRisk ? 'bg-[#F57C00]' : 'bg-[#1b6d24]'}`} 
-              style={{ width: `${Math.min(100, parseFloat(tamperProb))}%` }}
+            <div
+              className={`h-full rounded-full ${isHighRisk ? 'bg-[#D32F2F]' : isMediumRisk ? 'bg-[#F57C00]' : 'bg-[#1b6d24]'}`}
+              style={{ width: tamperProb !== 'Not available' ? `${Math.min(100, parseFloat(tamperProb))}%` : '0%' }}
             ></div>
           </div>
         </div>

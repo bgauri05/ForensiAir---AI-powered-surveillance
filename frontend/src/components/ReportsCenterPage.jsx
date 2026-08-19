@@ -57,19 +57,22 @@ export function ReportsCenterPage({ onNavigate }) {
   const isHigh = activeFac.risk_tier === 'High' || activeFac.risk_tier === 'High Risk';
   const isMedium = activeFac.risk_tier === 'Medium' || activeFac.risk_tier === 'Moderate Risk';
 
-  const rankNum = activeFac.rank || 1;
   const regionStr = activeFac.region || activeFac.district || 'Taloja';
-  const licenseNo = activeFac.consent_number || `MPCB/RO/${regionStr.slice(0,3).toUpperCase()}/2024/${1000 + rankNum * 43}`;
+  const licenseNo = activeFac.consent_number || 'Not available';
 
-  const tamperProbVal = activeFac.stage2_prediction?.confidence_percentage 
-    ? activeFac.stage2_prediction.confidence_percentage.toFixed(1)
-    : (activeFac.tsi_score ? Math.min(99.2, Math.max(14.2, activeFac.tsi_score * 0.95)) : 88.4).toFixed(1);
+  const tamperProbVal = activeFac.tamper_probability !== undefined
+    ? `${activeFac.tamper_probability.toFixed(1)}%`
+    : activeFac.stage2_prediction?.tamper_probability !== undefined
+    ? `${activeFac.stage2_prediction.tamper_probability.toFixed(1)}%`
+    : 'Not available';
 
   const anomalyScoreVal = activeFac.raw_fingerprint_signals?.anomaly_score !== undefined
     ? activeFac.raw_fingerprint_signals.anomaly_score.toFixed(2)
-    : (activeFac.anomaly_score !== undefined ? activeFac.anomaly_score.toFixed(2) : (0.42 + (activeFac.tsi_score || 30) * 0.005).toFixed(2));
+    : activeFac.anomaly_score !== undefined
+    ? activeFac.anomaly_score.toFixed(2)
+    : 'Not available';
 
-  const tamperType = activeFac.stage2_prediction?.predicted_tamper_type || (isHigh ? 'Severe Signal Suppression' : 'Minor Telemetry Variance');
+  const tamperType = activeFac.stage2_prediction?.predicted_tamper_type || 'Not available';
 
   return (
     <div className="h-[calc(100vh-64px)] flex overflow-hidden">
@@ -157,7 +160,7 @@ export function ReportsCenterPage({ onNavigate }) {
             <div className="p-4 bg-[#f8f9fb] rounded-lg border border-[#E5E7EB]">
               <div className="text-[10px] font-label-caps text-[#727780] uppercase font-bold">TAMPER PROBABILITY</div>
               <div className={`text-display-kpi text-display-kpi mt-1 ${isHigh ? 'text-[#D32F2F]' : isMedium ? 'text-[#F57C00]' : 'text-[#1b6d24]'}`}>
-                {tamperProbVal}%
+                {tamperProbVal}
               </div>
             </div>
             <div className="p-4 bg-[#f8f9fb] rounded-lg border border-[#E5E7EB]">
@@ -171,7 +174,7 @@ export function ReportsCenterPage({ onNavigate }) {
           <div className="space-y-3 pt-4 border-t border-[#E5E7EB]">
             <h3 className="font-headline-md text-headline-md text-[#00355f]">Executive Summary & Evidence</h3>
             <p className="text-body-sm text-[#42474f] leading-relaxed">
-              Forensic AI evaluation of real-time telemetry from <strong className="text-[#191c1e]">{activeFac.factory_name || activeFac.name}</strong> ({regionStr}) revealed TSI risk score of <strong className="text-[#191c1e]">{activeFac.tsi_score ? activeFac.tsi_score.toFixed(1) : '85.0'} / 100</strong>. Stage 2 XGBoost model classified primary anomaly pattern as <strong className="text-[#D32F2F]">{tamperType}</strong>. Automated compliance audit report compiled for inspector review.
+              Forensic AI evaluation of real-time telemetry from <strong className="text-[#191c1e]">{activeFac.factory_name || activeFac.name}</strong> ({regionStr}) revealed TSI risk score of <strong className="text-[#191c1e]">{activeFac.tsi_score !== undefined ? `${activeFac.tsi_score.toFixed(1)} / 100` : 'Not available'}</strong>. Stage 2 XGBoost model classified primary anomaly pattern as <strong className="text-[#D32F2F]">{tamperType}</strong>. {activeFac.stage2_prediction?.note ? `${activeFac.stage2_prediction.note} ` : ''}Automated compliance audit report compiled for inspector review.
             </p>
           </div>
         </div>

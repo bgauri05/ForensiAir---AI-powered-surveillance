@@ -641,6 +641,33 @@ def get_factory_predictions(factory_id: str):
     }
 
 # -------------------------------------------------------------
+# 5b. Factory Inspection History
+# -------------------------------------------------------------
+@app.get("/api/factories/{factory_id}/inspections")
+def get_factory_inspections(factory_id: str):
+    import sqlite3
+    db_path = os.path.join(os.path.dirname(__file__), "..", "forensiair.db")
+    if not os.path.exists(db_path):
+        db_path = "forensiair.db"
+    if not os.path.exists(db_path):
+        return []
+
+    conn = sqlite3.connect(db_path)
+    try:
+        rows = conn.execute(
+            "SELECT inspection_date, inspection_type, status FROM inspection_events "
+            "WHERE factory_id = ? ORDER BY inspection_date DESC",
+            (factory_id,)
+        ).fetchall()
+    finally:
+        conn.close()
+
+    return [
+        {"inspection_date": r[0], "inspection_type": r[1], "status": r[2]}
+        for r in rows
+    ]
+
+# -------------------------------------------------------------
 # 6. Data Quality Overview
 # -------------------------------------------------------------
 @app.get("/api/data-quality", dependencies=[Depends(require_role(["admin"]))])
@@ -701,20 +728,21 @@ def list_admin_factories(district: Optional[str] = Query(None), industry: Option
     cache = get_data_cache()
     df_tsi = cache["tsi"]
     name_map = cache["name_mapping"]
-    
+    stage1_matched = cache["stage1_matched_sites"]
+
     results = []
     for _, r in df_tsi.iterrows():
         fid = str(r['factory_id'])
         name, reg, ind = name_map.get(fid, (f"Industrial Site {fid}", "Taloja", "Chemical Manufacturing"))
-        
+
         if district and district.strip() and district.lower() not in ['all districts', '']:
             if reg.lower() != district.strip().lower():
                 continue
-                
+
         if industry and industry.strip() and industry.lower() not in ['all industries', '']:
             if ind.lower() != industry.strip().lower():
                 continue
-                
+
         results.append({
             "factory_id": fid,
             "factory_name": name,
@@ -723,7 +751,8 @@ def list_admin_factories(district: Optional[str] = Query(None), industry: Option
             "district": reg,
             "industry": ind,
             "risk_tier": str(r.get('risk_tier', 'Low')),
-            "tsi_score": float(r.get('tsi_score', 0.0))
+            "tsi_score": float(r.get('tsi_score', 0.0)),
+            "has_stage1_model": fid in stage1_matched
         })
         
     return results

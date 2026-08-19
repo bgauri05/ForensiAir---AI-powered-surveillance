@@ -6,18 +6,20 @@ export function ModelVersionsTab({ factories = [] }) {
   const [showMetadataPanel, setShowMetadataPanel] = useState(true);
   const [searchFactoryText, setSearchFactoryText] = useState('');
 
+  const stage1Count = factories.filter(f => f.has_stage1_model).length;
+
   // 3 Pipeline Stages
   const activeModels = [
     {
       id: 'stage1',
-      name: 'Stage 1 — IsolationForest (Per-Factory)',
+      name: 'Stage 1 — XGBoost (Per-Factory)',
       tag: 'v1.2',
-      category: 'Unsupervised Anomaly Detector',
+      category: 'Supervised Tamper Classifier',
       source: 'Real OCEMS Telemetry (2024)',
       trainedDate: 'Oct 10, 2024',
       status: 'Active',
       lastRetrained: '2 days ago',
-      details: '33 separate factory models (per-site contamination tuning)',
+      details: `${stage1Count} of ${factories.length} factories have a dedicated per-factory model; the rest use the global Stage 2 classifier only`,
       hasPerFactoryList: true
     },
     {
@@ -75,36 +77,6 @@ export function ModelVersionsTab({ factories = [] }) {
 
   return (
     <div className="p-6 space-y-8">
-      {/* 1. Performance Snapshot Cards */}
-      <div>
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="font-headline-md text-headline-md text-[#00355f]">Model Performance Snapshot</h3>
-          <span className="text-label-caps text-[11px] text-[#727780] font-bold">CROSS-VALIDATED ACCURACY</span>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="p-4 bg-[#f8f9fb] border border-[#E5E7EB] rounded-xl shadow-xs">
-            <div className="text-[10px] font-label-caps text-[#727780] uppercase font-bold">STAGE 1 AUCPR</div>
-            <div className="text-display-kpi font-display-kpi text-[#1b6d24] mt-1">0.942</div>
-            <div className="text-xs text-[#42474f] mt-1 font-semibold">+1.8% vs Baseline (Isolation Forest)</div>
-          </div>
-          <div className="p-4 bg-[#f8f9fb] border border-[#E5E7EB] rounded-xl shadow-xs">
-            <div className="text-[10px] font-label-caps text-[#727780] uppercase font-bold">STAGE 2 mLOGLOSS</div>
-            <div className="text-display-kpi font-display-kpi text-[#00355f] mt-1">0.184</div>
-            <div className="text-xs text-[#42474f] mt-1 font-semibold">9-Class Multiclass Loss</div>
-          </div>
-          <div className="p-4 bg-[#f8f9fb] border border-[#E5E7EB] rounded-xl shadow-xs">
-            <div className="text-[10px] font-label-caps text-[#727780] uppercase font-bold">ENSEMBLE F1-SCORE</div>
-            <div className="text-display-kpi font-display-kpi text-[#1b6d24] mt-1">96.8%</div>
-            <div className="text-xs text-[#42474f] mt-1 font-semibold">Precision 97.4% / Recall 96.2%</div>
-          </div>
-          <div className="p-4 bg-[#f8f9fb] border border-[#E5E7EB] rounded-xl shadow-xs">
-            <div className="text-[10px] font-label-caps text-[#727780] uppercase font-bold">SHAP SURROGATE FIDELITY</div>
-            <div className="text-display-kpi font-display-kpi text-[#0f4c81] mt-1">99.2%</div>
-            <div className="text-xs text-[#42474f] mt-1 font-semibold">LightGBM TreeExplainer Agreement</div>
-          </div>
-        </div>
-      </div>
-
       {/* 2. Active Pipeline Models Section */}
       <div className="space-y-4">
         <div className="flex justify-between items-center">
@@ -141,7 +113,7 @@ export function ModelVersionsTab({ factories = [] }) {
                     onClick={() => setShowFactoryModal(true)}
                     className="text-xs font-bold text-[#0f4c81] hover:underline flex items-center gap-1 pt-1 cursor-pointer"
                   >
-                    View all 33 per-factory models →
+                    View Stage 1 model coverage ({stage1Count} of {factories.length} factories) →
                   </button>
                 )}
               </div>
@@ -222,17 +194,6 @@ export function ModelVersionsTab({ factories = [] }) {
 
             <div className="space-y-4">
               <div>
-                <span className="text-[10px] font-label-caps text-[#727780] uppercase font-bold">EXCLUDED FORENSIC HOLDOUT SITES</span>
-                <div className="mt-1 flex items-center gap-2">
-                  <span className="px-2.5 py-1 bg-[#D32F2F]/10 text-[#D32F2F] border border-[#D32F2F]/20 rounded font-bold text-xs">
-                    site_1232 (Deep Discharger Exhibit)
-                  </span>
-                  <span className="px-2.5 py-1 bg-[#D32F2F]/10 text-[#D32F2F] border border-[#D32F2F]/20 rounded font-bold text-xs">
-                    site_1281 (Taloja Outlier Exhibit)
-                  </span>
-                </div>
-              </div>
-              <div>
                 <span className="text-[10px] font-label-caps text-[#727780] uppercase font-bold">FEATURE VECTOR DIMENSIONS</span>
                 <p className="font-bold text-[#191c1e] mt-0.5">24 Computed Signals (pH, BOD, COD, TSS, Flow, Autocorr, CV, Limit Hugging)</p>
               </div>
@@ -245,14 +206,14 @@ export function ModelVersionsTab({ factories = [] }) {
         )}
       </div>
 
-      {/* Modal: All 33 Per-Factory Stage 1 IsolationForest Models */}
+      {/* Modal: Stage 1 Per-Factory Model Coverage */}
       {showFactoryModal && (
         <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
           <div className="bg-white rounded-xl max-w-4xl w-full max-h-[85vh] flex flex-col overflow-hidden shadow-2xl">
             <div className="p-6 border-b border-[#E5E7EB] flex justify-between items-center bg-[#f8f9fb]">
               <div>
-                <h3 className="font-headline-md text-headline-md text-[#00355f]">Stage 1 IsolationForest — 33 Factory Models</h3>
-                <p className="text-xs text-[#42474f] mt-1">Per-site contamination tuning & individual OCEMS baseline models</p>
+                <h3 className="font-headline-md text-headline-md text-[#00355f]">Stage 1 — Per-Factory Model Coverage</h3>
+                <p className="text-xs text-[#42474f] mt-1">{stage1Count} of {factories.length} factories have a dedicated Stage 1 model; the rest fall back to the global Stage 2 classifier only</p>
               </div>
               <button 
                 onClick={() => setShowFactoryModal(false)}
@@ -278,9 +239,8 @@ export function ModelVersionsTab({ factories = [] }) {
                   <tr className="bg-[#f8f9fb]">
                     <th className="px-6 py-3 font-label-caps text-[11px] text-[#42474f] uppercase">Factory ID</th>
                     <th className="px-6 py-3 font-label-caps text-[11px] text-[#42474f] uppercase">Factory Name</th>
+                    <th className="px-6 py-3 font-label-caps text-[11px] text-[#42474f] uppercase">Stage 1 Status</th>
                     <th className="px-6 py-3 font-label-caps text-[11px] text-[#42474f] uppercase">Model File</th>
-                    <th className="px-6 py-3 font-label-caps text-[11px] text-[#42474f] uppercase">Contamination</th>
-                    <th className="px-6 py-3 font-label-caps text-[11px] text-[#42474f] uppercase">Last Trained</th>
                   </tr>
                 </thead>
                 <tbody className="text-table-data">
@@ -288,9 +248,16 @@ export function ModelVersionsTab({ factories = [] }) {
                     <tr key={f.factory_id || idx} className="hover:bg-[#f8f9fb]">
                       <td className="px-6 py-3 font-bold text-[#00355f]">{f.factory_id}</td>
                       <td className="px-6 py-3 font-bold text-[#191c1e]">{f.factory_name || f.name}</td>
-                      <td className="px-6 py-3 text-xs font-mono text-[#42474f]">iso_forest_{f.factory_id}.joblib</td>
-                      <td className="px-6 py-3 text-[#1b6d24] font-bold text-xs">0.05 (Default)</td>
-                      <td className="px-6 py-3 text-xs text-[#727780]">Oct 10, 2024</td>
+                      <td className="px-6 py-3 text-xs font-bold">
+                        {f.has_stage1_model ? (
+                          <span className="text-[#1b6d24]">AVAILABLE</span>
+                        ) : (
+                          <span className="text-[#727780]">NOT AVAILABLE</span>
+                        )}
+                      </td>
+                      <td className="px-6 py-3 text-xs font-mono text-[#42474f]">
+                        {f.has_stage1_model ? `stage1_${f.factory_id}.joblib` : '—'}
+                      </td>
                     </tr>
                   ))}
                 </tbody>

@@ -2,9 +2,22 @@ import React, { useState, useEffect } from 'react';
 import { Download, ChevronRight, Filter, Calendar } from 'lucide-react';
 import { API_BASE_URL } from '../config';
 
+const REGIONS = ['Taloja', 'Mahad'];
+const INDUSTRIES = [
+  'Chemical Manufacturing',
+  'Drugs & Pharmaceuticals',
+  'Garment & Dyeing',
+  'Heavy Metallurgy',
+  'Petrochemical Refinery',
+  'Pharmaceutical Synthetics',
+  'Synthetic Rubber'
+];
+
 export function ExecutiveDashboardPage({ onNavigate }) {
-  const [data, setData] = useState(null);
+  const [summary, setSummary] = useState(null);
+  const [factories, setFactories] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
 
   const [districtFilter, setDistrictFilter] = useState('All Districts');
   const [industryFilter, setIndustryFilter] = useState('All Industries');
@@ -22,69 +35,84 @@ export function ExecutiveDashboardPage({ onNavigate }) {
       ]);
 
       if (sumRes.ok && facRes.ok) {
-        const summary = await sumRes.json();
-        const factories = await facRes.json();
-        
-        setData({
-          kpis: {
-            total_factories: summary.total_factories || 33,
-            monitored_today: Math.round((summary.total_factories || 33) * 0.85),
-            high_risk_factories: summary.high_risk_count || 5,
-            active_alerts: (summary.high_risk_count || 5) + (summary.medium_risk_count || 8),
-            avg_data_quality: 94.8
-          },
-          risk_distribution: [
-            { label: 'Low Risk Compliance', count: summary.low_risk_count || 20, color: '#1b6d24' },
-            { label: 'Moderate Risk', count: summary.medium_risk_count || 8, color: '#F57C00' },
-            { label: 'Critical High Risk', count: summary.high_risk_count || 5, color: '#D32F2F' }
-          ],
-          factories: factories,
-          recent_alerts: (factories || []).slice(0, 5).map(f => ({
-            factory_id: f.factory_id,
-            factory_name: f.factory_name,
-            district: f.region || 'North Industrial',
-            risk_level: (f.risk_tier || 'Low').toUpperCase(),
-            time: '2 mins ago',
-            status: f.risk_tier === 'High' ? 'Under AI Review' : 'Monitored'
-          })),
-          activity_timeline: [
-            { time: '10:45 AM', title: 'TSI Risk Re-calculation Completed', desc: 'Canonical 10-signal TSI engine recomputed scores for 33 factories.' },
-            { time: '09:30 AM', title: 'Coordinated Missing Data Flagged', desc: 'High missing rate correlation (r > 0.6) detected for site_1569 <-> site_1909.' },
-            { time: '08:15 AM', title: 'Stage 2 XGBoost Inferences Updated', desc: '9-class multi-class tamper detector processed 1,138,064 records.' }
-          ],
-          priority_risk_factors: (factories || []).filter(f => f.risk_tier === 'High' || f.risk_tier === 'High Risk').slice(0, 3).map(f => ({
-            name: f.factory_name,
-            avg_risk: `${f.tamper_probability ? (f.tamper_probability * 100).toFixed(1) : '85.0'} (High)`
-          })),
-          data_integrity: [
-            { sensor: "SO2 Sensors", uptime: "98%" },
-            { sensor: "NO2 Scanners", uptime: "94%" },
-            { sensor: "Thermal Nodes", uptime: "89%" },
-            { sensor: "Satellite Imaging", uptime: "96%" }
-          ]
-        });
+        setSummary(await sumRes.json());
+        setFactories(await facRes.json());
+        setLoadError(false);
       } else {
-        setData(getFallbackDashboard());
+        setLoadError(true);
       }
     } catch (err) {
-      setData(getFallbackDashboard());
+      setLoadError(true);
     } finally {
       setLoading(false);
     }
   };
 
-  if (loading || !data) {
+  const clearFilters = () => {
+    setDistrictFilter('All Districts');
+    setIndustryFilter('All Industries');
+    setRiskFilter('Risk: All Levels');
+  };
+
+  if (loading) {
     return <div className="p-8 font-body-md text-[#42474f]">Loading Executive Dashboard...</div>;
   }
 
-  const { 
-    kpis = {}, 
-    risk_distribution = [], 
-    recent_alerts = [], 
-    activity_timeline = [], 
-    priority_risk_factors = [], 
-    data_integrity = [] 
-  } = data || {};
+  if (loadError || !summary) {
+    return (
+      <div className="p-8 font-body-md text-[#42474f]">
+        Unable to load dashboard data. Confirm the backend is running at {API_BASE_URL}.
+      </div>
+    );
+  }
+
+  const filteredFactories = factories.filter(f => {
+    if (districtFilter !== 'All Districts' && (f.region || '') !== districtFilter) return false;
+    if (industryFilter !== 'All Industries' && (f.industry || '') !== industryFilter) return false;
+    if (riskFilter !== 'Risk: All Levels' && (f.risk_tier || '') !== riskFilter) return false;
+    return true;
+  });
+
+  const riskCounts = { Low: 0, Medium: 0, High: 0 };
+  filteredFactories.forEach(f => {
+    const tier = f.risk_tier || 'Low';
+    if (riskCounts[tier] !== undefined) riskCounts[tier] += 1;
+  });
+
+  const riskDistribution = [
+    { label: 'Low Risk Compliance', tier: 'Low', count: riskCounts.Low, color: '#1b6d24' },
+    { label: 'Moderate Risk', tier: 'Medium', count: riskCounts.Medium, color: '#F57C00' },
+    { label: 'Critical High Risk', tier: 'High', count: riskCounts.High, color: '#D32F2F' }
+  ];
+
+  const totalFiltered = filteredFactories.length;
+  let cumulativeOffset = 0;
+  const donutSegments = riskDistribution.map(r => {
+    const pct = totalFiltered > 0 ? (r.count / totalFiltered) * 100 : 0;
+    const segment = { ...r, pct, dashOffset: -cumulativeOffset };
+    cumulativeOffset += pct;
+    return segment;
+  });
+
+  const recentAlerts = [...filteredFactories]
+    .sort((a, b) => (b.tsi_score || 0) - (a.tsi_score || 0))
+    .slice(0, 5)
+    .map(f => ({
+      factory_id: f.factory_id,
+      factory_name: f.factory_name,
+      district: f.region || 'Not available',
+      risk_level: (f.risk_tier || 'Low').toUpperCase(),
+      status: f.risk_tier === 'High' ? 'Under AI Review' : 'Monitored'
+    }));
+
+  const priorityRiskFactors = filteredFactories
+    .filter(f => f.risk_tier === 'High')
+    .sort((a, b) => (b.tsi_score || 0) - (a.tsi_score || 0))
+    .slice(0, 3)
+    .map(f => ({
+      name: f.factory_name,
+      avg_risk: f.tsi_score !== undefined ? `${f.tsi_score.toFixed(1)} (High)` : 'Not available'
+    }));
 
   return (
     <div className="p-8 max-w-[1600px] mx-auto">
@@ -105,32 +133,15 @@ export function ExecutiveDashboardPage({ onNavigate }) {
         </button>
       </div>
 
-      {/* 5 KPI Section Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+      {/* KPI Section Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         {/* Total Factories */}
         <div className="bg-white border border-[#E5E7EB] p-5 rounded-xl shadow-xs">
           <div className="flex justify-between items-start mb-2">
             <span className="font-label-caps text-label-caps text-[#42474f] uppercase">Total Factories</span>
             <span className="material-symbols-outlined text-[#00355f] text-xl">factory</span>
           </div>
-          <div className="font-display-kpi text-display-kpi text-[#191c1e]">{kpis.total_factories?.toLocaleString()}</div>
-          <div className="flex items-center gap-1 mt-2">
-            <span className="text-[#1b6d24] font-bold text-xs">+1.2%</span>
-            <span className="text-[#42474f] text-[11px]">from last month</span>
-          </div>
-        </div>
-
-        {/* Monitored Today */}
-        <div className="bg-white border border-[#E5E7EB] p-5 rounded-xl shadow-xs">
-          <div className="flex justify-between items-start mb-2">
-            <span className="font-label-caps text-label-caps text-[#42474f] uppercase">Monitored Today</span>
-            <span className="material-symbols-outlined text-[#00355f] text-xl">visibility</span>
-          </div>
-          <div className="font-display-kpi text-display-kpi text-[#191c1e]">{kpis.monitored_today}</div>
-          <div className="w-full bg-[#edeef0] mt-3 h-1.5 rounded-full overflow-hidden">
-            <div className="bg-[#00355f] h-full rounded-full" style={{ width: '85%' }}></div>
-          </div>
-          <div className="text-[#42474f] text-[11px] mt-1">85.0% of total capacity</div>
+          <div className="font-display-kpi text-display-kpi text-[#191c1e]">{summary.total_factories?.toLocaleString()}</div>
         </div>
 
         {/* High Risk */}
@@ -139,11 +150,7 @@ export function ExecutiveDashboardPage({ onNavigate }) {
             <span className="font-label-caps text-label-caps text-[#D32F2F] uppercase">High Risk Factories</span>
             <span className="material-symbols-outlined text-[#D32F2F] text-xl">warning</span>
           </div>
-          <div className="font-display-kpi text-display-kpi text-[#D32F2F]">{kpis.high_risk_factories}</div>
-          <div className="flex items-center gap-1 mt-2">
-            <span className="text-[#D32F2F] font-bold text-xs">+2</span>
-            <span className="text-[#42474f] text-[11px]">new detections</span>
-          </div>
+          <div className="font-display-kpi text-display-kpi text-[#D32F2F]">{summary.high_risk_count}</div>
         </div>
 
         {/* Active Alerts */}
@@ -152,22 +159,7 @@ export function ExecutiveDashboardPage({ onNavigate }) {
             <span className="font-label-caps text-label-caps text-[#42474f] uppercase">Active Alerts</span>
             <span className="material-symbols-outlined text-[#F57C00] text-xl">notifications_active</span>
           </div>
-          <div className="font-display-kpi text-display-kpi text-[#191c1e]">{kpis.active_alerts}</div>
-          <div className="flex items-center gap-1 mt-2">
-            <span className="text-[#42474f] text-[11px]">18 require urgent action</span>
-          </div>
-        </div>
-
-        {/* Data Quality */}
-        <div className="bg-white border border-[#E5E7EB] p-5 rounded-xl shadow-xs">
-          <div className="flex justify-between items-start mb-2">
-            <span className="font-label-caps text-label-caps text-[#42474f] uppercase">Avg Data Quality</span>
-            <span className="material-symbols-outlined text-[#1b6d24] text-xl">verified</span>
-          </div>
-          <div className="font-display-kpi text-display-kpi text-[#191c1e]">{kpis.avg_data_quality}%</div>
-          <div className="flex items-center gap-1 mt-2">
-            <span className="text-[#1b6d24] font-bold text-xs">High Confidence</span>
-          </div>
+          <div className="font-display-kpi text-display-kpi text-[#191c1e]">{(summary.high_risk_count || 0) + (summary.medium_risk_count || 0)}</div>
         </div>
       </div>
 
@@ -179,53 +171,48 @@ export function ExecutiveDashboardPage({ onNavigate }) {
             <span className="font-label-caps text-[10px] text-[#42474f] uppercase">Global Filters</span>
           </div>
 
-          <select 
-            value={districtFilter} 
+          <select
+            value={districtFilter}
             onChange={(e) => setDistrictFilter(e.target.value)}
             className="bg-[#f8f9fb] border border-[#E5E7EB] rounded px-3 py-1.5 text-body-sm font-medium text-[#191c1e] focus:outline-none focus:ring-1 focus:ring-[#00355f]"
           >
             <option>All Districts</option>
-            <option>North Industrial</option>
-            <option>Central Metro</option>
-            <option>East Coastal</option>
+            {REGIONS.map(r => <option key={r}>{r}</option>)}
           </select>
 
-          <select 
-            value={industryFilter} 
+          <select
+            value={industryFilter}
             onChange={(e) => setIndustryFilter(e.target.value)}
             className="bg-[#f8f9fb] border border-[#E5E7EB] rounded px-3 py-1.5 text-body-sm font-medium text-[#191c1e] focus:outline-none focus:ring-1 focus:ring-[#00355f]"
           >
             <option>All Industries</option>
-            <option>Petrochemicals</option>
-            <option>Metallurgy</option>
-            <option>Textiles & Dyeing</option>
+            {INDUSTRIES.map(i => <option key={i}>{i}</option>)}
           </select>
 
-          <select 
-            value={riskFilter} 
+          <select
+            value={riskFilter}
             onChange={(e) => setRiskFilter(e.target.value)}
             className="bg-[#f8f9fb] border border-[#E5E7EB] rounded px-3 py-1.5 text-body-sm font-medium text-[#191c1e] focus:outline-none focus:ring-1 focus:ring-[#00355f]"
           >
             <option>Risk: All Levels</option>
-            <option>Critical</option>
             <option>High</option>
+            <option>Medium</option>
             <option>Low</option>
           </select>
 
           <div className="relative flex items-center">
             <Calendar size={14} className="absolute left-3 text-[#727780]" />
-            <input 
-              className="bg-[#f8f9fb] border border-[#E5E7EB] rounded pl-9 pr-3 py-1.5 text-body-sm font-medium text-[#191c1e]" 
-              type="text" 
-              readOnly 
-              value="Oct 01, 2024 - Oct 31, 2024"
+            <input
+              className="bg-[#f8f9fb] border border-[#E5E7EB] rounded pl-9 pr-3 py-1.5 text-body-sm font-medium text-[#191c1e]"
+              type="text"
+              readOnly
+              value={`Data as of ${summary.last_updated}`}
             />
           </div>
         </div>
 
         <div className="flex items-center gap-2">
-          <button className="px-4 py-1.5 text-[#00355f] font-bold text-body-sm hover:underline">Clear All</button>
-          <button className="bg-[#00355f]/10 text-[#00355f] px-4 py-1.5 rounded font-bold text-body-sm border border-[#00355f]/20 hover:bg-[#00355f]/20 transition-all">Apply View</button>
+          <button className="px-4 py-1.5 text-[#00355f] font-bold text-body-sm hover:underline" onClick={clearFilters}>Clear All</button>
         </div>
       </div>
 
@@ -242,20 +229,29 @@ export function ExecutiveDashboardPage({ onNavigate }) {
             <div className="relative w-48 h-48">
               <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
                 <circle cx="18" cy="18" fill="transparent" r="16" stroke="#f1f1f1" strokeWidth="3"></circle>
-                <circle cx="18" cy="18" fill="transparent" r="16" stroke="#1b6d24" strokeDasharray="65, 100" strokeDashoffset="0" strokeWidth="3"></circle>
-                <circle cx="18" cy="18" fill="transparent" r="16" stroke="#F57C00" strokeDasharray="25, 100" strokeDashoffset="-65" strokeWidth="3"></circle>
-                <circle cx="18" cy="18" fill="transparent" r="16" stroke="#D32F2F" strokeDasharray="10, 100" strokeDashoffset="-90" strokeWidth="3"></circle>
+                {donutSegments.filter(s => s.pct > 0).map(s => (
+                  <circle
+                    key={s.tier}
+                    cx="18" cy="18" fill="transparent" r="16"
+                    stroke={s.color}
+                    strokeDasharray={`${s.pct}, 100`}
+                    strokeDashoffset={s.dashOffset}
+                    strokeWidth="3"
+                  ></circle>
+                ))}
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="font-display-kpi text-3xl font-bold text-[#191c1e]">33</span>
-                <span className="text-[10px] font-label-caps text-[#42474f] uppercase">Total Sites</span>
+                <span className="font-display-kpi text-3xl font-bold text-[#191c1e]">{totalFiltered}</span>
+                <span className="text-[10px] font-label-caps text-[#42474f] uppercase">
+                  {totalFiltered === factories.length ? 'Total Sites' : 'Sites Shown'}
+                </span>
               </div>
             </div>
           </div>
 
           <div className="space-y-3 pt-4 border-t border-[#E5E7EB]">
-            {risk_distribution.map((item, idx) => (
-              <div key={idx} className="flex items-center justify-between text-body-sm">
+            {riskDistribution.map((item) => (
+              <div key={item.tier} className="flex items-center justify-between text-body-sm">
                 <div className="flex items-center gap-2">
                   <span className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }}></span>
                   <span className="text-[#191c1e]">{item.label}</span>
@@ -270,7 +266,7 @@ export function ExecutiveDashboardPage({ onNavigate }) {
         <div className="lg:col-span-8 bg-white border border-[#E5E7EB] p-6 rounded-xl">
           <div className="flex justify-between items-center mb-6">
             <h3 className="font-headline-md text-headline-md text-[#00355f]">Recent Alerts</h3>
-            <button 
+            <button
               className="text-[#00355f] text-body-sm font-bold flex items-center gap-1 hover:underline"
               onClick={() => onNavigate('alerts')}
             >
@@ -285,14 +281,17 @@ export function ExecutiveDashboardPage({ onNavigate }) {
                   <th className="py-3 px-4">Factory Name</th>
                   <th className="py-3 px-4">District</th>
                   <th className="py-3 px-4">Risk Level</th>
-                  <th className="py-3 px-4">Time</th>
                   <th className="py-3 px-4">Status</th>
                 </tr>
               </thead>
               <tbody className="text-table-data">
-                {recent_alerts.map((row, idx) => (
-                  <tr 
-                    key={idx} 
+                {recentAlerts.length === 0 ? (
+                  <tr>
+                    <td colSpan={4} className="py-6 px-4 text-center text-[#727780]">No factories match the current filters.</td>
+                  </tr>
+                ) : recentAlerts.map((row, idx) => (
+                  <tr
+                    key={idx}
                     className="border-b border-[#E5E7EB] table-row-hover transition-colors cursor-pointer"
                     onClick={() => onNavigate('factory-detail', row.factory_id)}
                   >
@@ -306,7 +305,6 @@ export function ExecutiveDashboardPage({ onNavigate }) {
                         {row.risk_level}
                       </span>
                     </td>
-                    <td className="py-3.5 px-4 text-[#42474f]">{row.time}</td>
                     <td className="py-3.5 px-4 font-semibold text-[#191c1e]">
                       <div className="flex items-center gap-2">
                         {row.status === 'Under AI Review' && <span className="w-2 h-2 rounded-full bg-[#F57C00] animate-pulse" />}
@@ -321,91 +319,25 @@ export function ExecutiveDashboardPage({ onNavigate }) {
         </div>
       </div>
 
-      {/* Row 3 Grid: Activity Timeline, Priority Risk Factors, Data Integrity */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Activity Timeline */}
-        <div className="bg-white border border-[#E5E7EB] p-6 rounded-xl">
-          <h3 className="font-headline-md text-headline-md text-[#00355f] mb-4">Activity Timeline</h3>
-          <div className="space-y-4">
-            {activity_timeline.map((act, idx) => (
-              <div key={idx} className="border-l-2 border-[#00355f] pl-3">
-                <div className="text-[10px] font-label-caps text-[#00355f] tracking-wider">{act.time}</div>
-                <div className="text-body-sm font-bold text-[#191c1e] mt-0.5">{act.title}</div>
-                <div className="text-xs text-[#42474f] mt-0.5">{act.desc}</div>
+      {/* Priority Risk Factors */}
+      <div className="bg-white border border-[#E5E7EB] p-6 rounded-xl">
+        <h3 className="font-headline-md text-headline-md text-[#00355f] mb-4">Priority Risk Factors</h3>
+        <div className="space-y-3">
+          {priorityRiskFactors.length === 0 ? (
+            <p className="text-body-sm text-[#727780]">No high-risk factories match the current filters.</p>
+          ) : priorityRiskFactors.map((item, idx) => (
+            <div key={idx} className="p-3 border border-[#E5E7EB] rounded-lg bg-[#f8f9fb] flex items-center justify-between">
+              <div>
+                <div className="text-body-sm font-bold text-[#191c1e]">{item.name}</div>
+                <div className="text-xs text-[#42474f]">Avg Risk Score: {item.avg_risk}</div>
               </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Priority Risk Factors */}
-        <div className="bg-white border border-[#E5E7EB] p-6 rounded-xl">
-          <h3 className="font-headline-md text-headline-md text-[#00355f] mb-4">Priority Risk Factors</h3>
-          <div className="space-y-3">
-            {priority_risk_factors.map((item, idx) => (
-              <div key={idx} className="p-3 border border-[#E5E7EB] rounded-lg bg-[#f8f9fb] flex items-center justify-between">
-                <div>
-                  <div className="text-body-sm font-bold text-[#191c1e]">{item.name}</div>
-                  <div className="text-xs text-[#42474f]">Avg Risk Score: {item.avg_risk}</div>
-                </div>
-                <button className="text-[#00355f] hover:underline text-xs font-bold" onClick={() => onNavigate('explainability')}>
-                  Inspect
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Data Integrity */}
-        <div className="bg-white border border-[#E5E7EB] p-6 rounded-xl">
-          <h3 className="font-headline-md text-headline-md text-[#00355f] mb-4">Data Integrity</h3>
-          <div className="space-y-3.5">
-            {data_integrity.map((sen, idx) => (
-              <div key={idx}>
-                <div className="flex justify-between text-body-sm font-medium mb-1">
-                  <span>{sen.sensor}</span>
-                  <span className="text-[#1b6d24] font-bold">{sen.uptime}</span>
-                </div>
-                <div className="w-full h-1.5 bg-[#edeef0] rounded-full overflow-hidden">
-                  <div className="h-full bg-[#1b6d24] rounded-full" style={{ width: sen.uptime }}></div>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="mt-4 p-3 bg-[#e0f2fe] rounded-lg text-xs text-[#0369a1] font-medium leading-relaxed">
-            ℹ Sensor calibration recommended for 4 districts to maintain confidence levels.
-          </div>
+              <button className="text-[#00355f] hover:underline text-xs font-bold" onClick={() => onNavigate('explainability')}>
+                Inspect
+              </button>
+            </div>
+          ))}
         </div>
       </div>
     </div>
   );
-}
-
-function getFallbackDashboard() {
-  return {
-    kpis: { total_factories: 33, monitored_today: 28, high_risk_factories: 5, active_alerts: 13, avg_data_quality: 94.8 },
-    risk_distribution: [
-      { label: "Low Risk Compliance", count: 20, color: "#1b6d24" },
-      { label: "Moderate Risk", count: 8, color: "#F57C00" },
-      { label: "Critical High Risk", count: 5, color: "#D32F2F" }
-    ],
-    recent_alerts: [
-      { factory_name: "RUPA ORGANICS PVT LTD. Taloja", district: "Taloja", risk_level: "CRITICAL", time: "12:45 PM", status: "Under AI Review" },
-      { factory_name: "Dorf Ketal Chemicals India Pvt Ltd", district: "Taloja", risk_level: "HIGH", time: "11:20 AM", status: "Investigating" },
-      { factory_name: "SHREE HARI CHEMICALS EXPORT LIMITED", district: "Mahad", risk_level: "HIGH", time: "10:05 AM", status: "Resolved" }
-    ],
-    activity_timeline: [
-      { time: "JUST NOW", title: "Thermal scan completed at RUPA ORGANICS PVT LTD. Taloja", desc: "Variance detected within 2% margin." },
-      { time: "12 MIN AGO", title: "Compliance Cert Issued", desc: "Dorf Ketal Chemicals India Pvt Ltd passed audit." }
-    ],
-    priority_risk_factors: [
-      { name: "RUPA ORGANICS PVT LTD. Taloja", avg_risk: "88.4 (High)" },
-      { name: "Super Petroleum Products Private Limited", avg_risk: "72.1 (Moderate)" }
-    ],
-    data_integrity: [
-      { sensor: "SO2 Sensors", uptime: "98%" },
-      { sensor: "NO2 Scanners", uptime: "94%" },
-      { sensor: "Thermal Nodes", uptime: "89%" },
-      { sensor: "Satellite Imaging", uptime: "96%" }
-    ]
-  };
 }

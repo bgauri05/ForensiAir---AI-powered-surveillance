@@ -207,7 +207,7 @@ export function ThresholdSettingsTab() {
         <div className="p-4 bg-[#f8f9fb] border-t border-[#E5E7EB] text-xs text-[#727780] flex items-start gap-2">
           <Info size={16} className="text-[#0f4c81] shrink-0 mt-0.5" />
           <p className="leading-relaxed">
-            <strong>Statistical Note:</strong> Thresholds are derived from statistical validation against real OCEMS data (see Model Versions changelog). Changes require formal re-validation against historic holdout exhibits before deployment.
+            <strong>Statistical Note:</strong> Thresholds are derived from statistical validation against real OCEMS data (see Model Versions changelog). Changes require formal re-validation against the full 33-factory baseline before deployment.
           </p>
         </div>
       </div>
@@ -218,11 +218,11 @@ export function ThresholdSettingsTab() {
           <div className="flex justify-between items-center">
             <h3 className="font-headline-md text-headline-md text-[#00355f]">TSI Composite Scoring Configuration</h3>
             <span className="text-xs font-bold text-[#727780] bg-[#f8f9fb] px-3 py-1 rounded border border-[#E5E7EB]">
-              Fingerprint Weights ($w_i$): Equal Weighting Engine (v1.0 — 10.0% per signal)
+              Fingerprint Weights ($w_i$): Equal Weighting Engine (v1.0 — 8.4% per signal, 8 tracked signals)
             </span>
           </div>
           <p className="text-xs text-[#42474f] mt-1">
-            Ensemble weighting formula combining Supervised XGBoost ($45\%$), Unsupervised Isolation Forest ($25\%$), and Fingerprint Triggers ($30\%$).
+            Ensemble weighting formula combining a factory-level tamper model ($10\%$), Unsupervised Isolation Forest ($22.5\%$), and Fingerprint Triggers ($67.5\%$).
           </p>
         </div>
 
@@ -276,7 +276,7 @@ export function ThresholdSettingsTab() {
               </p>
               <ol className="list-decimal pl-4 space-y-1 text-[#191c1e]">
                 <li>Submit proposed parameter adjustments in a sandbox branch.</li>
-                <li>Run automated cross-validation against historic holdout exhibits (`site_1232`, `site_1281`).</li>
+                <li>Run automated cross-validation against the full 33-factory real-telemetry baseline.</li>
                 <li>Submit formal review to the Environmental Audit Committee.</li>
               </ol>
             </div>

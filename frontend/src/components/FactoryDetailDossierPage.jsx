@@ -6,6 +6,7 @@ export function FactoryDetailDossierPage({ onNavigate, selectedFactoryId }) {
   const [factoriesList, setFactoriesList] = useState([]);
   const [selectedFid, setSelectedFid] = useState(selectedFactoryId || '');
   const [factoryData, setFactoryData] = useState(null);
+  const [inspections, setInspections] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -47,11 +48,14 @@ export function FactoryDetailDossierPage({ onNavigate, selectedFactoryId }) {
 
   const fetchFactoryDetail = async (fid) => {
     try {
-      const res = await fetch(`${API_BASE_URL}/api/factories/${fid}`);
-      if (res.ok) {
-        const data = await res.json();
-        setFactoryData(data);
+      const [factoryRes, inspectionsRes] = await Promise.all([
+        fetch(`${API_BASE_URL}/api/factories/${fid}`),
+        fetch(`${API_BASE_URL}/api/factories/${fid}/inspections`)
+      ]);
+      if (factoryRes.ok) {
+        setFactoryData(await factoryRes.json());
       }
+      setInspections(inspectionsRes.ok ? await inspectionsRes.json() : []);
     } catch (err) {
       console.error(err);
     }
@@ -71,27 +75,32 @@ export function FactoryDetailDossierPage({ onNavigate, selectedFactoryId }) {
   const isMediumRisk = fObj.risk_tier === 'Medium' || fObj.risk_tier === 'Moderate Risk';
 
   // Dynamic calculations based on DB factory object
-  const rankNum = fObj.rank || 1;
   const regionStr = fObj.region || fObj.district || 'Taloja';
-  const licenseNo = fObj.consent_number || `MPCB/RO/${regionStr.slice(0,3).toUpperCase()}/2024/${1000 + rankNum * 43}`;
-  const plotAddress = fObj.address || `Plot M-${rankNum * 3 + 7}, MIDC Industrial Zone, ${regionStr}, Maharashtra`;
-  const plantHead = fObj.contact_person || `Dr. ${['V. Sharma', 'A. Kulkarni', 'R. Deshmukh', 'P. Patil', 'S. Mehta', 'N. Joshi'][rankNum % 6]} (Plant Head)`;
-  
-  const bodAvg = fObj.avg_bod ? `${fObj.avg_bod} mg/L` : `${(18.5 + (fObj.tsi_score || 30) * 0.28).toFixed(1)} mg/L`;
-  const codAvg = fObj.avg_cod ? `${fObj.avg_cod} mg/L` : `${(160 + (fObj.tsi_score || 30) * 1.4).toFixed(1)} mg/L`;
-  const phAvg = `${(6.6 + (rankNum % 5) * 0.2).toFixed(1)} pH`;
+  const licenseNo = fObj.consent_number || 'Not available';
+  const plotAddress = fObj.address || 'Not available';
+  const plantHead = fObj.contact_person || 'Not available';
 
-  const tamperProbVal = fObj.stage2_prediction?.confidence_percentage 
-    ? fObj.stage2_prediction.confidence_percentage 
-    : (fObj.tsi_score ? Math.min(99.2, Math.max(14.2, fObj.tsi_score * 0.95)) : 88.4).toFixed(1);
+  const bodAvg = fObj.avg_bod !== undefined ? `${fObj.avg_bod} mg/L` : 'Not available';
+  const codAvg = fObj.avg_cod !== undefined ? `${fObj.avg_cod} mg/L` : 'Not available';
+  const phAvg = 'Not available';
+
+  const tamperProbVal = fObj.tamper_probability !== undefined
+    ? `${fObj.tamper_probability.toFixed(1)}%`
+    : fObj.stage2_prediction?.tamper_probability !== undefined
+    ? `${fObj.stage2_prediction.tamper_probability.toFixed(1)}%`
+    : 'Not available';
 
   const anomalyScoreVal = fObj.raw_fingerprint_signals?.anomaly_score !== undefined
     ? fObj.raw_fingerprint_signals.anomaly_score.toFixed(2)
-    : (fObj.anomaly_score !== undefined ? fObj.anomaly_score.toFixed(2) : (0.42 + (fObj.tsi_score || 30) * 0.005).toFixed(2));
+    : fObj.anomaly_score !== undefined
+    ? fObj.anomaly_score.toFixed(2)
+    : 'Not available';
 
-  const confidenceVal = `${Math.min(98.8, 91.0 + (rankNum % 7) * 1.1).toFixed(1)}%`;
+  const confidenceVal = fObj.stage2_prediction?.confidence_percentage !== undefined
+    ? `${fObj.stage2_prediction.confidence_percentage.toFixed(1)}%`
+    : 'Not available';
 
-  const tamperType = fObj.stage2_prediction?.predicted_tamper_type || (isHighRisk ? 'Severe Signal Suppression' : 'Minor Telemetry Variance');
+  const tamperType = fObj.stage2_prediction?.predicted_tamper_type || 'Not available';
 
   return (
     <div className="space-y-6">
@@ -205,7 +214,7 @@ export function FactoryDetailDossierPage({ onNavigate, selectedFactoryId }) {
               <div className="p-4 bg-[#f8f9fb] border border-[#E5E7EB] rounded-lg">
                 <span className="text-label-caps text-[#727780] font-bold">TAMPER PROBABILITY</span>
                 <div className={`font-display-kpi text-display-kpi mt-1 ${isHighRisk ? 'text-[#D32F2F]' : isMediumRisk ? 'text-[#F57C00]' : 'text-[#1b6d24]'}`}>
-                  {tamperProbVal}%
+                  {tamperProbVal}
                 </div>
               </div>
               <div className="p-4 bg-[#f8f9fb] border border-[#E5E7EB] rounded-lg">
@@ -223,7 +232,9 @@ export function FactoryDetailDossierPage({ onNavigate, selectedFactoryId }) {
             <div className="p-4 bg-[#f8f9fb] rounded-lg border border-[#E5E7EB]">
               <div className="font-body-sm font-bold text-[#191c1e] mb-1">Inspector Recommendation</div>
               <p className="text-xs text-[#42474f] leading-relaxed">
-                {isHighRisk 
+                {fObj.stage2_prediction?.note
+                  ? fObj.stage2_prediction.note
+                  : isHighRisk
                   ? `Stage 2 XGBoost classification detected active "${tamperType}" for ${fObj.factory_name || fObj.name}. Priority physical audit recommended for sensor calibration verification.`
                   : isMediumRisk
                   ? `Moderate telemetry variance detected for ${fObj.factory_name || fObj.name}. Scheduled calibration check recommended within 48 hours.`
@@ -236,58 +247,23 @@ export function FactoryDetailDossierPage({ onNavigate, selectedFactoryId }) {
           <div className="bg-white border border-[#E5E7EB] p-6 rounded-xl shadow-xs">
             <h3 className="font-headline-md text-headline-md text-[#00355f] mb-4">Past Inspection History</h3>
             <div className="space-y-3 text-body-sm">
-              {isHighRisk ? (
-                <>
-                  <div className="p-3 border-l-4 border-l-[#D32F2F] bg-[#f8f9fb] rounded-r-lg flex justify-between items-center">
+              {inspections.length === 0 ? (
+                <p className="text-xs text-[#727780]">No inspection history on record for this factory.</p>
+              ) : inspections.map((insp, idx) => {
+                const borderColor = insp.inspection_type === 'High Risk' ? '#D32F2F' : insp.inspection_type === 'Medium Risk' ? '#F57C00' : '#1b6d24';
+                const isCompleted = insp.status === 'Completed';
+                return (
+                  <div key={idx} className="p-3 rounded-r-lg flex justify-between items-center bg-[#f8f9fb]" style={{ borderLeft: `4px solid ${borderColor}` }}>
                     <div>
-                      <div className="font-bold text-[#191c1e]">Critical Anomaly Alert - {tamperType}</div>
-                      <div className="text-xs text-[#42474f]">Flagged by Stage 2 XGBoost on Oct 14, 2024</div>
+                      <div className="font-bold text-[#191c1e]">{insp.inspection_type} Inspection</div>
+                      <div className="text-xs text-[#42474f]">{insp.inspection_date}</div>
                     </div>
-                    <span className="px-2.5 py-1 text-xs font-bold text-[#D32F2F] bg-[#D32F2F]/10 rounded">UNDER REVIEW</span>
+                    <span className={`px-2.5 py-1 text-xs font-bold rounded ${isCompleted ? 'text-[#1b6d24] bg-[#1b6d24]/10' : 'text-[#F57C00] bg-[#F57C00]/10'}`}>
+                      {(insp.status || '').toUpperCase()}
+                    </span>
                   </div>
-                  <div className="p-3 border-l-4 border-l-[#F57C00] bg-[#f8f9fb] rounded-r-lg flex justify-between items-center">
-                    <div>
-                      <div className="font-bold text-[#191c1e]">Surprise Sensor Recalibration Check</div>
-                      <div className="text-xs text-[#42474f]">Minor variance flagged on June 04, 2024</div>
-                    </div>
-                    <span className="px-2.5 py-1 text-xs font-bold text-[#F57C00] bg-[#F57C00]/10 rounded">RESOLVED</span>
-                  </div>
-                </>
-              ) : isMediumRisk ? (
-                <>
-                  <div className="p-3 border-l-4 border-l-[#F57C00] bg-[#f8f9fb] rounded-r-lg flex justify-between items-center">
-                    <div>
-                      <div className="font-bold text-[#191c1e]">Telemetry Variance Notice</div>
-                      <div className="text-xs text-[#42474f]">Flagged for review on Sept 28, 2024</div>
-                    </div>
-                    <span className="px-2.5 py-1 text-xs font-bold text-[#F57C00] bg-[#F57C00]/10 rounded">INVESTIGATING</span>
-                  </div>
-                  <div className="p-3 border-l-4 border-l-[#1b6d24] bg-[#f8f9fb] rounded-r-lg flex justify-between items-center">
-                    <div>
-                      <div className="font-bold text-[#191c1e]">Annual Compliance Audit</div>
-                      <div className="text-xs text-[#42474f]">Passed with clean record on April 10, 2024</div>
-                    </div>
-                    <span className="px-2.5 py-1 text-xs font-bold text-[#1b6d24] bg-[#1b6d24]/10 rounded">PASSED</span>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className="p-3 border-l-4 border-l-[#1b6d24] bg-[#f8f9fb] rounded-r-lg flex justify-between items-center">
-                    <div>
-                      <div className="font-bold text-[#191c1e]">Annual Environmental Compliance Audit</div>
-                      <div className="text-xs text-[#42474f]">Passed inspection with 100% telemetry coverage on Oct 02, 2024</div>
-                    </div>
-                    <span className="px-2.5 py-1 text-xs font-bold text-[#1b6d24] bg-[#1b6d24]/10 rounded">PASSED</span>
-                  </div>
-                  <div className="p-3 border-l-4 border-l-[#1b6d24] bg-[#f8f9fb] rounded-r-lg flex justify-between items-center">
-                    <div>
-                      <div className="font-bold text-[#191c1e]">Routine Sensor Recalibration Check</div>
-                      <div className="text-xs text-[#42474f]">Verified all parameters within limits on Jan 15, 2024</div>
-                    </div>
-                    <span className="px-2.5 py-1 text-xs font-bold text-[#1b6d24] bg-[#1b6d24]/10 rounded">PASSED</span>
-                  </div>
-                </>
-              )}
+                );
+              })}
             </div>
           </div>
         </div>
