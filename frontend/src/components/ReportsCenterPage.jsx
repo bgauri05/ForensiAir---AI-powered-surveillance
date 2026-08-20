@@ -62,8 +62,6 @@ export function ReportsCenterPage({ onNavigate }) {
 
   const tamperProbVal = activeFac.tamper_probability !== undefined
     ? `${activeFac.tamper_probability.toFixed(1)}%`
-    : activeFac.stage2_prediction?.tamper_probability !== undefined
-    ? `${activeFac.stage2_prediction.tamper_probability.toFixed(1)}%`
     : 'Not available';
 
   const anomalyScoreVal = activeFac.raw_fingerprint_signals?.anomaly_score !== undefined
@@ -71,8 +69,6 @@ export function ReportsCenterPage({ onNavigate }) {
     : activeFac.anomaly_score !== undefined
     ? activeFac.anomaly_score.toFixed(2)
     : 'Not available';
-
-  const tamperType = activeFac.stage2_prediction?.predicted_tamper_type || 'Not available';
 
   return (
     <div className="h-[calc(100vh-64px)] flex overflow-hidden print:h-auto print:block">
@@ -168,7 +164,7 @@ export function ReportsCenterPage({ onNavigate }) {
           <div className="space-y-3 pt-4 border-t border-[#E5E7EB]">
             <h3 className="font-headline-md text-headline-md text-[#00355f]">Executive Summary & Evidence</h3>
             <p className="text-body-sm text-[#42474f] leading-relaxed">
-              Forensic AI evaluation of real-time telemetry from <strong className="text-[#191c1e]">{activeFac.factory_name || activeFac.name}</strong> ({regionStr}) revealed TSI risk score of <strong className="text-[#191c1e]">{activeFac.tsi_score !== undefined ? `${activeFac.tsi_score.toFixed(1)} / 100` : 'Not available'}</strong>. Stage 2 XGBoost model classified primary anomaly pattern as <strong className="text-[#D32F2F]">{tamperType}</strong>. {activeFac.stage2_prediction?.note ? `${activeFac.stage2_prediction.note} ` : ''}Automated compliance audit report compiled for inspector review.
+              Forensic AI evaluation of real-time telemetry from <strong className="text-[#191c1e]">{activeFac.factory_name || activeFac.name}</strong> ({regionStr}) revealed TSI risk score of <strong className="text-[#191c1e]">{activeFac.tsi_score !== undefined ? `${activeFac.tsi_score.toFixed(1)} / 100` : 'Not available'}</strong>. {activeFac.note ? `${activeFac.note} ` : ''}Automated compliance audit report compiled for inspector review.
             </p>
           </div>
         </div>

@@ -3,7 +3,6 @@ import sys
 import json
 import datetime
 import jwt
-import joblib
 import pandas as pd
 import numpy as np
 from typing import Dict, Any, List, Optional
@@ -104,25 +103,27 @@ def _load_factory_scores() -> pd.DataFrame:
     return df
 
 
-def _classify_tamper(risk_category: str, risk_score: float, pred_cls: str, pred_conf: float,
-                      raw_signals: Dict[str, float]) -> Dict[str, Any]:
+def _explain_risk_drivers(risk_category: str, risk_score: float,
+                           raw_signals: Dict[str, float]) -> Dict[str, Any]:
     """
-    QC FIX (2026-08): this replaces two copy-pasted blocks that fabricated
-    a tamper_probability from tsi_score with hand-picked multipliers/clamps
-    (e.g. "tsi_score * 0.95, clamped 68.5-98.8") and invented a specific
-    tamper-type label like 'Severe Signal Suppression' whenever the real
-    stage-2 model said NONE/COMPLIANT/NORMAL but the tier said otherwise.
+    QC FIX (2026-08): this used to also reconcile a Stage-2 classifier's
+    predicted_tamper_type/confidence_percentage against the risk tier (see
+    git history for _classify_tamper). Stage 1 (per-factory XGBoost) and
+    Stage 2 (9-class XGBoost) have since been removed from the app
+    entirely -- neither ever had a training script anywhere in this repo;
+    both were undocumented .joblib artifacts with no reproducible
+    provenance, and their real weight in calculate_composite_risk() was
+    always zero (they were diagnostic-only, never part of the composite
+    formula). See ml_pipeline/risk_engine.py for what actually is.
 
-    tamper_probability is now just the real composite risk_score (already
-    0-100, already the honest answer). predicted_tamper_type is left as
-    whatever the real stage-2 model actually predicted -- if that
-    disagrees with a HIGH/CRITICAL risk score, that's surfaced as a note
-    naming which real fingerprint checks are driving the risk, instead of
-    silently overwriting the model's answer with a guess.
+    tamper_probability is the real composite risk_score (already 0-100,
+    already the honest answer). note explains which real fingerprint
+    checks are driving a HIGH/CRITICAL score, so the number isn't
+    presented with no explanation.
     """
     tamper_probability = round(float(risk_score), 1)
     note = None
-    if pred_cls.upper() in ['NONE', 'COMPLIANT', 'NORMAL'] and risk_category in ['HIGH', 'CRITICAL']:
+    if risk_category in ['HIGH', 'CRITICAL']:
         drivers = []
         if raw_signals.get('flatline_rate', 0) and raw_signals.get('flatline_rate', 0) > 0.05:
             drivers.append('flatline')
@@ -133,13 +134,10 @@ def _classify_tamper(risk_category: str, risk_score: float, pred_cls: str, pred_
         if raw_signals.get('impossible_val_rate', 0):
             drivers.append('impossible values')
         note = (
-            "Stage-2 classifier did not identify a specific tamper pattern for this "
-            "factory, but the risk score above is being driven by fingerprint checks: "
+            "Risk score is being driven by fingerprint checks: "
             + (', '.join(drivers) if drivers else "see raw_fingerprint_signals for detail") + "."
         )
     return {
-        "predicted_tamper_type": pred_cls,
-        "confidence_percentage": round(float(pred_conf), 1),
         "tamper_probability": tamper_probability,
         "note": note
     }
@@ -235,26 +233,6 @@ def get_data_cache():
                 _data_cache["iso_summary"] = json.load(f)
         else:
             _data_cache["iso_summary"] = {"per_factory_seed_stability": {}}
-
-    if "models" not in _data_cache:
-        models_dir = os.path.join(os.path.dirname(__file__), "..", "ml_pipeline", "models")
-        xgb2 = joblib.load(os.path.join(models_dir, "xgboost_stage2_tamper.joblib"))
-        le = joblib.load(os.path.join(models_dir, "stage2_label_encoder.joblib"))
-        scaler = joblib.load(os.path.join(models_dir, "stage2_scaler.joblib"))
-        feature_cols = joblib.load(os.path.join(models_dir, "stage2_feature_cols.joblib"))
-        s1_cols = joblib.load(os.path.join(models_dir, "feature_cols.joblib"))
-        iso = joblib.load(os.path.join(models_dir, "iso_forest.joblib")) if os.path.exists(os.path.join(models_dir, "iso_forest.joblib")) else None
-        
-        stage1_models = {}
-        for fid in _data_cache["stage1_matched_sites"]:
-            s1_joblib_path = os.path.join(models_dir, f"stage1_{fid}.joblib")
-            if os.path.exists(s1_joblib_path):
-                stage1_models[fid] = joblib.load(s1_joblib_path)
-                
-        _data_cache["models"] = {
-            "xgb2": xgb2, "le": le, "scaler": scaler, "cols": feature_cols,
-            "s1_cols": s1_cols, "iso": iso, "stage1": stage1_models
-        }
 
     return _data_cache
 
@@ -473,27 +451,18 @@ def get_factory_detail(factory_id: str):
         "coordinated_missing_flag": float(row.get('coordinated_missing_flag', 0.0))
     }
     
-    xgb2 = cache["models"]["xgb2"]
-    le = cache["models"]["le"]
-    scaler = cache["models"]["scaler"]
-    feature_cols = cache["models"]["cols"]
-    
-    row_feat_dict = get_factory_row_features(factory_id, feature_cols)
-    f_df = pd.DataFrame([row_feat_dict], columns=feature_cols)
-    f_scaled = scaler.transform(f_df)
-    probs = xgb2.predict_proba(f_scaled)[0]
-    top_idx = int(np.argmax(probs))
-    pred_cls = str(le.classes_[top_idx])
-    pred_conf = round(float(probs[top_idx]) * 100, 1)
-    
+    # value/rolling_mean/rolling_std are the only real-feature columns this
+    # endpoint actually needs (for the BOD/COD/Flow estimates below) --
+    # previously fetched the full Stage 2 feature vector just to get these
+    # three, as a side effect of running Stage 2 inference here.
+    row_feat_dict = get_factory_row_features(factory_id, ['value', 'rolling_mean', 'rolling_std'])
+
     risk_tier = str(row.get('risk_tier', 'Low'))
     risk_category = str(row.get('true_risk_category', 'LOW'))
     tsi_score = float(row.get('tsi_score', 0.0))
 
-    classification = _classify_tamper(risk_category, tsi_score, pred_cls, pred_conf, raw_signals)
-    tamper_prob = classification['tamper_probability']
-    pred_cls = classification['predicted_tamper_type']
-    pred_conf = classification['confidence_percentage']
+    explanation = _explain_risk_drivers(risk_category, tsi_score, raw_signals)
+    tamper_prob = explanation['tamper_probability']
 
     # Calculate effluent averages from row features
     val = row_feat_dict.get('value', 20.0)
@@ -612,28 +581,16 @@ def get_factory_predictions(factory_id: str):
         'coordinated_missing_flag': float(r_row.get('coordinated_missing_flag', 0) or 0),
         'impossible_val_rate': float(r_row.get('impossible_val_rate', 0) or 0),
     }
-    classification = _classify_tamper(risk_category, tsi_score, pred_cls, pred_conf, raw_signals_for_note)
-    tamper_prob = classification['tamper_probability']
-    pred_cls = classification['predicted_tamper_type']
-    pred_conf = classification['confidence_percentage']
+    explanation = _explain_risk_drivers(risk_category, tsi_score, raw_signals_for_note)
 
     iso_summary = cache["iso_summary"]
     stabs_dict = iso_summary.get("per_factory_seed_stability", {})
     seed_stability = float(stabs_dict.get(factory_id, 0.942))
-    
+
     return {
         "factory_id": factory_id,
-        "stage1_model": {
-            "status": stage1_status,
-            "tampered_probability": stage1_prob,
-            "reason": stage1_reason
-        },
-        "stage2_model": {
-            "predicted_tamper_type": pred_cls,
-            "confidence_percentage": pred_conf,
-            "tamper_probability": tamper_prob,
-            "note": classification['note']
-        },
+        "tamper_probability": explanation['tamper_probability'],
+        "note": explanation['note'],
         "isolation_forest": {
             "anomaly_score": round(iso_score, 4),
             "seed_stability_index": seed_stability
@@ -666,6 +623,45 @@ def get_factory_inspections(factory_id: str):
         {"inspection_date": r[0], "inspection_type": r[1], "status": r[2]}
         for r in rows
     ]
+
+@app.post("/api/factories/{factory_id}/audit")
+def initiate_audit(factory_id: str):
+    """
+    Records a real audit request as a new row in inspection_events (status
+    "Requested") so it immediately shows up in this factory's inspection
+    history via get_factory_inspections above -- no separate audit table
+    or workflow exists yet, so this is the honest minimal version rather
+    than a fake confirmation.
+    """
+    import sqlite3
+    db_path = os.path.join(os.path.dirname(__file__), "..", "forensiair.db")
+    if not os.path.exists(db_path):
+        db_path = "forensiair.db"
+    if not os.path.exists(db_path):
+        raise HTTPException(status_code=500, detail="Database not available")
+
+    conn = sqlite3.connect(db_path)
+    try:
+        exists = conn.execute("SELECT 1 FROM factories WHERE factory_id = ?", (factory_id,)).fetchone()
+        if not exists:
+            raise HTTPException(status_code=404, detail=f"Factory {factory_id} not found")
+        inspection_date = datetime.date.today().isoformat()
+        conn.execute(
+            "INSERT INTO inspection_events (factory_id, inspection_date, inspection_type, status) "
+            "VALUES (?, ?, ?, ?)",
+            (factory_id, inspection_date, "Audit Requested", "Requested")
+        )
+        conn.commit()
+    finally:
+        conn.close()
+
+    return {
+        "status": "recorded",
+        "factory_id": factory_id,
+        "inspection_date": inspection_date,
+        "inspection_type": "Audit Requested",
+        "inspection_status": "Requested"
+    }
 
 # -------------------------------------------------------------
 # 6. Data Quality Overview
@@ -728,7 +724,6 @@ def list_admin_factories(district: Optional[str] = Query(None), industry: Option
     cache = get_data_cache()
     df_tsi = cache["tsi"]
     name_map = cache["name_mapping"]
-    stage1_matched = cache["stage1_matched_sites"]
 
     results = []
     for _, r in df_tsi.iterrows():
@@ -751,10 +746,9 @@ def list_admin_factories(district: Optional[str] = Query(None), industry: Option
             "district": reg,
             "industry": ind,
             "risk_tier": str(r.get('risk_tier', 'Low')),
-            "tsi_score": float(r.get('tsi_score', 0.0)),
-            "has_stage1_model": fid in stage1_matched
+            "tsi_score": float(r.get('tsi_score', 0.0))
         })
-        
+
     return results
 
 @app.get("/api/admin/users", dependencies=[Depends(require_role(["admin"]))])
@@ -776,7 +770,7 @@ def get_pipeline_status():
     return {
         "pipeline_state": "ONLINE",
         "last_feature_engineering_run": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        "active_models": ["XGBoost Stage 2 (9-class)", "IsolationForest", "LightGBM SHAP Surrogate"],
+        "active_models": ["Fingerprint Engine", "IsolationForest", "Factory-Level Tamper Model", "LightGBM SHAP Surrogate"],
         "gpu_acceleration": "DISABLED (CPU Multi-threading enabled)",
         "memory_usage_mb": 412.5
     }

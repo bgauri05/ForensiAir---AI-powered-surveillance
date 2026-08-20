@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, Factory, Gauge, Target, Activity, CheckCircle, ClipboardList, Lock } from 'lucide-react';
-import { API_BASE_URL } from '../config';
+import { ArrowLeft, Factory, Gauge, Target, Activity, ClipboardList, Download, ShieldAlert } from 'lucide-react';
+import { apiFetch } from '../config';
 
 export function FactoryDetailDossierPage({ onNavigate, selectedFactoryId }) {
   const [factoriesList, setFactoriesList] = useState([]);
@@ -8,6 +8,7 @@ export function FactoryDetailDossierPage({ onNavigate, selectedFactoryId }) {
   const [factoryData, setFactoryData] = useState(null);
   const [inspections, setInspections] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [auditState, setAuditState] = useState('idle'); // idle | submitting | done | error
 
   useEffect(() => {
     fetchFactories();
@@ -63,7 +64,22 @@ export function FactoryDetailDossierPage({ onNavigate, selectedFactoryId }) {
 
   const handleSelectFactory = (fid) => {
     setSelectedFid(fid);
+    setAuditState('idle');
     fetchFactoryDetail(fid);
+  };
+
+  const handleInitiateAudit = async () => {
+    if (!selectedFid || auditState === 'submitting') return;
+    setAuditState('submitting');
+    try {
+      const res = await apiFetch(`/api/factories/${selectedFid}/audit`, { method: 'POST' });
+      if (!res.ok) throw new Error('Audit request failed');
+      await fetchFactoryDetail(selectedFid);
+      setAuditState('done');
+    } catch (err) {
+      console.error(err);
+      setAuditState('error');
+    }
   };
 
   if (loading) {
@@ -91,8 +107,6 @@ export function FactoryDetailDossierPage({ onNavigate, selectedFactoryId }) {
 
   const tamperProbVal = fObj.tamper_probability !== undefined
     ? `${fObj.tamper_probability.toFixed(1)}%`
-    : fObj.stage2_prediction?.tamper_probability !== undefined
-    ? `${fObj.stage2_prediction.tamper_probability.toFixed(1)}%`
     : 'Not available';
 
   const anomalyScoreVal = fObj.raw_fingerprint_signals?.anomaly_score !== undefined
@@ -101,24 +115,18 @@ export function FactoryDetailDossierPage({ onNavigate, selectedFactoryId }) {
     ? fObj.anomaly_score.toFixed(2)
     : 'Not available';
 
-  const confidenceVal = fObj.stage2_prediction?.confidence_percentage !== undefined
-    ? `${fObj.stage2_prediction.confidence_percentage.toFixed(1)}%`
-    : 'Not available';
-
-  const tamperType = fObj.stage2_prediction?.predicted_tamper_type || 'Not available';
-
   const riskColor = isHighRisk ? 'var(--color-danger)' : isMediumRisk ? 'var(--color-warning)' : 'var(--color-success)';
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 print:space-y-4">
       {/* Top Header Banner */}
-      <div className="bg-[var(--color-surface)] border-b border-[var(--color-border)] px-8 py-6">
+      <div className="bg-[var(--color-surface)] border-b border-[var(--color-border)] px-8 py-6 print:px-0 print:py-0 print:border-none">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
             <div className="flex items-center gap-3 mb-2">
               <button
                 onClick={() => onNavigate('dashboard')}
-                className="p-1.5 hover:bg-[var(--color-bg)] rounded-full transition-colors"
+                className="p-1.5 hover:bg-[var(--color-bg)] rounded-full transition-colors print:hidden"
               >
                 <ArrowLeft size={18} className="text-[var(--color-primary)]" />
               </button>
@@ -140,7 +148,7 @@ export function FactoryDetailDossierPage({ onNavigate, selectedFactoryId }) {
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 print:hidden">
             <select
               value={selectedFid}
               onChange={(e) => handleSelectFactory(e.target.value)}
@@ -153,14 +161,29 @@ export function FactoryDetailDossierPage({ onNavigate, selectedFactoryId }) {
               ))}
             </select>
 
-            <button disabled title="Dossier export isn't implemented yet" className="btn btn-secondary flex items-center gap-2 cursor-not-allowed opacity-60">
-              <Lock size={14} /> Export Dossier
+            <button onClick={() => window.print()} className="btn btn-secondary flex items-center gap-2">
+              <Download size={14} /> Export Dossier
             </button>
-            <button disabled title="Audit dispatch isn't implemented yet" className="btn btn-primary flex items-center gap-2 cursor-not-allowed opacity-60">
-              <Lock size={14} /> Initiate Audit
+            <button
+              onClick={handleInitiateAudit}
+              disabled={auditState === 'submitting'}
+              className={`btn btn-primary flex items-center gap-2 ${auditState === 'submitting' ? 'opacity-60 cursor-wait' : ''}`}
+            >
+              <ShieldAlert size={14} />
+              {auditState === 'submitting' ? 'Submitting...' : auditState === 'done' ? 'Audit Requested' : 'Initiate Audit'}
             </button>
           </div>
         </div>
+        {auditState === 'done' && (
+          <p className="mt-2 text-body-sm text-[var(--color-success)] print:hidden">
+            Audit request recorded for this factory and added to its inspection history below.
+          </p>
+        )}
+        {auditState === 'error' && (
+          <p className="mt-2 text-body-sm text-[var(--color-danger)] print:hidden">
+            Could not record the audit request. Please try again.
+          </p>
+        )}
       </div>
 
       {/* Main Dossier Content */}
@@ -227,7 +250,7 @@ export function FactoryDetailDossierPage({ onNavigate, selectedFactoryId }) {
         <div className="lg:col-span-8 space-y-6">
           <div className="card p-6">
             <h3 className="font-headline-md text-headline-md text-[var(--color-primary)] mb-4">AI Tamper Risk Evaluation</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
               <div className="p-4 bg-[var(--color-bg)] border border-[var(--color-border)] rounded-lg">
                 <span className="text-label-caps text-[var(--color-text-muted)] font-bold flex items-center gap-1.5">
                   <Target size={12} /> TAMPER PROBABILITY
@@ -248,25 +271,15 @@ export function FactoryDetailDossierPage({ onNavigate, selectedFactoryId }) {
                   <div className="font-display-kpi text-display-kpi mt-1" style={{ color: riskColor }}>{anomalyScoreVal}</div>
                 )}
               </div>
-              <div className="p-4 bg-[var(--color-bg)] border border-[var(--color-border)] rounded-lg">
-                <span className="text-label-caps text-[var(--color-text-muted)] font-bold flex items-center gap-1.5">
-                  <CheckCircle size={12} /> CONFIDENCE
-                </span>
-                {confidenceVal === 'Not available' ? (
-                  <div className="value-unavailable text-body-sm mt-2">{confidenceVal}</div>
-                ) : (
-                  <div className="font-display-kpi text-display-kpi text-[var(--color-success)] mt-1">{confidenceVal}</div>
-                )}
-              </div>
             </div>
 
             <div className="p-4 bg-[var(--color-bg)] rounded-lg border border-[var(--color-border)]">
               <div className="font-body-sm font-bold text-[var(--color-text)] mb-1">Inspector Recommendation</div>
               <p className="text-xs text-[var(--color-text-secondary)] leading-relaxed">
-                {fObj.stage2_prediction?.note
-                  ? fObj.stage2_prediction.note
+                {fObj.note
+                  ? fObj.note
                   : isHighRisk
-                  ? `Stage 2 XGBoost classification detected active "${tamperType}" for ${fObj.factory_name || fObj.name}. Priority physical audit recommended for sensor calibration verification.`
+                  ? `Elevated tamper risk detected for ${fObj.factory_name || fObj.name}. Priority physical audit recommended for sensor calibration verification.`
                   : isMediumRisk
                   ? `Moderate telemetry variance detected for ${fObj.factory_name || fObj.name}. Scheduled calibration check recommended within 48 hours.`
                   : `Telemetry for ${fObj.factory_name || fObj.name} is operating within nominal environmental compliance thresholds. Continue routine automated monitoring.`

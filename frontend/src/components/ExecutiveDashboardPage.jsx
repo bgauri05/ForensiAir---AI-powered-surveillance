@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronRight, Filter, Calendar, Lock } from 'lucide-react';
-import { API_BASE_URL } from '../config';
+import { ChevronRight, Filter, Calendar } from 'lucide-react';
+import { apiFetch, API_BASE_URL } from '../config';
 
 const REGIONS = ['Taloja', 'Mahad'];
 const INDUSTRIES = [
@@ -135,10 +135,6 @@ export function ExecutiveDashboardPage({ onNavigate }) {
           <h2 className="font-headline-lg text-headline-lg text-[var(--color-primary)]">Executive Dashboard</h2>
           <p className="font-body-md text-body-md text-[var(--color-text-secondary)]">Central monitoring of national environmental compliance and risk metrics.</p>
         </div>
-        <button disabled title="Report export isn't implemented yet" className="btn btn-primary btn-lg flex items-center gap-2 cursor-not-allowed opacity-60">
-          <Lock size={14} />
-          Export Report
-        </button>
       </div>
 
       {/* KPI Section Grid */}

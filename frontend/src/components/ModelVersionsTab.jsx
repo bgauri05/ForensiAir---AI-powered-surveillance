@@ -1,50 +1,55 @@
 import React, { useState } from 'react';
-import { Layers, GitBranch, ChevronDown, ChevronUp, CheckCircle, Lock, Clock, Info, ShieldCheck, Database } from 'lucide-react';
+import { GitBranch, ChevronDown, ChevronUp, CheckCircle, Lock, Database } from 'lucide-react';
 
-export function ModelVersionsTab({ factories = [] }) {
-  const [showFactoryModal, setShowFactoryModal] = useState(false);
+export function ModelVersionsTab() {
   const [showMetadataPanel, setShowMetadataPanel] = useState(true);
-  const [searchFactoryText, setSearchFactoryText] = useState('');
 
-  const stage1Count = factories.filter(f => f.has_stage1_model).length;
+  // The three literal inputs to ml_pipeline/risk_engine.py's
+  // calculate_composite_risk() -- these, weighted 67.5% / 22.5% / 10%,
+  // are what actually produce every tamper_probability/risk_score shown
+  // anywhere in this app. Confirmed against risk_engine.py, train_models.py,
+  // and train_xgboost_weak_supervision.py before writing this copy.
+  const pipelineModels = [
+    {
+      id: 'fingerprints',
+      name: 'Fingerprint Engine — Rule-Based Detection',
+      weight: '67.5%',
+      category: 'Domain logic, not a trained model',
+      details: '8 rule-based checks: flatline, limit hugging, correlation break, copy-paste/autocorrelation, impossible pH range, inspection dip, coordinated missing data, data integrity. The single largest component of the composite risk score.'
+    },
+    {
+      id: 'isolation-forest',
+      name: 'Isolation Forest — Unsupervised Anomaly Detector',
+      weight: '22.5%',
+      category: 'Unsupervised · single global model',
+      source: 'Real OCEMS telemetry (Data/RawData/real_features.parquet)',
+      details: 'scikit-learn IsolationForest (100 estimators, contamination=0.05), fit on real telemetry with its own StandardScaler. One global model shared across all 33 factories -- not per-factory.'
+    },
+    {
+      id: 'tamper-model',
+      name: 'Tamper Model — Factory-Level Logistic Regression',
+      weight: '10%',
+      category: 'Supervised · proxy-labeled · smallest, least-trusted component',
+      source: 'Real telemetry aggregated per factory',
+      details: 'Replaced the old per-reading XGBoost model (retired after over-flagging 45.7% of real readings on a synthetic/real distribution mismatch). Trained on proxy labels only -- 3+ of 8 fingerprints triggered = proxy-tampered -- not real confirmed tampering cases. Validated via leave-one-out CV: AUC 0.854, Spearman 0.677. Deployment weight kept deliberately low until real confirmed cases exist to validate further against.'
+    }
+  ];
 
-  // 3 Pipeline Stages
+  // Diagnostic / supporting models -- Stage 1 and Stage 2 (previously here)
+  // have been removed from the app entirely; see backend/main.py and the
+  // rest of this component's removal for the full change. Explainability
+  // is the only entry left in this group.
   const activeModels = [
-    {
-      id: 'stage1',
-      name: 'Stage 1 — XGBoost (Per-Factory)',
-      tag: 'v1.2',
-      category: 'Supervised Tamper Classifier',
-      source: 'Real OCEMS Telemetry (2024)',
-      trainedDate: 'Oct 10, 2024',
-      status: 'Active',
-      lastRetrained: '2 days ago',
-      details: `${stage1Count} of ${factories.length} factories have a dedicated per-factory model; the rest use the global Stage 2 classifier only`,
-      hasPerFactoryList: true
-    },
-    {
-      id: 'stage2',
-      name: 'Stage 2 — XGBoost (Multiclass Classifier)',
-      tag: 'v1.2',
-      category: 'Supervised Tamper Classifier',
-      source: 'Synthetic Labeled Data (CTO Limits + Injections)',
-      trainedDate: 'Oct 12, 2024',
-      status: 'Active',
-      lastRetrained: '1 day ago',
-      details: '9-Class Tamper Classifier (NONE, BOD Flatline, Limit Hugging, Dip...)',
-      hasPerFactoryList: false
-    },
     {
       id: 'shap',
       name: 'Explainability — LightGBM Surrogate + SHAP',
       tag: 'v1.1',
       category: 'TreeExplainer Feature Attribution',
-      source: 'Stage 2 XGBoost Predictions & Telemetry',
+      source: 'Data/RawData/factory_shap_attributions.csv (no generator script found in repo)',
       trainedDate: 'Oct 12, 2024',
       status: 'Active',
       lastRetrained: '1 day ago',
-      details: 'Global & Local SHAP Feature Importance Attribution Engine',
-      hasPerFactoryList: false
+      details: 'Global & Local SHAP Feature Importance Attribution Engine'
     }
   ];
 
@@ -70,19 +75,54 @@ export function ModelVersionsTab({ factories = [] }) {
     }
   ];
 
-  const filteredFactories = factories.filter(f => 
-    (f.factory_name || f.name || '').toLowerCase().includes(searchFactoryText.toLowerCase()) ||
-    (f.factory_id || '').toLowerCase().includes(searchFactoryText.toLowerCase())
-  );
-
   return (
     <div className="p-6 space-y-8">
-      {/* 2. Active Pipeline Models Section */}
+      {/* Live Composite Scoring Pipeline -- the actual inputs to
+          calculate_composite_risk(), weighted 67.5% / 22.5% / 10% */}
       <div className="space-y-4">
         <div className="flex justify-between items-center">
-          <h3 className="font-headline-md text-headline-md text-[#00355f]">Active Pipeline Models</h3>
+          <h3 className="font-headline-md text-headline-md text-[#00355f]">Live Composite Scoring Pipeline</h3>
           <span className="bg-[#1b6d24]/10 text-[#1b6d24] border border-[#1b6d24]/20 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1.5">
-            <CheckCircle size={14} /> 3 Active Production Pipelines
+            <CheckCircle size={14} /> Drives every Tamper Probability shown in this app
+          </span>
+        </div>
+        <p className="text-xs text-[#42474f] leading-relaxed">
+          These three components are the literal, weighted inputs to <code className="font-mono bg-[#f8f9fb] px-1.5 py-0.5 rounded border border-[#E5E7EB]">calculate_composite_risk()</code> -- every tamper_probability / risk_score number in this app comes from this formula.
+        </p>
+
+        <div className="space-y-4">
+          {pipelineModels.map((model) => (
+            <div key={model.id} className="p-5 bg-white border border-[#E5E7EB] rounded-xl shadow-xs flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+              <div className="space-y-2 max-w-2xl">
+                <div className="flex items-center gap-3">
+                  <h4 className="font-body-md font-bold text-[#00355f] text-base">{model.name}</h4>
+                  <span className="bg-[#00355f]/10 text-[#00355f] border border-[#00355f]/20 text-[11px] font-bold px-2.5 py-0.5 rounded">
+                    {model.weight} weight
+                  </span>
+                </div>
+
+                <p className="text-xs text-[#727780] font-semibold uppercase tracking-wide">{model.category}</p>
+                <p className="text-xs text-[#42474f] leading-relaxed">{model.details}</p>
+
+                {model.source && (
+                  <div className="text-xs text-[#727780]">
+                    Source: <strong className="text-[#191c1e]">{model.source}</strong>
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Diagnostic / Supporting Models -- classification labels and
+          per-factory probabilities shown elsewhere in the app, but none
+          of these feed the composite score above directly. */}
+      <div className="space-y-4">
+        <div className="flex justify-between items-center">
+          <h3 className="font-headline-md text-headline-md text-[#00355f]">Diagnostic / Supporting Models</h3>
+          <span className="bg-[#f8f9fb] text-[#727780] border border-[#E5E7EB] text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1.5">
+            Not part of the composite score
           </span>
         </div>
 
@@ -99,36 +139,27 @@ export function ModelVersionsTab({ factories = [] }) {
                     {model.status}
                   </span>
                 </div>
-                
+
                 <p className="text-xs text-[#42474f] leading-relaxed">{model.details}</p>
-                
+
                 <div className="flex flex-wrap gap-4 text-xs text-[#727780]">
                   <div>Source: <strong className="text-[#191c1e]">{model.source}</strong></div>
                   <div>Trained Date: <strong className="text-[#191c1e]">{model.trainedDate}</strong></div>
                   <div>Last Retrained: <strong className="text-[#191c1e]">{model.lastRetrained}</strong></div>
                 </div>
-
-                {model.hasPerFactoryList && (
-                  <button 
-                    onClick={() => setShowFactoryModal(true)}
-                    className="text-xs font-bold text-[#0f4c81] hover:underline flex items-center gap-1 pt-1 cursor-pointer"
-                  >
-                    View Stage 1 model coverage ({stage1Count} of {factories.length} factories) →
-                  </button>
-                )}
               </div>
 
               {/* Action UI Stubs (Read-Only) */}
               <div className="flex items-center gap-2 self-end md:self-center">
-                <button 
-                  disabled 
+                <button
+                  disabled
                   title="Model deployment logic is read-only in this version"
                   className="px-3 py-1.5 bg-[#f8f9fb] border border-[#E5E7EB] text-[#727780] rounded text-xs font-bold cursor-not-allowed opacity-60 flex items-center gap-1"
                 >
                   <Lock size={12} /> Promote to Active
                 </button>
-                <button 
-                  disabled 
+                <button
+                  disabled
                   title="Rollback is disabled"
                   className="px-3 py-1.5 bg-[#f8f9fb] border border-[#E5E7EB] text-[#727780] rounded text-xs font-bold cursor-not-allowed opacity-60 flex items-center gap-1"
                 >
@@ -164,7 +195,7 @@ export function ModelVersionsTab({ factories = [] }) {
 
       {/* 4. Training Metadata Panel (Collapsible) */}
       <div className="bg-white border border-[#E5E7EB] rounded-xl shadow-xs overflow-hidden">
-        <button 
+        <button
           onClick={() => setShowMetadataPanel(!showMetadataPanel)}
           className="w-full p-6 flex justify-between items-center bg-[#f8f9fb] hover:bg-[#edeef0] transition-colors border-b border-[#E5E7EB] text-left"
         >
@@ -205,76 +236,6 @@ export function ModelVersionsTab({ factories = [] }) {
           </div>
         )}
       </div>
-
-      {/* Modal: Stage 1 Per-Factory Model Coverage */}
-      {showFactoryModal && (
-        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl max-w-4xl w-full max-h-[85vh] flex flex-col overflow-hidden shadow-2xl">
-            <div className="p-6 border-b border-[#E5E7EB] flex justify-between items-center bg-[#f8f9fb]">
-              <div>
-                <h3 className="font-headline-md text-headline-md text-[#00355f]">Stage 1 — Per-Factory Model Coverage</h3>
-                <p className="text-xs text-[#42474f] mt-1">{stage1Count} of {factories.length} factories have a dedicated Stage 1 model; the rest fall back to the global Stage 2 classifier only</p>
-              </div>
-              <button 
-                onClick={() => setShowFactoryModal(false)}
-                className="text-[#727780] hover:text-[#191c1e] font-bold text-xl px-2"
-              >
-                ✕
-              </button>
-            </div>
-
-            <div className="p-4 border-b border-[#E5E7EB] bg-white">
-              <input 
-                type="text"
-                placeholder="Search factory ID or name..."
-                value={searchFactoryText}
-                onChange={(e) => setSearchFactoryText(e.target.value)}
-                className="w-full border border-[#E5E7EB] bg-[#f8f9fb] rounded-lg px-4 py-2 text-body-sm focus:outline-none focus:border-[#00355f]"
-              />
-            </div>
-
-            <div className="flex-1 overflow-y-auto divide-y divide-[#E5E7EB]">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="bg-[#f8f9fb]">
-                    <th className="px-6 py-3 font-label-caps text-[11px] text-[#42474f] uppercase">Factory ID</th>
-                    <th className="px-6 py-3 font-label-caps text-[11px] text-[#42474f] uppercase">Factory Name</th>
-                    <th className="px-6 py-3 font-label-caps text-[11px] text-[#42474f] uppercase">Stage 1 Status</th>
-                    <th className="px-6 py-3 font-label-caps text-[11px] text-[#42474f] uppercase">Model File</th>
-                  </tr>
-                </thead>
-                <tbody className="text-table-data">
-                  {filteredFactories.map((f, idx) => (
-                    <tr key={f.factory_id || idx} className="hover:bg-[#f8f9fb]">
-                      <td className="px-6 py-3 font-bold text-[#00355f]">{f.factory_id}</td>
-                      <td className="px-6 py-3 font-bold text-[#191c1e]">{f.factory_name || f.name}</td>
-                      <td className="px-6 py-3 text-xs font-bold">
-                        {f.has_stage1_model ? (
-                          <span className="text-[#1b6d24]">AVAILABLE</span>
-                        ) : (
-                          <span className="text-[#727780]">NOT AVAILABLE</span>
-                        )}
-                      </td>
-                      <td className="px-6 py-3 text-xs font-mono text-[#42474f]">
-                        {f.has_stage1_model ? `stage1_${f.factory_id}.joblib` : '—'}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            <div className="p-4 border-t border-[#E5E7EB] bg-[#f8f9fb] text-right">
-              <button 
-                onClick={() => setShowFactoryModal(false)}
-                className="px-5 py-2 bg-[#00355f] text-white rounded-lg text-body-sm font-bold hover:opacity-90"
-              >
-                Close Modal
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

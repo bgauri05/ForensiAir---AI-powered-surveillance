@@ -270,7 +270,7 @@ export function AdminPortalPage({ onNavigate }) {
 
         {/* Tab 4: Model Versions */}
         {activeTab === 'models' && (
-          <ModelVersionsTab factories={factories} />
+          <ModelVersionsTab />
         )}
 
         {/* Tab 5: Threshold Settings */}
