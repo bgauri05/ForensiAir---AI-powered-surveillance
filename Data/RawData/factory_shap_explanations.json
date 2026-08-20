@@ -1,0 +1,5685 @@
+{
+  "generated_at": "2026-08-20T12:01:46.121717",
+  "method": {
+    "tamper_model": "shap.LinearExplainer, exact (logit space)",
+    "isolation_forest": "shap.KernelExplainer against iso.score_samples, seeded sample of up to 150 readings/factory averaged (TreeExplainer verified non-additive for IsolationForest, not used)"
+  },
+  "factories": {
+    "site_1131": {
+      "tamper_model_shap": {
+        "base_value_logit": -0.4787,
+        "predicted_probability": 0.0661,
+        "features": [
+          {
+            "feature": "flatline_flag_std",
+            "label": "Flatline flag rate (std dev)",
+            "raw_value": 0.1476,
+            "shap_value_logit": -1.7909
+          },
+          {
+            "feature": "rolling_mean_std",
+            "label": "Rolling mean (std dev)",
+            "raw_value": 0.0243,
+            "shap_value_logit": -0.3782
+          },
+          {
+            "feature": "value_std",
+            "label": "Reading value (std dev)",
+            "raw_value": 0.0497,
+            "shap_value_logit": -0.2415
+          },
+          {
+            "feature": "flatline_flag_mean",
+            "label": "Flatline flag rate",
+            "raw_value": 0.9777,
+            "shap_value_logit": -0.2191
+          },
+          {
+            "feature": "rolling_mean_mean",
+            "label": "Rolling mean (mean)",
+            "raw_value": 0.0011,
+            "shap_value_logit": 0.2068
+          },
+          {
+            "feature": "value_mean",
+            "label": "Reading value (mean)",
+            "raw_value": 0.0011,
+            "shap_value_logit": 0.2039
+          },
+          {
+            "feature": "rolling_std_mean",
+            "label": "Rolling std dev (mean)",
+            "raw_value": 0.0023,
+            "shap_value_logit": 0.0928
+          },
+          {
+            "feature": "rolling_std_std",
+            "label": "Rolling std dev (std dev)",
+            "raw_value": 0.0463,
+            "shap_value_logit": -0.0429
+          }
+        ]
+      },
+      "isolation_forest_shap": {
+        "base_value": -0.41148,
+        "mean_anomaly_score": -0.37254,
+        "n_readings_total": 31048,
+        "n_readings_sampled": 150,
+        "features": [
+          {
+            "feature": "rolling_std",
+            "label": "Rolling std dev",
+            "raw_value": 0.0023,
+            "shap_value": 0.01406
+          },
+          {
+            "feature": "autocorrelation",
+            "label": "Autocorrelation",
+            "raw_value": 0.0026,
+            "shap_value": 0.0049
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-pH",
+            "label": "Correlation: BOD vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00315
+          },
+          {
+            "feature": "rolling_cov",
+            "label": "Rolling coefficient of variation",
+            "raw_value": 0.0537,
+            "shap_value": 0.00313
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-TSS",
+            "label": "Correlation: Flow vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 0.00275
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-Flow",
+            "label": "Correlation: COD vs Flow",
+            "raw_value": 0.0,
+            "shap_value": 0.00197
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-pH",
+            "label": "Correlation: Flow vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00169
+          },
+          {
+            "feature": "rolling_mean",
+            "label": "Rolling mean",
+            "raw_value": 0.0011,
+            "shap_value": 0.00142
+          },
+          {
+            "feature": "corr_ETP-TSS_ETP-pH",
+            "label": "Correlation: TSS vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00137
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-Flow",
+            "label": "Correlation: BOD vs Flow",
+            "raw_value": 0.0,
+            "shap_value": 0.00114
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-pH",
+            "label": "Correlation: COD vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.0009
+          },
+          {
+            "feature": "value",
+            "label": "Reading value",
+            "raw_value": 0.0011,
+            "shap_value": 0.00084
+          },
+          {
+            "feature": "limit_hugging",
+            "label": "Limit-hugging flag",
+            "raw_value": 0.0,
+            "shap_value": 0.00077
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-TSS",
+            "label": "Correlation: BOD vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 0.00063
+          },
+          {
+            "feature": "flatline_flag",
+            "label": "Flatline flag",
+            "raw_value": 0.9775,
+            "shap_value": -0.00029
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-COD",
+            "label": "Correlation: BOD vs COD",
+            "raw_value": 0.0,
+            "shap_value": 0.00014
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-TSS",
+            "label": "Correlation: COD vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 1e-05
+          },
+          {
+            "feature": "missing_rate",
+            "label": "Missing-data rate",
+            "raw_value": 0.0,
+            "shap_value": 0.0
+          }
+        ]
+      }
+    },
+    "site_1138": {
+      "tamper_model_shap": {
+        "base_value_logit": -0.4787,
+        "predicted_probability": 0.025,
+        "features": [
+          {
+            "feature": "flatline_flag_std",
+            "label": "Flatline flag rate (std dev)",
+            "raw_value": 0.0,
+            "shap_value_logit": -3.1754
+          },
+          {
+            "feature": "rolling_mean_std",
+            "label": "Rolling mean (std dev)",
+            "raw_value": 0.0375,
+            "shap_value_logit": -0.3778
+          },
+          {
+            "feature": "flatline_flag_mean",
+            "label": "Flatline flag rate",
+            "raw_value": 0.0,
+            "shap_value_logit": 0.2654
+          },
+          {
+            "feature": "value_std",
+            "label": "Reading value (std dev)",
+            "raw_value": 0.0595,
+            "shap_value_logit": -0.2414
+          },
+          {
+            "feature": "rolling_mean_mean",
+            "label": "Rolling mean (mean)",
+            "raw_value": 2.1926,
+            "shap_value_logit": 0.151
+          },
+          {
+            "feature": "value_mean",
+            "label": "Reading value (mean)",
+            "raw_value": 2.1817,
+            "shap_value_logit": 0.1493
+          },
+          {
+            "feature": "rolling_std_mean",
+            "label": "Rolling std dev (mean)",
+            "raw_value": 0.0204,
+            "shap_value_logit": 0.0889
+          },
+          {
+            "feature": "rolling_std_std",
+            "label": "Rolling std dev (std dev)",
+            "raw_value": 0.019,
+            "shap_value_logit": -0.0432
+          }
+        ]
+      },
+      "isolation_forest_shap": {
+        "base_value": -0.41148,
+        "mean_anomaly_score": -0.36995,
+        "n_readings_total": 24,
+        "n_readings_sampled": 24,
+        "features": [
+          {
+            "feature": "rolling_std",
+            "label": "Rolling std dev",
+            "raw_value": 0.0144,
+            "shap_value": 0.00666
+          },
+          {
+            "feature": "autocorrelation",
+            "label": "Autocorrelation",
+            "raw_value": 0.0,
+            "shap_value": 0.00613
+          },
+          {
+            "feature": "flatline_flag",
+            "label": "Flatline flag",
+            "raw_value": 0.0,
+            "shap_value": 0.00532
+          },
+          {
+            "feature": "rolling_cov",
+            "label": "Rolling coefficient of variation",
+            "raw_value": 0.0067,
+            "shap_value": 0.00477
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-TSS",
+            "label": "Correlation: Flow vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 0.00428
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-pH",
+            "label": "Correlation: BOD vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00424
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-Flow",
+            "label": "Correlation: COD vs Flow",
+            "raw_value": 0.0,
+            "shap_value": 0.00247
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-Flow",
+            "label": "Correlation: BOD vs Flow",
+            "raw_value": 0.0,
+            "shap_value": 0.00191
+          },
+          {
+            "feature": "value",
+            "label": "Reading value",
+            "raw_value": 2.1817,
+            "shap_value": 0.00151
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-pH",
+            "label": "Correlation: Flow vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00151
+          },
+          {
+            "feature": "corr_ETP-TSS_ETP-pH",
+            "label": "Correlation: TSS vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.0014
+          },
+          {
+            "feature": "limit_hugging",
+            "label": "Limit-hugging flag",
+            "raw_value": 0.0,
+            "shap_value": 0.00067
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-TSS",
+            "label": "Correlation: BOD vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 0.0003
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-pH",
+            "label": "Correlation: COD vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00026
+          },
+          {
+            "feature": "rolling_mean",
+            "label": "Rolling mean",
+            "raw_value": 1.5531,
+            "shap_value": 0.0001
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-COD",
+            "label": "Correlation: BOD vs COD",
+            "raw_value": 0.0,
+            "shap_value": 0.0
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-TSS",
+            "label": "Correlation: COD vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 0.0
+          },
+          {
+            "feature": "missing_rate",
+            "label": "Missing-data rate",
+            "raw_value": 0.0,
+            "shap_value": 0.0
+          }
+        ]
+      }
+    },
+    "site_1167": {
+      "tamper_model_shap": {
+        "base_value_logit": -0.4787,
+        "predicted_probability": 0.0172,
+        "features": [
+          {
+            "feature": "flatline_flag_std",
+            "label": "Flatline flag rate (std dev)",
+            "raw_value": 0.0,
+            "shap_value_logit": -3.1754
+          },
+          {
+            "feature": "rolling_mean_std",
+            "label": "Rolling mean (std dev)",
+            "raw_value": 0.0,
+            "shap_value_logit": -0.379
+          },
+          {
+            "feature": "value_std",
+            "label": "Reading value (std dev)",
+            "raw_value": 0.0,
+            "shap_value_logit": -0.2424
+          },
+          {
+            "feature": "flatline_flag_mean",
+            "label": "Flatline flag rate",
+            "raw_value": 1.0,
+            "shap_value_logit": -0.2302
+          },
+          {
+            "feature": "rolling_mean_mean",
+            "label": "Rolling mean (mean)",
+            "raw_value": 0.0,
+            "shap_value_logit": 0.2068
+          },
+          {
+            "feature": "value_mean",
+            "label": "Reading value (mean)",
+            "raw_value": 0.0,
+            "shap_value_logit": 0.2039
+          },
+          {
+            "feature": "rolling_std_mean",
+            "label": "Rolling std dev (mean)",
+            "raw_value": 0.0,
+            "shap_value_logit": 0.0933
+          },
+          {
+            "feature": "rolling_std_std",
+            "label": "Rolling std dev (std dev)",
+            "raw_value": 0.0,
+            "shap_value_logit": -0.0434
+          }
+        ]
+      },
+      "isolation_forest_shap": {
+        "base_value": -0.41148,
+        "mean_anomaly_score": -0.3704,
+        "n_readings_total": 7650,
+        "n_readings_sampled": 150,
+        "features": [
+          {
+            "feature": "rolling_std",
+            "label": "Rolling std dev",
+            "raw_value": 0.0,
+            "shap_value": 0.01415
+          },
+          {
+            "feature": "rolling_cov",
+            "label": "Rolling coefficient of variation",
+            "raw_value": 0.0,
+            "shap_value": 0.00564
+          },
+          {
+            "feature": "autocorrelation",
+            "label": "Autocorrelation",
+            "raw_value": 0.0,
+            "shap_value": 0.00474
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-pH",
+            "label": "Correlation: BOD vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00331
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-TSS",
+            "label": "Correlation: Flow vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 0.00294
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-pH",
+            "label": "Correlation: Flow vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00168
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-Flow",
+            "label": "Correlation: COD vs Flow",
+            "raw_value": 0.0,
+            "shap_value": 0.00161
+          },
+          {
+            "feature": "rolling_mean",
+            "label": "Rolling mean",
+            "raw_value": 0.0,
+            "shap_value": 0.0014
+          },
+          {
+            "feature": "corr_ETP-TSS_ETP-pH",
+            "label": "Correlation: TSS vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00121
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-Flow",
+            "label": "Correlation: BOD vs Flow",
+            "raw_value": 0.0,
+            "shap_value": 0.0011
+          },
+          {
+            "feature": "value",
+            "label": "Reading value",
+            "raw_value": 0.0,
+            "shap_value": 0.00089
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-pH",
+            "label": "Correlation: COD vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00088
+          },
+          {
+            "feature": "limit_hugging",
+            "label": "Limit-hugging flag",
+            "raw_value": 0.0,
+            "shap_value": 0.00082
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-TSS",
+            "label": "Correlation: BOD vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 0.00058
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-COD",
+            "label": "Correlation: BOD vs COD",
+            "raw_value": 0.0,
+            "shap_value": 0.00015
+          },
+          {
+            "feature": "flatline_flag",
+            "label": "Flatline flag",
+            "raw_value": 0.9991,
+            "shap_value": -1e-05
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-TSS",
+            "label": "Correlation: COD vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 0.0
+          },
+          {
+            "feature": "missing_rate",
+            "label": "Missing-data rate",
+            "raw_value": 0.0,
+            "shap_value": 0.0
+          }
+        ]
+      }
+    },
+    "site_1200": {
+      "tamper_model_shap": {
+        "base_value_logit": -0.4787,
+        "predicted_probability": 0.3185,
+        "features": [
+          {
+            "feature": "rolling_mean_std",
+            "label": "Rolling mean (std dev)",
+            "raw_value": 1.1469,
+            "shap_value_logit": -0.342
+          },
+          {
+            "feature": "value_std",
+            "label": "Reading value (std dev)",
+            "raw_value": 1.492,
+            "shap_value_logit": -0.217
+          },
+          {
+            "feature": "rolling_mean_mean",
+            "label": "Rolling mean (mean)",
+            "raw_value": 0.3337,
+            "shap_value_logit": 0.1983
+          },
+          {
+            "feature": "value_mean",
+            "label": "Reading value (mean)",
+            "raw_value": 0.3337,
+            "shap_value_logit": 0.1956
+          },
+          {
+            "feature": "flatline_flag_mean",
+            "label": "Flatline flag rate",
+            "raw_value": 0.8628,
+            "shap_value_logit": -0.1622
+          },
+          {
+            "feature": "flatline_flag_std",
+            "label": "Flatline flag rate (std dev)",
+            "raw_value": 0.344,
+            "shap_value_logit": 0.0507
+          },
+          {
+            "feature": "rolling_std_std",
+            "label": "Rolling std dev (std dev)",
+            "raw_value": 0.9753,
+            "shap_value_logit": -0.0344
+          },
+          {
+            "feature": "rolling_std_mean",
+            "label": "Rolling std dev (mean)",
+            "raw_value": 0.3004,
+            "shap_value_logit": 0.029
+          }
+        ]
+      },
+      "isolation_forest_shap": {
+        "base_value": -0.41148,
+        "mean_anomaly_score": -0.39668,
+        "n_readings_total": 33303,
+        "n_readings_sampled": 150,
+        "features": [
+          {
+            "feature": "rolling_std",
+            "label": "Rolling std dev",
+            "raw_value": 0.3003,
+            "shap_value": 0.01082
+          },
+          {
+            "feature": "autocorrelation",
+            "label": "Autocorrelation",
+            "raw_value": 0.3938,
+            "shap_value": -0.00804
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-pH",
+            "label": "Correlation: BOD vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00349
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-TSS",
+            "label": "Correlation: Flow vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 0.00289
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-Flow",
+            "label": "Correlation: COD vs Flow",
+            "raw_value": 0.0,
+            "shap_value": 0.00185
+          },
+          {
+            "feature": "flatline_flag",
+            "label": "Flatline flag",
+            "raw_value": 0.8627,
+            "shap_value": -0.00173
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-pH",
+            "label": "Correlation: Flow vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00154
+          },
+          {
+            "feature": "corr_ETP-TSS_ETP-pH",
+            "label": "Correlation: TSS vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00128
+          },
+          {
+            "feature": "rolling_mean",
+            "label": "Rolling mean",
+            "raw_value": 0.3337,
+            "shap_value": 0.0012
+          },
+          {
+            "feature": "value",
+            "label": "Reading value",
+            "raw_value": 0.3337,
+            "shap_value": 0.00104
+          },
+          {
+            "feature": "rolling_cov",
+            "label": "Rolling coefficient of variation",
+            "raw_value": 0.1886,
+            "shap_value": -0.00097
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-Flow",
+            "label": "Correlation: BOD vs Flow",
+            "raw_value": 0.0,
+            "shap_value": 0.00096
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-pH",
+            "label": "Correlation: COD vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00084
+          },
+          {
+            "feature": "limit_hugging",
+            "label": "Limit-hugging flag",
+            "raw_value": 0.0,
+            "shap_value": 0.00084
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-TSS",
+            "label": "Correlation: BOD vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 0.00063
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-COD",
+            "label": "Correlation: BOD vs COD",
+            "raw_value": 0.0,
+            "shap_value": 0.00015
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-TSS",
+            "label": "Correlation: COD vs TSS",
+            "raw_value": 0.0,
+            "shap_value": -3e-05
+          },
+          {
+            "feature": "missing_rate",
+            "label": "Missing-data rate",
+            "raw_value": 0.0,
+            "shap_value": 0.0
+          }
+        ]
+      }
+    },
+    "site_1203": {
+      "tamper_model_shap": {
+        "base_value_logit": -0.4787,
+        "predicted_probability": 0.0216,
+        "features": [
+          {
+            "feature": "flatline_flag_std",
+            "label": "Flatline flag rate (std dev)",
+            "raw_value": 0.0227,
+            "shap_value_logit": -2.9626
+          },
+          {
+            "feature": "rolling_mean_std",
+            "label": "Rolling mean (std dev)",
+            "raw_value": 0.218,
+            "shap_value_logit": -0.372
+          },
+          {
+            "feature": "value_std",
+            "label": "Reading value (std dev)",
+            "raw_value": 0.6167,
+            "shap_value_logit": -0.2319
+          },
+          {
+            "feature": "flatline_flag_mean",
+            "label": "Flatline flag rate",
+            "raw_value": 0.9995,
+            "shap_value_logit": -0.2299
+          },
+          {
+            "feature": "rolling_mean_mean",
+            "label": "Rolling mean (mean)",
+            "raw_value": 0.0043,
+            "shap_value_logit": 0.2067
+          },
+          {
+            "feature": "value_mean",
+            "label": "Reading value (mean)",
+            "raw_value": 0.0043,
+            "shap_value_logit": 0.2038
+          },
+          {
+            "feature": "rolling_std_mean",
+            "label": "Rolling std dev (mean)",
+            "raw_value": 0.0121,
+            "shap_value_logit": 0.0907
+          },
+          {
+            "feature": "rolling_std_std",
+            "label": "Rolling std dev (std dev)",
+            "raw_value": 0.6167,
+            "shap_value_logit": -0.0377
+          }
+        ]
+      },
+      "isolation_forest_shap": {
+        "base_value": -0.41148,
+        "mean_anomaly_score": -0.3705,
+        "n_readings_total": 31084,
+        "n_readings_sampled": 150,
+        "features": [
+          {
+            "feature": "rolling_std",
+            "label": "Rolling std dev",
+            "raw_value": 0.0121,
+            "shap_value": 0.01372
+          },
+          {
+            "feature": "rolling_cov",
+            "label": "Rolling coefficient of variation",
+            "raw_value": 0.0015,
+            "shap_value": 0.00507
+          },
+          {
+            "feature": "autocorrelation",
+            "label": "Autocorrelation",
+            "raw_value": 0.0,
+            "shap_value": 0.00454
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-pH",
+            "label": "Correlation: BOD vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00319
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-TSS",
+            "label": "Correlation: Flow vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 0.00271
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-Flow",
+            "label": "Correlation: COD vs Flow",
+            "raw_value": 0.0,
+            "shap_value": 0.00193
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-pH",
+            "label": "Correlation: Flow vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00156
+          },
+          {
+            "feature": "rolling_mean",
+            "label": "Rolling mean",
+            "raw_value": 0.0043,
+            "shap_value": 0.00146
+          },
+          {
+            "feature": "corr_ETP-TSS_ETP-pH",
+            "label": "Correlation: TSS vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00123
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-Flow",
+            "label": "Correlation: BOD vs Flow",
+            "raw_value": 0.0,
+            "shap_value": 0.001
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-pH",
+            "label": "Correlation: COD vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.0009
+          },
+          {
+            "feature": "value",
+            "label": "Reading value",
+            "raw_value": 0.0043,
+            "shap_value": 0.0007
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-TSS",
+            "label": "Correlation: BOD vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 0.00066
+          },
+          {
+            "feature": "limit_hugging",
+            "label": "Limit-hugging flag",
+            "raw_value": 0.0,
+            "shap_value": 0.00064
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-COD",
+            "label": "Correlation: BOD vs COD",
+            "raw_value": 0.0,
+            "shap_value": 0.00027
+          },
+          {
+            "feature": "flatline_flag",
+            "label": "Flatline flag",
+            "raw_value": 0.9993,
+            "shap_value": -2e-05
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-TSS",
+            "label": "Correlation: COD vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 1e-05
+          },
+          {
+            "feature": "missing_rate",
+            "label": "Missing-data rate",
+            "raw_value": 0.0,
+            "shap_value": 0.0
+          }
+        ]
+      }
+    },
+    "site_1221": {
+      "tamper_model_shap": {
+        "base_value_logit": -0.4787,
+        "predicted_probability": 0.9826,
+        "features": [
+          {
+            "feature": "value_std",
+            "label": "Reading value (std dev)",
+            "raw_value": 124.657,
+            "shap_value_logit": 1.8814
+          },
+          {
+            "feature": "flatline_flag_std",
+            "label": "Flatline flag rate (std dev)",
+            "raw_value": 0.496,
+            "shap_value_logit": 1.4758
+          },
+          {
+            "feature": "rolling_mean_std",
+            "label": "Rolling mean (std dev)",
+            "raw_value": 50.1402,
+            "shap_value_logit": 1.2404
+          },
+          {
+            "feature": "rolling_std_mean",
+            "label": "Rolling std dev (mean)",
+            "raw_value": 6.223,
+            "shap_value_logit": -1.239
+          },
+          {
+            "feature": "rolling_std_std",
+            "label": "Rolling std dev (std dev)",
+            "raw_value": 121.8657,
+            "shap_value_logit": 1.0721
+          },
+          {
+            "feature": "rolling_mean_mean",
+            "label": "Rolling mean (mean)",
+            "raw_value": 6.2312,
+            "shap_value_logit": 0.0483
+          },
+          {
+            "feature": "value_mean",
+            "label": "Reading value (mean)",
+            "raw_value": 6.2307,
+            "shap_value_logit": 0.0478
+          },
+          {
+            "feature": "flatline_flag_mean",
+            "label": "Flatline flag rate",
+            "raw_value": 0.5632,
+            "shap_value_logit": -0.0137
+          }
+        ]
+      },
+      "isolation_forest_shap": {
+        "base_value": -0.41148,
+        "mean_anomaly_score": -0.39429,
+        "n_readings_total": 63588,
+        "n_readings_sampled": 150,
+        "features": [
+          {
+            "feature": "rolling_std",
+            "label": "Rolling std dev",
+            "raw_value": 6.2216,
+            "shap_value": 0.00894
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-pH",
+            "label": "Correlation: Flow vs pH",
+            "raw_value": -0.0191,
+            "shap_value": -0.0068
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-pH",
+            "label": "Correlation: BOD vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00322
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-TSS",
+            "label": "Correlation: Flow vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 0.00311
+          },
+          {
+            "feature": "rolling_mean",
+            "label": "Rolling mean",
+            "raw_value": 6.2298,
+            "shap_value": 0.00251
+          },
+          {
+            "feature": "flatline_flag",
+            "label": "Flatline flag",
+            "raw_value": 0.563,
+            "shap_value": 0.00213
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-Flow",
+            "label": "Correlation: COD vs Flow",
+            "raw_value": 0.0,
+            "shap_value": 0.00185
+          },
+          {
+            "feature": "rolling_cov",
+            "label": "Rolling coefficient of variation",
+            "raw_value": 0.1005,
+            "shap_value": 0.0015
+          },
+          {
+            "feature": "value",
+            "label": "Reading value",
+            "raw_value": 6.2307,
+            "shap_value": 0.00125
+          },
+          {
+            "feature": "corr_ETP-TSS_ETP-pH",
+            "label": "Correlation: TSS vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00125
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-Flow",
+            "label": "Correlation: BOD vs Flow",
+            "raw_value": 0.0,
+            "shap_value": 0.00119
+          },
+          {
+            "feature": "autocorrelation",
+            "label": "Autocorrelation",
+            "raw_value": 0.0372,
+            "shap_value": -0.00072
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-TSS",
+            "label": "Correlation: BOD vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 0.00071
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-pH",
+            "label": "Correlation: COD vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00068
+          },
+          {
+            "feature": "limit_hugging",
+            "label": "Limit-hugging flag",
+            "raw_value": 0.0098,
+            "shap_value": 0.00067
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-COD",
+            "label": "Correlation: BOD vs COD",
+            "raw_value": 0.0,
+            "shap_value": 8e-05
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-TSS",
+            "label": "Correlation: COD vs TSS",
+            "raw_value": 0.0,
+            "shap_value": -5e-05
+          },
+          {
+            "feature": "missing_rate",
+            "label": "Missing-data rate",
+            "raw_value": 0.0,
+            "shap_value": 0.0
+          }
+        ]
+      }
+    },
+    "site_1232": {
+      "tamper_model_shap": {
+        "base_value_logit": -0.4787,
+        "predicted_probability": 0.0941,
+        "features": [
+          {
+            "feature": "flatline_flag_std",
+            "label": "Flatline flag rate (std dev)",
+            "raw_value": 0.1829,
+            "shap_value_logit": -1.4603
+          },
+          {
+            "feature": "rolling_mean_std",
+            "label": "Rolling mean (std dev)",
+            "raw_value": 0.2797,
+            "shap_value_logit": -0.37
+          },
+          {
+            "feature": "flatline_flag_mean",
+            "label": "Flatline flag rate",
+            "raw_value": 0.0347,
+            "shap_value_logit": 0.2482
+          },
+          {
+            "feature": "value_std",
+            "label": "Reading value (std dev)",
+            "raw_value": 0.2815,
+            "shap_value_logit": -0.2376
+          },
+          {
+            "feature": "rolling_std_mean",
+            "label": "Rolling std dev (mean)",
+            "raw_value": 0.0226,
+            "shap_value_logit": 0.0885
+          },
+          {
+            "feature": "rolling_std_std",
+            "label": "Rolling std dev (std dev)",
+            "raw_value": 0.0264,
+            "shap_value_logit": -0.0431
+          },
+          {
+            "feature": "rolling_mean_mean",
+            "label": "Rolling mean (mean)",
+            "raw_value": 8.3699,
+            "shap_value_logit": -0.0061
+          },
+          {
+            "feature": "value_mean",
+            "label": "Reading value (mean)",
+            "raw_value": 8.3699,
+            "shap_value_logit": -0.0057
+          }
+        ]
+      },
+      "isolation_forest_shap": {
+        "base_value": -0.41148,
+        "mean_anomaly_score": -0.38641,
+        "n_readings_total": 28462,
+        "n_readings_sampled": 150,
+        "features": [
+          {
+            "feature": "autocorrelation",
+            "label": "Autocorrelation",
+            "raw_value": 0.5303,
+            "shap_value": -0.01254
+          },
+          {
+            "feature": "flatline_flag",
+            "label": "Flatline flag",
+            "raw_value": 0.0346,
+            "shap_value": 0.00716
+          },
+          {
+            "feature": "rolling_std",
+            "label": "Rolling std dev",
+            "raw_value": 0.0226,
+            "shap_value": 0.00565
+          },
+          {
+            "feature": "rolling_cov",
+            "label": "Rolling coefficient of variation",
+            "raw_value": 0.0027,
+            "shap_value": 0.00464
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-pH",
+            "label": "Correlation: BOD vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00366
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-TSS",
+            "label": "Correlation: Flow vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 0.00319
+          },
+          {
+            "feature": "rolling_mean",
+            "label": "Rolling mean",
+            "raw_value": 8.3678,
+            "shap_value": 0.0026
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-Flow",
+            "label": "Correlation: COD vs Flow",
+            "raw_value": 0.0,
+            "shap_value": 0.00249
+          },
+          {
+            "feature": "value",
+            "label": "Reading value",
+            "raw_value": 8.3699,
+            "shap_value": 0.00178
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-pH",
+            "label": "Correlation: Flow vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00151
+          },
+          {
+            "feature": "corr_ETP-TSS_ETP-pH",
+            "label": "Correlation: TSS vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00113
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-Flow",
+            "label": "Correlation: BOD vs Flow",
+            "raw_value": 0.0,
+            "shap_value": 0.00092
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-TSS",
+            "label": "Correlation: BOD vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 0.00091
+          },
+          {
+            "feature": "limit_hugging",
+            "label": "Limit-hugging flag",
+            "raw_value": 0.0,
+            "shap_value": 0.00076
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-pH",
+            "label": "Correlation: COD vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00075
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-COD",
+            "label": "Correlation: BOD vs COD",
+            "raw_value": 0.0,
+            "shap_value": 9e-05
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-TSS",
+            "label": "Correlation: COD vs TSS",
+            "raw_value": 0.0,
+            "shap_value": -2e-05
+          },
+          {
+            "feature": "missing_rate",
+            "label": "Missing-data rate",
+            "raw_value": 0.0,
+            "shap_value": 0.0
+          }
+        ]
+      }
+    },
+    "site_1247": {
+      "tamper_model_shap": {
+        "base_value_logit": -0.4787,
+        "predicted_probability": 0.0677,
+        "features": [
+          {
+            "feature": "flatline_flag_std",
+            "label": "Flatline flag rate (std dev)",
+            "raw_value": 0.1498,
+            "shap_value_logit": -1.7706
+          },
+          {
+            "feature": "rolling_mean_std",
+            "label": "Rolling mean (std dev)",
+            "raw_value": 0.2832,
+            "shap_value_logit": -0.3698
+          },
+          {
+            "feature": "value_std",
+            "label": "Reading value (std dev)",
+            "raw_value": 0.5488,
+            "shap_value_logit": -0.233
+          },
+          {
+            "feature": "flatline_flag_mean",
+            "label": "Flatline flag rate",
+            "raw_value": 0.977,
+            "shap_value_logit": -0.2188
+          },
+          {
+            "feature": "rolling_mean_mean",
+            "label": "Rolling mean (mean)",
+            "raw_value": 0.0386,
+            "shap_value_logit": 0.2058
+          },
+          {
+            "feature": "value_mean",
+            "label": "Reading value (mean)",
+            "raw_value": 0.0386,
+            "shap_value_logit": 0.203
+          },
+          {
+            "feature": "rolling_std_mean",
+            "label": "Rolling std dev (mean)",
+            "raw_value": 0.0721,
+            "shap_value_logit": 0.0779
+          },
+          {
+            "feature": "rolling_std_std",
+            "label": "Rolling std dev (std dev)",
+            "raw_value": 0.4975,
+            "shap_value_logit": -0.0388
+          }
+        ]
+      },
+      "isolation_forest_shap": {
+        "base_value": -0.41148,
+        "mean_anomaly_score": -0.37306,
+        "n_readings_total": 25956,
+        "n_readings_sampled": 150,
+        "features": [
+          {
+            "feature": "rolling_std",
+            "label": "Rolling std dev",
+            "raw_value": 0.0721,
+            "shap_value": 0.01381
+          },
+          {
+            "feature": "autocorrelation",
+            "label": "Autocorrelation",
+            "raw_value": 0.0001,
+            "shap_value": 0.0046
+          },
+          {
+            "feature": "rolling_cov",
+            "label": "Rolling coefficient of variation",
+            "raw_value": 0.0476,
+            "shap_value": 0.00439
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-pH",
+            "label": "Correlation: BOD vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00345
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-TSS",
+            "label": "Correlation: Flow vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 0.0029
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-Flow",
+            "label": "Correlation: COD vs Flow",
+            "raw_value": 0.0,
+            "shap_value": 0.00177
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-pH",
+            "label": "Correlation: Flow vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00161
+          },
+          {
+            "feature": "corr_ETP-TSS_ETP-pH",
+            "label": "Correlation: TSS vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00143
+          },
+          {
+            "feature": "rolling_mean",
+            "label": "Rolling mean",
+            "raw_value": 0.0386,
+            "shap_value": 0.00141
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-Flow",
+            "label": "Correlation: BOD vs Flow",
+            "raw_value": 0.0,
+            "shap_value": 0.00105
+          },
+          {
+            "feature": "value",
+            "label": "Reading value",
+            "raw_value": 0.0386,
+            "shap_value": 0.00102
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-pH",
+            "label": "Correlation: COD vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00092
+          },
+          {
+            "feature": "limit_hugging",
+            "label": "Limit-hugging flag",
+            "raw_value": 0.0,
+            "shap_value": 0.00061
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-TSS",
+            "label": "Correlation: BOD vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 0.00056
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-COD",
+            "label": "Correlation: BOD vs COD",
+            "raw_value": 0.0,
+            "shap_value": 0.0002
+          },
+          {
+            "feature": "flatline_flag",
+            "label": "Flatline flag",
+            "raw_value": 0.9768,
+            "shap_value": -0.00013
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-TSS",
+            "label": "Correlation: COD vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 1e-05
+          },
+          {
+            "feature": "missing_rate",
+            "label": "Missing-data rate",
+            "raw_value": 0.0,
+            "shap_value": 0.0
+          }
+        ]
+      }
+    },
+    "site_1256": {
+      "tamper_model_shap": {
+        "base_value_logit": -0.4787,
+        "predicted_probability": 0.6983,
+        "features": [
+          {
+            "feature": "flatline_flag_std",
+            "label": "Flatline flag rate (std dev)",
+            "raw_value": 0.4926,
+            "shap_value_logit": 1.444
+          },
+          {
+            "feature": "rolling_mean_std",
+            "label": "Rolling mean (std dev)",
+            "raw_value": 2.5493,
+            "shap_value_logit": -0.2967
+          },
+          {
+            "feature": "value_std",
+            "label": "Reading value (std dev)",
+            "raw_value": 2.554,
+            "shap_value_logit": -0.1989
+          },
+          {
+            "feature": "rolling_mean_mean",
+            "label": "Rolling mean (mean)",
+            "raw_value": 2.8756,
+            "shap_value_logit": 0.1337
+          },
+          {
+            "feature": "value_mean",
+            "label": "Reading value (mean)",
+            "raw_value": 2.8739,
+            "shap_value_logit": 0.1319
+          },
+          {
+            "feature": "rolling_std_mean",
+            "label": "Rolling std dev (mean)",
+            "raw_value": 0.0351,
+            "shap_value_logit": 0.0858
+          },
+          {
+            "feature": "flatline_flag_mean",
+            "label": "Flatline flag rate",
+            "raw_value": 0.4134,
+            "shap_value_logit": 0.0605
+          },
+          {
+            "feature": "rolling_std_std",
+            "label": "Rolling std dev (std dev)",
+            "raw_value": 0.114,
+            "shap_value_logit": -0.0423
+          }
+        ]
+      },
+      "isolation_forest_shap": {
+        "base_value": -0.41148,
+        "mean_anomaly_score": -0.40889,
+        "n_readings_total": 1562,
+        "n_readings_sampled": 150,
+        "features": [
+          {
+            "feature": "corr_ETP-Flow_ETP-pH",
+            "label": "Correlation: Flow vs pH",
+            "raw_value": 0.15,
+            "shap_value": -0.01732
+          },
+          {
+            "feature": "autocorrelation",
+            "label": "Autocorrelation",
+            "raw_value": 0.2476,
+            "shap_value": -0.01098
+          },
+          {
+            "feature": "rolling_std",
+            "label": "Rolling std dev",
+            "raw_value": 0.0348,
+            "shap_value": 0.00896
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-pH",
+            "label": "Correlation: BOD vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00343
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-TSS",
+            "label": "Correlation: Flow vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 0.00308
+          },
+          {
+            "feature": "flatline_flag",
+            "label": "Flatline flag",
+            "raw_value": 0.4097,
+            "shap_value": 0.00243
+          },
+          {
+            "feature": "rolling_cov",
+            "label": "Rolling coefficient of variation",
+            "raw_value": 0.1192,
+            "shap_value": -0.00196
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-Flow",
+            "label": "Correlation: COD vs Flow",
+            "raw_value": 0.0,
+            "shap_value": 0.00196
+          },
+          {
+            "feature": "value",
+            "label": "Reading value",
+            "raw_value": 2.8739,
+            "shap_value": 0.00154
+          },
+          {
+            "feature": "rolling_mean",
+            "label": "Rolling mean",
+            "raw_value": 2.8498,
+            "shap_value": 0.0015
+          },
+          {
+            "feature": "corr_ETP-TSS_ETP-pH",
+            "label": "Correlation: TSS vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00107
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-Flow",
+            "label": "Correlation: BOD vs Flow",
+            "raw_value": 0.0,
+            "shap_value": 0.00101
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-pH",
+            "label": "Correlation: COD vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00073
+          },
+          {
+            "feature": "limit_hugging",
+            "label": "Limit-hugging flag",
+            "raw_value": 0.0,
+            "shap_value": 0.00066
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-TSS",
+            "label": "Correlation: BOD vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 0.00063
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-TSS",
+            "label": "Correlation: COD vs TSS",
+            "raw_value": 0.0,
+            "shap_value": -0.00017
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-COD",
+            "label": "Correlation: BOD vs COD",
+            "raw_value": 0.0,
+            "shap_value": 8e-05
+          },
+          {
+            "feature": "missing_rate",
+            "label": "Missing-data rate",
+            "raw_value": 0.0,
+            "shap_value": 0.0
+          }
+        ]
+      }
+    },
+    "site_1257": {
+      "tamper_model_shap": {
+        "base_value_logit": -0.4787,
+        "predicted_probability": 0.5578,
+        "features": [
+          {
+            "feature": "flatline_flag_std",
+            "label": "Flatline flag rate (std dev)",
+            "raw_value": 0.4175,
+            "shap_value_logit": 0.7396
+          },
+          {
+            "feature": "rolling_mean_std",
+            "label": "Rolling mean (std dev)",
+            "raw_value": 3.6401,
+            "shap_value_logit": -0.2614
+          },
+          {
+            "feature": "value_std",
+            "label": "Reading value (std dev)",
+            "raw_value": 3.6435,
+            "shap_value_logit": -0.1803
+          },
+          {
+            "feature": "flatline_flag_mean",
+            "label": "Flatline flag rate",
+            "raw_value": 0.2249,
+            "shap_value_logit": 0.154
+          },
+          {
+            "feature": "rolling_mean_mean",
+            "label": "Rolling mean (mean)",
+            "raw_value": 3.7305,
+            "shap_value_logit": 0.1119
+          },
+          {
+            "feature": "value_mean",
+            "label": "Reading value (mean)",
+            "raw_value": 3.7305,
+            "shap_value_logit": 0.1105
+          },
+          {
+            "feature": "rolling_std_mean",
+            "label": "Rolling std dev (mean)",
+            "raw_value": 0.0677,
+            "shap_value_logit": 0.0788
+          },
+          {
+            "feature": "rolling_std_std",
+            "label": "Rolling std dev (std dev)",
+            "raw_value": 0.153,
+            "shap_value_logit": -0.042
+          }
+        ]
+      },
+      "isolation_forest_shap": {
+        "base_value": -0.41148,
+        "mean_anomaly_score": -0.39853,
+        "n_readings_total": 62119,
+        "n_readings_sampled": 150,
+        "features": [
+          {
+            "feature": "corr_ETP-Flow_ETP-pH",
+            "label": "Correlation: Flow vs pH",
+            "raw_value": -0.0642,
+            "shap_value": -0.00715
+          },
+          {
+            "feature": "rolling_std",
+            "label": "Rolling std dev",
+            "raw_value": 0.0677,
+            "shap_value": 0.00677
+          },
+          {
+            "feature": "flatline_flag",
+            "label": "Flatline flag",
+            "raw_value": 0.2248,
+            "shap_value": 0.00343
+          },
+          {
+            "feature": "autocorrelation",
+            "label": "Autocorrelation",
+            "raw_value": 0.195,
+            "shap_value": -0.00338
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-pH",
+            "label": "Correlation: BOD vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00328
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-TSS",
+            "label": "Correlation: Flow vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 0.00297
+          },
+          {
+            "feature": "rolling_mean",
+            "label": "Rolling mean",
+            "raw_value": 3.7296,
+            "shap_value": 0.00222
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-Flow",
+            "label": "Correlation: COD vs Flow",
+            "raw_value": 0.0,
+            "shap_value": 0.00202
+          },
+          {
+            "feature": "rolling_cov",
+            "label": "Rolling coefficient of variation",
+            "raw_value": 0.1287,
+            "shap_value": -0.00183
+          },
+          {
+            "feature": "value",
+            "label": "Reading value",
+            "raw_value": 3.7305,
+            "shap_value": 0.00125
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-Flow",
+            "label": "Correlation: BOD vs Flow",
+            "raw_value": 0.0,
+            "shap_value": 0.00124
+          },
+          {
+            "feature": "corr_ETP-TSS_ETP-pH",
+            "label": "Correlation: TSS vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00115
+          },
+          {
+            "feature": "limit_hugging",
+            "label": "Limit-hugging flag",
+            "raw_value": 0.0,
+            "shap_value": 0.00068
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-pH",
+            "label": "Correlation: COD vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00066
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-TSS",
+            "label": "Correlation: BOD vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 0.00065
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-COD",
+            "label": "Correlation: BOD vs COD",
+            "raw_value": 0.0,
+            "shap_value": 0.00017
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-TSS",
+            "label": "Correlation: COD vs TSS",
+            "raw_value": 0.0,
+            "shap_value": -0.0001
+          },
+          {
+            "feature": "missing_rate",
+            "label": "Missing-data rate",
+            "raw_value": 0.0,
+            "shap_value": 0.0
+          }
+        ]
+      }
+    },
+    "site_1259": {
+      "tamper_model_shap": {
+        "base_value_logit": -0.4787,
+        "predicted_probability": 0.6786,
+        "features": [
+          {
+            "feature": "flatline_flag_std",
+            "label": "Flatline flag rate (std dev)",
+            "raw_value": 0.4868,
+            "shap_value_logit": 1.3893
+          },
+          {
+            "feature": "rolling_mean_std",
+            "label": "Rolling mean (std dev)",
+            "raw_value": 3.4741,
+            "shap_value_logit": -0.2668
+          },
+          {
+            "feature": "value_std",
+            "label": "Reading value (std dev)",
+            "raw_value": 3.4759,
+            "shap_value_logit": -0.1832
+          },
+          {
+            "feature": "rolling_std_mean",
+            "label": "Rolling std dev (mean)",
+            "raw_value": 0.0161,
+            "shap_value_logit": 0.0899
+          },
+          {
+            "feature": "rolling_mean_mean",
+            "label": "Rolling mean (mean)",
+            "raw_value": 4.8655,
+            "shap_value_logit": 0.083
+          },
+          {
+            "feature": "value_mean",
+            "label": "Reading value (mean)",
+            "raw_value": 4.8624,
+            "shap_value_logit": 0.0821
+          },
+          {
+            "feature": "flatline_flag_mean",
+            "label": "Flatline flag rate",
+            "raw_value": 0.3856,
+            "shap_value_logit": 0.0743
+          },
+          {
+            "feature": "rolling_std_std",
+            "label": "Rolling std dev (std dev)",
+            "raw_value": 0.0696,
+            "shap_value_logit": -0.0427
+          }
+        ]
+      },
+      "isolation_forest_shap": {
+        "base_value": -0.41148,
+        "mean_anomaly_score": -0.37283,
+        "n_readings_total": 5476,
+        "n_readings_sampled": 150,
+        "features": [
+          {
+            "feature": "rolling_std",
+            "label": "Rolling std dev",
+            "raw_value": 0.016,
+            "shap_value": 0.00957
+          },
+          {
+            "feature": "rolling_cov",
+            "label": "Rolling coefficient of variation",
+            "raw_value": 0.0062,
+            "shap_value": 0.00493
+          },
+          {
+            "feature": "flatline_flag",
+            "label": "Flatline flag",
+            "raw_value": 0.3846,
+            "shap_value": 0.00375
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-pH",
+            "label": "Correlation: BOD vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00347
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-TSS",
+            "label": "Correlation: Flow vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 0.00337
+          },
+          {
+            "feature": "rolling_mean",
+            "label": "Rolling mean",
+            "raw_value": 4.8531,
+            "shap_value": 0.00291
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-Flow",
+            "label": "Correlation: COD vs Flow",
+            "raw_value": 0.0,
+            "shap_value": 0.0023
+          },
+          {
+            "feature": "value",
+            "label": "Reading value",
+            "raw_value": 4.8624,
+            "shap_value": 0.0016
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-pH",
+            "label": "Correlation: Flow vs pH",
+            "raw_value": 0.0063,
+            "shap_value": 0.00139
+          },
+          {
+            "feature": "corr_ETP-TSS_ETP-pH",
+            "label": "Correlation: TSS vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00124
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-Flow",
+            "label": "Correlation: BOD vs Flow",
+            "raw_value": 0.0,
+            "shap_value": 0.001
+          },
+          {
+            "feature": "autocorrelation",
+            "label": "Autocorrelation",
+            "raw_value": 0.1302,
+            "shap_value": 0.0009
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-pH",
+            "label": "Correlation: COD vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00064
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-TSS",
+            "label": "Correlation: BOD vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 0.00061
+          },
+          {
+            "feature": "limit_hugging",
+            "label": "Limit-hugging flag",
+            "raw_value": 0.0,
+            "shap_value": 0.00045
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-COD",
+            "label": "Correlation: BOD vs COD",
+            "raw_value": 0.0,
+            "shap_value": 0.00017
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-TSS",
+            "label": "Correlation: COD vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 0.0
+          },
+          {
+            "feature": "missing_rate",
+            "label": "Missing-data rate",
+            "raw_value": 0.0,
+            "shap_value": 0.0
+          }
+        ]
+      }
+    },
+    "site_1264": {
+      "tamper_model_shap": {
+        "base_value_logit": -0.4787,
+        "predicted_probability": 0.6916,
+        "features": [
+          {
+            "feature": "flatline_flag_std",
+            "label": "Flatline flag rate (std dev)",
+            "raw_value": 0.4953,
+            "shap_value_logit": 1.4694
+          },
+          {
+            "feature": "rolling_mean_std",
+            "label": "Rolling mean (std dev)",
+            "raw_value": 3.8552,
+            "shap_value_logit": -0.2545
+          },
+          {
+            "feature": "value_std",
+            "label": "Reading value (std dev)",
+            "raw_value": 3.8556,
+            "shap_value_logit": -0.1767
+          },
+          {
+            "feature": "rolling_mean_mean",
+            "label": "Rolling mean (mean)",
+            "raw_value": 3.8581,
+            "shap_value_logit": 0.1087
+          },
+          {
+            "feature": "value_mean",
+            "label": "Reading value (mean)",
+            "raw_value": 3.8581,
+            "shap_value_logit": 0.1073
+          },
+          {
+            "feature": "rolling_std_mean",
+            "label": "Rolling std dev (mean)",
+            "raw_value": 0.0084,
+            "shap_value_logit": 0.0915
+          },
+          {
+            "feature": "rolling_std_std",
+            "label": "Rolling std dev (std dev)",
+            "raw_value": 0.0495,
+            "shap_value_logit": -0.0429
+          },
+          {
+            "feature": "flatline_flag_mean",
+            "label": "Flatline flag rate",
+            "raw_value": 0.5683,
+            "shap_value_logit": -0.0162
+          }
+        ]
+      },
+      "isolation_forest_shap": {
+        "base_value": -0.41148,
+        "mean_anomaly_score": -0.38073,
+        "n_readings_total": 43729,
+        "n_readings_sampled": 150,
+        "features": [
+          {
+            "feature": "rolling_std",
+            "label": "Rolling std dev",
+            "raw_value": 0.0084,
+            "shap_value": 0.01179
+          },
+          {
+            "feature": "rolling_cov",
+            "label": "Rolling coefficient of variation",
+            "raw_value": 0.0144,
+            "shap_value": 0.00537
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-pH",
+            "label": "Correlation: BOD vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00333
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-TSS",
+            "label": "Correlation: Flow vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 0.00304
+          },
+          {
+            "feature": "rolling_mean",
+            "label": "Rolling mean",
+            "raw_value": 3.8568,
+            "shap_value": 0.00253
+          },
+          {
+            "feature": "autocorrelation",
+            "label": "Autocorrelation",
+            "raw_value": 0.2628,
+            "shap_value": -0.00218
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-Flow",
+            "label": "Correlation: COD vs Flow",
+            "raw_value": 0.0,
+            "shap_value": 0.00214
+          },
+          {
+            "feature": "flatline_flag",
+            "label": "Flatline flag",
+            "raw_value": 0.5681,
+            "shap_value": 0.00156
+          },
+          {
+            "feature": "value",
+            "label": "Reading value",
+            "raw_value": 3.8581,
+            "shap_value": 0.00137
+          },
+          {
+            "feature": "corr_ETP-TSS_ETP-pH",
+            "label": "Correlation: TSS vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00118
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-Flow",
+            "label": "Correlation: BOD vs Flow",
+            "raw_value": 0.0,
+            "shap_value": 0.00104
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-pH",
+            "label": "Correlation: COD vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00082
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-TSS",
+            "label": "Correlation: BOD vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 0.00058
+          },
+          {
+            "feature": "limit_hugging",
+            "label": "Limit-hugging flag",
+            "raw_value": 0.0079,
+            "shap_value": -0.0004
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-COD",
+            "label": "Correlation: BOD vs COD",
+            "raw_value": 0.0,
+            "shap_value": 0.00013
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-pH",
+            "label": "Correlation: Flow vs pH",
+            "raw_value": 0.0107,
+            "shap_value": 6e-05
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-TSS",
+            "label": "Correlation: COD vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 1e-05
+          },
+          {
+            "feature": "missing_rate",
+            "label": "Missing-data rate",
+            "raw_value": 0.0,
+            "shap_value": 0.0
+          }
+        ]
+      }
+    },
+    "site_1280": {
+      "tamper_model_shap": {
+        "base_value_logit": -0.4787,
+        "predicted_probability": 0.0301,
+        "features": [
+          {
+            "feature": "flatline_flag_std",
+            "label": "Flatline flag rate (std dev)",
+            "raw_value": 0.0101,
+            "shap_value_logit": -3.0808
+          },
+          {
+            "feature": "rolling_mean_std",
+            "label": "Rolling mean (std dev)",
+            "raw_value": 0.1307,
+            "shap_value_logit": -0.3748
+          },
+          {
+            "feature": "flatline_flag_mean",
+            "label": "Flatline flag rate",
+            "raw_value": 0.0001,
+            "shap_value_logit": 0.2654
+          },
+          {
+            "feature": "value_std",
+            "label": "Reading value (std dev)",
+            "raw_value": 0.3327,
+            "shap_value_logit": -0.2367
+          },
+          {
+            "feature": "rolling_mean_mean",
+            "label": "Rolling mean (mean)",
+            "raw_value": 0.0848,
+            "shap_value_logit": 0.2046
+          },
+          {
+            "feature": "value_mean",
+            "label": "Reading value (mean)",
+            "raw_value": 0.0848,
+            "shap_value_logit": 0.2018
+          },
+          {
+            "feature": "rolling_std_mean",
+            "label": "Rolling std dev (mean)",
+            "raw_value": 0.1144,
+            "shap_value_logit": 0.0688
+          },
+          {
+            "feature": "rolling_std_std",
+            "label": "Rolling std dev (std dev)",
+            "raw_value": 0.3064,
+            "shap_value_logit": -0.0405
+          }
+        ]
+      },
+      "isolation_forest_shap": {
+        "base_value": -0.41148,
+        "mean_anomaly_score": -0.39683,
+        "n_readings_total": 29513,
+        "n_readings_sampled": 150,
+        "features": [
+          {
+            "feature": "rolling_cov",
+            "label": "Rolling coefficient of variation",
+            "raw_value": 0.5399,
+            "shap_value": -0.01725
+          },
+          {
+            "feature": "flatline_flag",
+            "label": "Flatline flag",
+            "raw_value": 0.0001,
+            "shap_value": 0.00514
+          },
+          {
+            "feature": "autocorrelation",
+            "label": "Autocorrelation",
+            "raw_value": 0.0104,
+            "shap_value": 0.00462
+          },
+          {
+            "feature": "rolling_std",
+            "label": "Rolling std dev",
+            "raw_value": 0.1144,
+            "shap_value": 0.00382
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-TSS",
+            "label": "Correlation: Flow vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 0.00322
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-pH",
+            "label": "Correlation: BOD vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00317
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-Flow",
+            "label": "Correlation: COD vs Flow",
+            "raw_value": 0.0,
+            "shap_value": 0.00203
+          },
+          {
+            "feature": "corr_ETP-TSS_ETP-pH",
+            "label": "Correlation: TSS vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00154
+          },
+          {
+            "feature": "value",
+            "label": "Reading value",
+            "raw_value": 0.0848,
+            "shap_value": 0.00123
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-pH",
+            "label": "Correlation: Flow vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00121
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-Flow",
+            "label": "Correlation: BOD vs Flow",
+            "raw_value": 0.0,
+            "shap_value": 0.00106
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-pH",
+            "label": "Correlation: COD vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00104
+          },
+          {
+            "feature": "rolling_mean",
+            "label": "Rolling mean",
+            "raw_value": 0.0848,
+            "shap_value": 0.00084
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-TSS",
+            "label": "Correlation: BOD vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 0.00082
+          },
+          {
+            "feature": "limit_hugging",
+            "label": "Limit-hugging flag",
+            "raw_value": 0.0,
+            "shap_value": 0.00081
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-COD",
+            "label": "Correlation: BOD vs COD",
+            "raw_value": 0.0,
+            "shap_value": 0.00018
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-TSS",
+            "label": "Correlation: COD vs TSS",
+            "raw_value": 0.0,
+            "shap_value": -1e-05
+          },
+          {
+            "feature": "missing_rate",
+            "label": "Missing-data rate",
+            "raw_value": 0.0,
+            "shap_value": 0.0
+          }
+        ]
+      }
+    },
+    "site_1281": {
+      "tamper_model_shap": {
+        "base_value_logit": -0.4787,
+        "predicted_probability": 0.7019,
+        "features": [
+          {
+            "feature": "flatline_flag_std",
+            "label": "Flatline flag rate (std dev)",
+            "raw_value": 0.4964,
+            "shap_value_logit": 1.4792
+          },
+          {
+            "feature": "rolling_mean_std",
+            "label": "Rolling mean (std dev)",
+            "raw_value": 3.7276,
+            "shap_value_logit": -0.2586
+          },
+          {
+            "feature": "value_std",
+            "label": "Reading value (std dev)",
+            "raw_value": 3.7402,
+            "shap_value_logit": -0.1787
+          },
+          {
+            "feature": "rolling_mean_mean",
+            "label": "Rolling mean (mean)",
+            "raw_value": 3.7511,
+            "shap_value_logit": 0.1114
+          },
+          {
+            "feature": "value_mean",
+            "label": "Reading value (mean)",
+            "raw_value": 3.7513,
+            "shap_value_logit": 0.11
+          },
+          {
+            "feature": "rolling_std_mean",
+            "label": "Rolling std dev (mean)",
+            "raw_value": 0.133,
+            "shap_value_logit": 0.0648
+          },
+          {
+            "feature": "flatline_flag_mean",
+            "label": "Flatline flag rate",
+            "raw_value": 0.4397,
+            "shap_value_logit": 0.0475
+          },
+          {
+            "feature": "rolling_std_std",
+            "label": "Rolling std dev (std dev)",
+            "raw_value": 0.2966,
+            "shap_value_logit": -0.0406
+          }
+        ]
+      },
+      "isolation_forest_shap": {
+        "base_value": -0.41148,
+        "mean_anomaly_score": -0.3947,
+        "n_readings_total": 28793,
+        "n_readings_sampled": 150,
+        "features": [
+          {
+            "feature": "rolling_std",
+            "label": "Rolling std dev",
+            "raw_value": 0.133,
+            "shap_value": 0.00585
+          },
+          {
+            "feature": "flatline_flag",
+            "label": "Flatline flag",
+            "raw_value": 0.4395,
+            "shap_value": 0.00415
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-pH",
+            "label": "Correlation: BOD vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00348
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-TSS",
+            "label": "Correlation: Flow vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 0.0031
+          },
+          {
+            "feature": "rolling_cov",
+            "label": "Rolling coefficient of variation",
+            "raw_value": 0.127,
+            "shap_value": 0.003
+          },
+          {
+            "feature": "autocorrelation",
+            "label": "Autocorrelation",
+            "raw_value": 0.1907,
+            "shap_value": -0.00287
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-pH",
+            "label": "Correlation: Flow vs pH",
+            "raw_value": -0.0064,
+            "shap_value": -0.00281
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-Flow",
+            "label": "Correlation: COD vs Flow",
+            "raw_value": 0.0,
+            "shap_value": 0.00207
+          },
+          {
+            "feature": "rolling_mean",
+            "label": "Rolling mean",
+            "raw_value": 3.7493,
+            "shap_value": 0.00177
+          },
+          {
+            "feature": "limit_hugging",
+            "label": "Limit-hugging flag",
+            "raw_value": 0.025,
+            "shap_value": -0.00148
+          },
+          {
+            "feature": "value",
+            "label": "Reading value",
+            "raw_value": 3.7513,
+            "shap_value": 0.00136
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-Flow",
+            "label": "Correlation: BOD vs Flow",
+            "raw_value": 0.0,
+            "shap_value": 0.00114
+          },
+          {
+            "feature": "corr_ETP-TSS_ETP-pH",
+            "label": "Correlation: TSS vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00107
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-pH",
+            "label": "Correlation: COD vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00094
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-TSS",
+            "label": "Correlation: BOD vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 0.00058
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-COD",
+            "label": "Correlation: BOD vs COD",
+            "raw_value": 0.0,
+            "shap_value": 0.00012
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-TSS",
+            "label": "Correlation: COD vs TSS",
+            "raw_value": 0.0,
+            "shap_value": -0.0
+          },
+          {
+            "feature": "missing_rate",
+            "label": "Missing-data rate",
+            "raw_value": 0.0,
+            "shap_value": 0.0
+          }
+        ]
+      }
+    },
+    "site_1284": {
+      "tamper_model_shap": {
+        "base_value_logit": -0.4787,
+        "predicted_probability": 0.6971,
+        "features": [
+          {
+            "feature": "flatline_flag_std",
+            "label": "Flatline flag rate (std dev)",
+            "raw_value": 0.4955,
+            "shap_value_logit": 1.4715
+          },
+          {
+            "feature": "rolling_mean_std",
+            "label": "Rolling mean (std dev)",
+            "raw_value": 3.7082,
+            "shap_value_logit": -0.2592
+          },
+          {
+            "feature": "value_std",
+            "label": "Reading value (std dev)",
+            "raw_value": 3.7108,
+            "shap_value_logit": -0.1792
+          },
+          {
+            "feature": "rolling_mean_mean",
+            "label": "Rolling mean (mean)",
+            "raw_value": 4.3993,
+            "shap_value_logit": 0.0949
+          },
+          {
+            "feature": "value_mean",
+            "label": "Reading value (mean)",
+            "raw_value": 4.399,
+            "shap_value_logit": 0.0937
+          },
+          {
+            "feature": "rolling_std_mean",
+            "label": "Rolling std dev (mean)",
+            "raw_value": 0.0521,
+            "shap_value_logit": 0.0821
+          },
+          {
+            "feature": "flatline_flag_mean",
+            "label": "Flatline flag rate",
+            "raw_value": 0.4333,
+            "shap_value_logit": 0.0507
+          },
+          {
+            "feature": "rolling_std_std",
+            "label": "Rolling std dev (std dev)",
+            "raw_value": 0.1389,
+            "shap_value_logit": -0.0421
+          }
+        ]
+      },
+      "isolation_forest_shap": {
+        "base_value": -0.41148,
+        "mean_anomaly_score": -0.38273,
+        "n_readings_total": 35587,
+        "n_readings_sampled": 150,
+        "features": [
+          {
+            "feature": "rolling_std",
+            "label": "Rolling std dev",
+            "raw_value": 0.0521,
+            "shap_value": 0.00899
+          },
+          {
+            "feature": "autocorrelation",
+            "label": "Autocorrelation",
+            "raw_value": 0.2995,
+            "shap_value": -0.00612
+          },
+          {
+            "feature": "rolling_cov",
+            "label": "Rolling coefficient of variation",
+            "raw_value": 0.007,
+            "shap_value": 0.00457
+          },
+          {
+            "feature": "flatline_flag",
+            "label": "Flatline flag",
+            "raw_value": 0.4332,
+            "shap_value": 0.00405
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-pH",
+            "label": "Correlation: BOD vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00325
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-TSS",
+            "label": "Correlation: Flow vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 0.00299
+          },
+          {
+            "feature": "rolling_mean",
+            "label": "Rolling mean",
+            "raw_value": 4.3976,
+            "shap_value": 0.00252
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-Flow",
+            "label": "Correlation: COD vs Flow",
+            "raw_value": 0.0,
+            "shap_value": 0.00206
+          },
+          {
+            "feature": "value",
+            "label": "Reading value",
+            "raw_value": 4.399,
+            "shap_value": 0.00161
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-pH",
+            "label": "Correlation: Flow vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.0015
+          },
+          {
+            "feature": "corr_ETP-TSS_ETP-pH",
+            "label": "Correlation: TSS vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00137
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-Flow",
+            "label": "Correlation: BOD vs Flow",
+            "raw_value": 0.0,
+            "shap_value": 0.00123
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-pH",
+            "label": "Correlation: COD vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00086
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-TSS",
+            "label": "Correlation: BOD vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 0.0006
+          },
+          {
+            "feature": "limit_hugging",
+            "label": "Limit-hugging flag",
+            "raw_value": 0.0235,
+            "shap_value": -0.00043
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-COD",
+            "label": "Correlation: BOD vs COD",
+            "raw_value": 0.0,
+            "shap_value": 0.00022
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-TSS",
+            "label": "Correlation: COD vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 1e-05
+          },
+          {
+            "feature": "missing_rate",
+            "label": "Missing-data rate",
+            "raw_value": 0.0,
+            "shap_value": 0.0
+          }
+        ]
+      }
+    },
+    "site_1285": {
+      "tamper_model_shap": {
+        "base_value_logit": -0.4787,
+        "predicted_probability": 0.7097,
+        "features": [
+          {
+            "feature": "flatline_flag_std",
+            "label": "Flatline flag rate (std dev)",
+            "raw_value": 0.4998,
+            "shap_value_logit": 1.5116
+          },
+          {
+            "feature": "rolling_mean_std",
+            "label": "Rolling mean (std dev)",
+            "raw_value": 3.6252,
+            "shap_value_logit": -0.2619
+          },
+          {
+            "feature": "value_std",
+            "label": "Reading value (std dev)",
+            "raw_value": 3.6374,
+            "shap_value_logit": -0.1804
+          },
+          {
+            "feature": "rolling_mean_mean",
+            "label": "Rolling mean (mean)",
+            "raw_value": 3.2922,
+            "shap_value_logit": 0.1231
+          },
+          {
+            "feature": "value_mean",
+            "label": "Reading value (mean)",
+            "raw_value": 3.2923,
+            "shap_value_logit": 0.1215
+          },
+          {
+            "feature": "rolling_std_mean",
+            "label": "Rolling std dev (mean)",
+            "raw_value": 0.0853,
+            "shap_value_logit": 0.075
+          },
+          {
+            "feature": "rolling_std_std",
+            "label": "Rolling std dev (std dev)",
+            "raw_value": 0.3065,
+            "shap_value_logit": -0.0405
+          },
+          {
+            "feature": "flatline_flag_mean",
+            "label": "Flatline flag rate",
+            "raw_value": 0.4865,
+            "shap_value_logit": 0.0243
+          }
+        ]
+      },
+      "isolation_forest_shap": {
+        "base_value": -0.41148,
+        "mean_anomaly_score": -0.38913,
+        "n_readings_total": 52592,
+        "n_readings_sampled": 150,
+        "features": [
+          {
+            "feature": "rolling_std",
+            "label": "Rolling std dev",
+            "raw_value": 0.0853,
+            "shap_value": 0.00883
+          },
+          {
+            "feature": "autocorrelation",
+            "label": "Autocorrelation",
+            "raw_value": 0.2195,
+            "shap_value": -0.0065
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-pH",
+            "label": "Correlation: BOD vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.0034
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-TSS",
+            "label": "Correlation: Flow vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 0.00303
+          },
+          {
+            "feature": "flatline_flag",
+            "label": "Flatline flag",
+            "raw_value": 0.4864,
+            "shap_value": 0.00243
+          },
+          {
+            "feature": "rolling_mean",
+            "label": "Rolling mean",
+            "raw_value": 3.2913,
+            "shap_value": 0.00212
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-Flow",
+            "label": "Correlation: COD vs Flow",
+            "raw_value": 0.0,
+            "shap_value": 0.00194
+          },
+          {
+            "feature": "value",
+            "label": "Reading value",
+            "raw_value": 3.2923,
+            "shap_value": 0.00122
+          },
+          {
+            "feature": "corr_ETP-TSS_ETP-pH",
+            "label": "Correlation: TSS vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00121
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-Flow",
+            "label": "Correlation: BOD vs Flow",
+            "raw_value": 0.0,
+            "shap_value": 0.00112
+          },
+          {
+            "feature": "limit_hugging",
+            "label": "Limit-hugging flag",
+            "raw_value": 0.0,
+            "shap_value": 0.00085
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-pH",
+            "label": "Correlation: COD vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.0008
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-TSS",
+            "label": "Correlation: BOD vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 0.00073
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-pH",
+            "label": "Correlation: Flow vs pH",
+            "raw_value": -0.0242,
+            "shap_value": 0.00042
+          },
+          {
+            "feature": "rolling_cov",
+            "label": "Rolling coefficient of variation",
+            "raw_value": 0.1519,
+            "shap_value": -0.00041
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-COD",
+            "label": "Correlation: BOD vs COD",
+            "raw_value": 0.0,
+            "shap_value": 0.00021
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-TSS",
+            "label": "Correlation: COD vs TSS",
+            "raw_value": 0.0,
+            "shap_value": -1e-05
+          },
+          {
+            "feature": "missing_rate",
+            "label": "Missing-data rate",
+            "raw_value": 0.0,
+            "shap_value": 0.0
+          }
+        ]
+      }
+    },
+    "site_1310": {
+      "tamper_model_shap": {
+        "base_value_logit": -0.4787,
+        "predicted_probability": 0.3388,
+        "features": [
+          {
+            "feature": "rolling_mean_std",
+            "label": "Rolling mean (std dev)",
+            "raw_value": 0.0853,
+            "shap_value_logit": -0.3762
+          },
+          {
+            "feature": "value_std",
+            "label": "Reading value (std dev)",
+            "raw_value": 0.0917,
+            "shap_value_logit": -0.2408
+          },
+          {
+            "feature": "flatline_flag_std",
+            "label": "Flatline flag rate (std dev)",
+            "raw_value": 0.3145,
+            "shap_value_logit": -0.226
+          },
+          {
+            "feature": "flatline_flag_mean",
+            "label": "Flatline flag rate",
+            "raw_value": 0.1113,
+            "shap_value_logit": 0.2103
+          },
+          {
+            "feature": "rolling_mean_mean",
+            "label": "Rolling mean (mean)",
+            "raw_value": 0.2382,
+            "shap_value_logit": 0.2007
+          },
+          {
+            "feature": "value_mean",
+            "label": "Reading value (mean)",
+            "raw_value": 0.2381,
+            "shap_value_logit": 0.198
+          },
+          {
+            "feature": "rolling_std_mean",
+            "label": "Rolling std dev (mean)",
+            "raw_value": 0.0289,
+            "shap_value_logit": 0.0871
+          },
+          {
+            "feature": "rolling_std_std",
+            "label": "Rolling std dev (std dev)",
+            "raw_value": 0.0211,
+            "shap_value_logit": -0.0432
+          }
+        ]
+      },
+      "isolation_forest_shap": {
+        "base_value": -0.41148,
+        "mean_anomaly_score": -0.3775,
+        "n_readings_total": 27740,
+        "n_readings_sampled": 150,
+        "features": [
+          {
+            "feature": "flatline_flag",
+            "label": "Flatline flag",
+            "raw_value": 0.1113,
+            "shap_value": 0.00585
+          },
+          {
+            "feature": "rolling_std",
+            "label": "Rolling std dev",
+            "raw_value": 0.0289,
+            "shap_value": 0.00515
+          },
+          {
+            "feature": "autocorrelation",
+            "label": "Autocorrelation",
+            "raw_value": 0.0011,
+            "shap_value": 0.00487
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-pH",
+            "label": "Correlation: BOD vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00371
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-TSS",
+            "label": "Correlation: Flow vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 0.00365
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-Flow",
+            "label": "Correlation: COD vs Flow",
+            "raw_value": 0.0,
+            "shap_value": 0.00242
+          },
+          {
+            "feature": "value",
+            "label": "Reading value",
+            "raw_value": 0.2381,
+            "shap_value": 0.0016
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-pH",
+            "label": "Correlation: Flow vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00154
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-Flow",
+            "label": "Correlation: BOD vs Flow",
+            "raw_value": 0.0,
+            "shap_value": 0.00136
+          },
+          {
+            "feature": "corr_ETP-TSS_ETP-pH",
+            "label": "Correlation: TSS vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00124
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-pH",
+            "label": "Correlation: COD vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00099
+          },
+          {
+            "feature": "limit_hugging",
+            "label": "Limit-hugging flag",
+            "raw_value": 0.0,
+            "shap_value": 0.00063
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-TSS",
+            "label": "Correlation: BOD vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 0.00049
+          },
+          {
+            "feature": "rolling_cov",
+            "label": "Rolling coefficient of variation",
+            "raw_value": 0.1093,
+            "shap_value": -0.00033
+          },
+          {
+            "feature": "rolling_mean",
+            "label": "Rolling mean",
+            "raw_value": 0.2381,
+            "shap_value": 0.0003
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-COD",
+            "label": "Correlation: BOD vs COD",
+            "raw_value": 0.0,
+            "shap_value": 0.00011
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-TSS",
+            "label": "Correlation: COD vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 0.0
+          },
+          {
+            "feature": "missing_rate",
+            "label": "Missing-data rate",
+            "raw_value": 0.0,
+            "shap_value": 0.0
+          }
+        ]
+      }
+    },
+    "site_1321": {
+      "tamper_model_shap": {
+        "base_value_logit": -0.4787,
+        "predicted_probability": 0.7474,
+        "features": [
+          {
+            "feature": "flatline_flag_std",
+            "label": "Flatline flag rate (std dev)",
+            "raw_value": 0.4954,
+            "shap_value_logit": 1.4697
+          },
+          {
+            "feature": "rolling_mean_std",
+            "label": "Rolling mean (std dev)",
+            "raw_value": 28.8296,
+            "shap_value_logit": 0.5521
+          },
+          {
+            "feature": "rolling_mean_mean",
+            "label": "Rolling mean (mean)",
+            "raw_value": 21.7462,
+            "shap_value_logit": -0.3463
+          },
+          {
+            "feature": "value_mean",
+            "label": "Reading value (mean)",
+            "raw_value": 21.7501,
+            "shap_value_logit": -0.3409
+          },
+          {
+            "feature": "value_std",
+            "label": "Reading value (std dev)",
+            "raw_value": 28.9309,
+            "shap_value_logit": 0.2505
+          },
+          {
+            "feature": "rolling_std_mean",
+            "label": "Rolling std dev (mean)",
+            "raw_value": 0.6795,
+            "shap_value_logit": -0.0522
+          },
+          {
+            "feature": "flatline_flag_mean",
+            "label": "Flatline flag rate",
+            "raw_value": 0.432,
+            "shap_value_logit": 0.0513
+          },
+          {
+            "feature": "rolling_std_std",
+            "label": "Rolling std dev (std dev)",
+            "raw_value": 2.4637,
+            "shap_value_logit": -0.0208
+          }
+        ]
+      },
+      "isolation_forest_shap": {
+        "base_value": -0.41148,
+        "mean_anomaly_score": -0.43325,
+        "n_readings_total": 58278,
+        "n_readings_sampled": 150,
+        "features": [
+          {
+            "feature": "corr_ETP-BOD_ETP-pH",
+            "label": "Correlation: BOD vs pH",
+            "raw_value": -0.1854,
+            "shap_value": -0.00752
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-TSS",
+            "label": "Correlation: COD vs TSS",
+            "raw_value": 0.524,
+            "shap_value": 0.00596
+          },
+          {
+            "feature": "value",
+            "label": "Reading value",
+            "raw_value": 21.7501,
+            "shap_value": -0.00589
+          },
+          {
+            "feature": "corr_ETP-TSS_ETP-pH",
+            "label": "Correlation: TSS vs pH",
+            "raw_value": -0.157,
+            "shap_value": -0.00505
+          },
+          {
+            "feature": "rolling_mean",
+            "label": "Rolling mean",
+            "raw_value": 21.7331,
+            "shap_value": -0.00417
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-pH",
+            "label": "Correlation: COD vs pH",
+            "raw_value": -0.1926,
+            "shap_value": -0.00384
+          },
+          {
+            "feature": "rolling_cov",
+            "label": "Rolling coefficient of variation",
+            "raw_value": 0.0284,
+            "shap_value": 0.00332
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-TSS",
+            "label": "Correlation: BOD vs TSS",
+            "raw_value": 0.5646,
+            "shap_value": -0.00256
+          },
+          {
+            "feature": "flatline_flag",
+            "label": "Flatline flag",
+            "raw_value": 0.4317,
+            "shap_value": 0.00228
+          },
+          {
+            "feature": "rolling_std",
+            "label": "Rolling std dev",
+            "raw_value": 0.6791,
+            "shap_value": 0.00207
+          },
+          {
+            "feature": "autocorrelation",
+            "label": "Autocorrelation",
+            "raw_value": 0.1896,
+            "shap_value": -0.00201
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-pH",
+            "label": "Correlation: Flow vs pH",
+            "raw_value": -0.0167,
+            "shap_value": 0.00074
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-COD",
+            "label": "Correlation: BOD vs COD",
+            "raw_value": 0.6431,
+            "shap_value": -0.00068
+          },
+          {
+            "feature": "limit_hugging",
+            "label": "Limit-hugging flag",
+            "raw_value": 0.01,
+            "shap_value": -0.00059
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-TSS",
+            "label": "Correlation: Flow vs TSS",
+            "raw_value": 0.0193,
+            "shap_value": 0.00047
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-Flow",
+            "label": "Correlation: COD vs Flow",
+            "raw_value": 0.0256,
+            "shap_value": -0.00015
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-Flow",
+            "label": "Correlation: BOD vs Flow",
+            "raw_value": 0.0223,
+            "shap_value": 6e-05
+          },
+          {
+            "feature": "missing_rate",
+            "label": "Missing-data rate",
+            "raw_value": 0.0,
+            "shap_value": 0.0
+          }
+        ]
+      }
+    },
+    "site_1369": {
+      "tamper_model_shap": {
+        "base_value_logit": -0.4787,
+        "predicted_probability": 0.7562,
+        "features": [
+          {
+            "feature": "flatline_flag_std",
+            "label": "Flatline flag rate (std dev)",
+            "raw_value": 0.4987,
+            "shap_value_logit": 1.5016
+          },
+          {
+            "feature": "rolling_mean_std",
+            "label": "Rolling mean (std dev)",
+            "raw_value": 23.9642,
+            "shap_value_logit": 0.395
+          },
+          {
+            "feature": "rolling_mean_mean",
+            "label": "Rolling mean (mean)",
+            "raw_value": 18.0812,
+            "shap_value_logit": -0.2531
+          },
+          {
+            "feature": "value_mean",
+            "label": "Reading value (mean)",
+            "raw_value": 18.0824,
+            "shap_value_logit": -0.2491
+          },
+          {
+            "feature": "value_std",
+            "label": "Reading value (std dev)",
+            "raw_value": 23.969,
+            "shap_value_logit": 0.166
+          },
+          {
+            "feature": "rolling_std_mean",
+            "label": "Rolling std dev (mean)",
+            "raw_value": 0.0187,
+            "shap_value_logit": 0.0893
+          },
+          {
+            "feature": "rolling_std_std",
+            "label": "Rolling std dev (std dev)",
+            "raw_value": 0.449,
+            "shap_value_logit": -0.0392
+          },
+          {
+            "feature": "flatline_flag_mean",
+            "label": "Flatline flag rate",
+            "raw_value": 0.5354,
+            "shap_value_logit": 0.0001
+          }
+        ]
+      },
+      "isolation_forest_shap": {
+        "base_value": -0.41148,
+        "mean_anomaly_score": -0.41523,
+        "n_readings_total": 87457,
+        "n_readings_sampled": 150,
+        "features": [
+          {
+            "feature": "corr_ETP-COD_ETP-TSS",
+            "label": "Correlation: COD vs TSS",
+            "raw_value": -0.3162,
+            "shap_value": -0.01407
+          },
+          {
+            "feature": "rolling_std",
+            "label": "Rolling std dev",
+            "raw_value": 0.0187,
+            "shap_value": 0.00988
+          },
+          {
+            "feature": "rolling_cov",
+            "label": "Rolling coefficient of variation",
+            "raw_value": 0.0041,
+            "shap_value": 0.00494
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-TSS",
+            "label": "Correlation: BOD vs TSS",
+            "raw_value": 0.1123,
+            "shap_value": 0.00477
+          },
+          {
+            "feature": "value",
+            "label": "Reading value",
+            "raw_value": 18.0824,
+            "shap_value": -0.00337
+          },
+          {
+            "feature": "corr_ETP-TSS_ETP-pH",
+            "label": "Correlation: TSS vs pH",
+            "raw_value": -0.0967,
+            "shap_value": -0.00309
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-TSS",
+            "label": "Correlation: Flow vs TSS",
+            "raw_value": -0.0007,
+            "shap_value": 0.00219
+          },
+          {
+            "feature": "flatline_flag",
+            "label": "Flatline flag",
+            "raw_value": 0.5072,
+            "shap_value": 0.00212
+          },
+          {
+            "feature": "rolling_mean",
+            "label": "Rolling mean",
+            "raw_value": 18.074,
+            "shap_value": -0.00197
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-COD",
+            "label": "Correlation: BOD vs COD",
+            "raw_value": 0.0195,
+            "shap_value": -0.00187
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-pH",
+            "label": "Correlation: COD vs pH",
+            "raw_value": 0.071,
+            "shap_value": -0.00183
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-pH",
+            "label": "Correlation: BOD vs pH",
+            "raw_value": 0.0085,
+            "shap_value": 0.00132
+          },
+          {
+            "feature": "autocorrelation",
+            "label": "Autocorrelation",
+            "raw_value": 0.1856,
+            "shap_value": -0.00122
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-Flow",
+            "label": "Correlation: COD vs Flow",
+            "raw_value": -0.0018,
+            "shap_value": 0.00103
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-pH",
+            "label": "Correlation: Flow vs pH",
+            "raw_value": 0.0001,
+            "shap_value": 0.00086
+          },
+          {
+            "feature": "limit_hugging",
+            "label": "Limit-hugging flag",
+            "raw_value": 0.0,
+            "shap_value": 0.00073
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-Flow",
+            "label": "Correlation: BOD vs Flow",
+            "raw_value": 0.0051,
+            "shap_value": 0.0005
+          },
+          {
+            "feature": "missing_rate",
+            "label": "Missing-data rate",
+            "raw_value": 0.0,
+            "shap_value": 0.0
+          }
+        ]
+      }
+    },
+    "site_1376": {
+      "tamper_model_shap": {
+        "base_value_logit": -0.4787,
+        "predicted_probability": 0.8612,
+        "features": [
+          {
+            "feature": "flatline_flag_std",
+            "label": "Flatline flag rate (std dev)",
+            "raw_value": 0.4998,
+            "shap_value_logit": 1.5116
+          },
+          {
+            "feature": "rolling_mean_std",
+            "label": "Rolling mean (std dev)",
+            "raw_value": 32.9799,
+            "shap_value_logit": 0.6862
+          },
+          {
+            "feature": "value_std",
+            "label": "Reading value (std dev)",
+            "raw_value": 33.0134,
+            "shap_value_logit": 0.3201
+          },
+          {
+            "feature": "rolling_mean_mean",
+            "label": "Rolling mean (mean)",
+            "raw_value": 13.1714,
+            "shap_value_logit": -0.1282
+          },
+          {
+            "feature": "value_mean",
+            "label": "Reading value (mean)",
+            "raw_value": 13.1777,
+            "shap_value_logit": -0.1262
+          },
+          {
+            "feature": "rolling_std_mean",
+            "label": "Rolling std dev (mean)",
+            "raw_value": 0.1517,
+            "shap_value_logit": 0.0608
+          },
+          {
+            "feature": "rolling_std_std",
+            "label": "Rolling std dev (std dev)",
+            "raw_value": 1.289,
+            "shap_value_logit": -0.0316
+          },
+          {
+            "feature": "flatline_flag_mean",
+            "label": "Flatline flag rate",
+            "raw_value": 0.5134,
+            "shap_value_logit": 0.011
+          }
+        ]
+      },
+      "isolation_forest_shap": {
+        "base_value": -0.41148,
+        "mean_anomaly_score": -0.43719,
+        "n_readings_total": 92679,
+        "n_readings_sampled": 150,
+        "features": [
+          {
+            "feature": "corr_ETP-COD_ETP-Flow",
+            "label": "Correlation: COD vs Flow",
+            "raw_value": 0.1058,
+            "shap_value": -0.0087
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-TSS",
+            "label": "Correlation: COD vs TSS",
+            "raw_value": 0.656,
+            "shap_value": 0.00845
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-Flow",
+            "label": "Correlation: BOD vs Flow",
+            "raw_value": 0.105,
+            "shap_value": -0.00678
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-TSS",
+            "label": "Correlation: Flow vs TSS",
+            "raw_value": 0.107,
+            "shap_value": -0.00656
+          },
+          {
+            "feature": "rolling_std",
+            "label": "Rolling std dev",
+            "raw_value": 0.1516,
+            "shap_value": 0.00647
+          },
+          {
+            "feature": "autocorrelation",
+            "label": "Autocorrelation",
+            "raw_value": 0.3951,
+            "shap_value": -0.00626
+          },
+          {
+            "feature": "corr_ETP-TSS_ETP-pH",
+            "label": "Correlation: TSS vs pH",
+            "raw_value": 0.1413,
+            "shap_value": -0.00582
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-pH",
+            "label": "Correlation: BOD vs pH",
+            "raw_value": 0.1325,
+            "shap_value": -0.00575
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-pH",
+            "label": "Correlation: COD vs pH",
+            "raw_value": 0.1314,
+            "shap_value": -0.00368
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-TSS",
+            "label": "Correlation: BOD vs TSS",
+            "raw_value": 0.655,
+            "shap_value": -0.00273
+          },
+          {
+            "feature": "rolling_cov",
+            "label": "Rolling coefficient of variation",
+            "raw_value": 0.0296,
+            "shap_value": 0.00256
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-COD",
+            "label": "Correlation: BOD vs COD",
+            "raw_value": 0.6314,
+            "shap_value": 0.00211
+          },
+          {
+            "feature": "value",
+            "label": "Reading value",
+            "raw_value": 13.1777,
+            "shap_value": -0.00134
+          },
+          {
+            "feature": "rolling_mean",
+            "label": "Rolling mean",
+            "raw_value": 13.1664,
+            "shap_value": -0.00086
+          },
+          {
+            "feature": "limit_hugging",
+            "label": "Limit-hugging flag",
+            "raw_value": 0.0,
+            "shap_value": 0.00041
+          },
+          {
+            "feature": "flatline_flag",
+            "label": "Flatline flag",
+            "raw_value": 0.5079,
+            "shap_value": 0.00032
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-pH",
+            "label": "Correlation: Flow vs pH",
+            "raw_value": 0.0144,
+            "shap_value": 9e-05
+          },
+          {
+            "feature": "missing_rate",
+            "label": "Missing-data rate",
+            "raw_value": 0.0,
+            "shap_value": 0.0
+          }
+        ]
+      }
+    },
+    "site_1561": {
+      "tamper_model_shap": {
+        "base_value_logit": -0.4787,
+        "predicted_probability": 0.6399,
+        "features": [
+          {
+            "feature": "flatline_flag_std",
+            "label": "Flatline flag rate (std dev)",
+            "raw_value": 0.4973,
+            "shap_value_logit": 1.4883
+          },
+          {
+            "feature": "rolling_mean_std",
+            "label": "Rolling mean (std dev)",
+            "raw_value": 1.0312,
+            "shap_value_logit": -0.3457
+          },
+          {
+            "feature": "value_std",
+            "label": "Reading value (std dev)",
+            "raw_value": 1.0554,
+            "shap_value_logit": -0.2244
+          },
+          {
+            "feature": "rolling_std_mean",
+            "label": "Rolling std dev (mean)",
+            "raw_value": 0.0432,
+            "shap_value_logit": 0.084
+          },
+          {
+            "feature": "flatline_flag_mean",
+            "label": "Flatline flag rate",
+            "raw_value": 0.4484,
+            "shap_value_logit": 0.0432
+          },
+          {
+            "feature": "rolling_std_std",
+            "label": "Rolling std dev (std dev)",
+            "raw_value": 0.2372,
+            "shap_value_logit": -0.0412
+          },
+          {
+            "feature": "rolling_mean_mean",
+            "label": "Rolling mean (mean)",
+            "raw_value": 7.1578,
+            "shap_value_logit": 0.0247
+          },
+          {
+            "feature": "value_mean",
+            "label": "Reading value (mean)",
+            "raw_value": 7.1578,
+            "shap_value_logit": 0.0246
+          }
+        ]
+      },
+      "isolation_forest_shap": {
+        "base_value": -0.41148,
+        "mean_anomaly_score": -0.38318,
+        "n_readings_total": 32920,
+        "n_readings_sampled": 150,
+        "features": [
+          {
+            "feature": "rolling_std",
+            "label": "Rolling std dev",
+            "raw_value": 0.0432,
+            "shap_value": 0.0082
+          },
+          {
+            "feature": "autocorrelation",
+            "label": "Autocorrelation",
+            "raw_value": 0.0374,
+            "shap_value": -0.00517
+          },
+          {
+            "feature": "rolling_cov",
+            "label": "Rolling coefficient of variation",
+            "raw_value": 0.0145,
+            "shap_value": 0.00444
+          },
+          {
+            "feature": "rolling_mean",
+            "label": "Rolling mean",
+            "raw_value": 7.1562,
+            "shap_value": 0.00371
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-pH",
+            "label": "Correlation: BOD vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00361
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-TSS",
+            "label": "Correlation: Flow vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 0.00304
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-Flow",
+            "label": "Correlation: COD vs Flow",
+            "raw_value": 0.0,
+            "shap_value": 0.00225
+          },
+          {
+            "feature": "flatline_flag",
+            "label": "Flatline flag",
+            "raw_value": 0.4272,
+            "shap_value": 0.00217
+          },
+          {
+            "feature": "value",
+            "label": "Reading value",
+            "raw_value": 7.1578,
+            "shap_value": 0.00151
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-pH",
+            "label": "Correlation: Flow vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00142
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-Flow",
+            "label": "Correlation: BOD vs Flow",
+            "raw_value": 0.0,
+            "shap_value": 0.00115
+          },
+          {
+            "feature": "corr_ETP-TSS_ETP-pH",
+            "label": "Correlation: TSS vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00107
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-pH",
+            "label": "Correlation: COD vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00075
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-TSS",
+            "label": "Correlation: BOD vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 0.00073
+          },
+          {
+            "feature": "limit_hugging",
+            "label": "Limit-hugging flag",
+            "raw_value": 0.0088,
+            "shap_value": 0.00021
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-COD",
+            "label": "Correlation: BOD vs COD",
+            "raw_value": 0.0,
+            "shap_value": 0.00016
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-TSS",
+            "label": "Correlation: COD vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 2e-05
+          },
+          {
+            "feature": "missing_rate",
+            "label": "Missing-data rate",
+            "raw_value": 0.0,
+            "shap_value": 0.0
+          }
+        ]
+      }
+    },
+    "site_1569": {
+      "tamper_model_shap": {
+        "base_value_logit": -0.4787,
+        "predicted_probability": 0.0172,
+        "features": [
+          {
+            "feature": "flatline_flag_std",
+            "label": "Flatline flag rate (std dev)",
+            "raw_value": 0.0,
+            "shap_value_logit": -3.1754
+          },
+          {
+            "feature": "rolling_mean_std",
+            "label": "Rolling mean (std dev)",
+            "raw_value": 0.0,
+            "shap_value_logit": -0.379
+          },
+          {
+            "feature": "value_std",
+            "label": "Reading value (std dev)",
+            "raw_value": 0.0,
+            "shap_value_logit": -0.2424
+          },
+          {
+            "feature": "flatline_flag_mean",
+            "label": "Flatline flag rate",
+            "raw_value": 1.0,
+            "shap_value_logit": -0.2302
+          },
+          {
+            "feature": "rolling_mean_mean",
+            "label": "Rolling mean (mean)",
+            "raw_value": 0.0,
+            "shap_value_logit": 0.2068
+          },
+          {
+            "feature": "value_mean",
+            "label": "Reading value (mean)",
+            "raw_value": 0.0,
+            "shap_value_logit": 0.2039
+          },
+          {
+            "feature": "rolling_std_mean",
+            "label": "Rolling std dev (mean)",
+            "raw_value": 0.0,
+            "shap_value_logit": 0.0933
+          },
+          {
+            "feature": "rolling_std_std",
+            "label": "Rolling std dev (std dev)",
+            "raw_value": 0.0,
+            "shap_value_logit": -0.0434
+          }
+        ]
+      },
+      "isolation_forest_shap": {
+        "base_value": -0.41148,
+        "mean_anomaly_score": -0.3704,
+        "n_readings_total": 5310,
+        "n_readings_sampled": 150,
+        "features": [
+          {
+            "feature": "rolling_std",
+            "label": "Rolling std dev",
+            "raw_value": 0.0,
+            "shap_value": 0.01423
+          },
+          {
+            "feature": "rolling_cov",
+            "label": "Rolling coefficient of variation",
+            "raw_value": 0.0,
+            "shap_value": 0.00559
+          },
+          {
+            "feature": "autocorrelation",
+            "label": "Autocorrelation",
+            "raw_value": 0.0,
+            "shap_value": 0.00471
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-pH",
+            "label": "Correlation: BOD vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00316
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-TSS",
+            "label": "Correlation: Flow vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 0.00279
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-Flow",
+            "label": "Correlation: COD vs Flow",
+            "raw_value": 0.0,
+            "shap_value": 0.00177
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-pH",
+            "label": "Correlation: Flow vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00173
+          },
+          {
+            "feature": "corr_ETP-TSS_ETP-pH",
+            "label": "Correlation: TSS vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00148
+          },
+          {
+            "feature": "rolling_mean",
+            "label": "Rolling mean",
+            "raw_value": 0.0,
+            "shap_value": 0.00129
+          },
+          {
+            "feature": "value",
+            "label": "Reading value",
+            "raw_value": 0.0,
+            "shap_value": 0.00103
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-Flow",
+            "label": "Correlation: BOD vs Flow",
+            "raw_value": 0.0,
+            "shap_value": 0.00099
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-pH",
+            "label": "Correlation: COD vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00097
+          },
+          {
+            "feature": "limit_hugging",
+            "label": "Limit-hugging flag",
+            "raw_value": 0.0,
+            "shap_value": 0.0008
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-TSS",
+            "label": "Correlation: BOD vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 0.00051
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-COD",
+            "label": "Correlation: BOD vs COD",
+            "raw_value": 0.0,
+            "shap_value": 0.0002
+          },
+          {
+            "feature": "flatline_flag",
+            "label": "Flatline flag",
+            "raw_value": 0.9987,
+            "shap_value": -0.00016
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-TSS",
+            "label": "Correlation: COD vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 0.0
+          },
+          {
+            "feature": "missing_rate",
+            "label": "Missing-data rate",
+            "raw_value": 0.0,
+            "shap_value": 0.0
+          }
+        ]
+      }
+    },
+    "site_1581": {
+      "tamper_model_shap": {
+        "base_value_logit": -0.4787,
+        "predicted_probability": 0.7077,
+        "features": [
+          {
+            "feature": "flatline_flag_std",
+            "label": "Flatline flag rate (std dev)",
+            "raw_value": 0.5009,
+            "shap_value_logit": 1.5218
+          },
+          {
+            "feature": "rolling_mean_std",
+            "label": "Rolling mean (std dev)",
+            "raw_value": 4.2607,
+            "shap_value_logit": -0.2414
+          },
+          {
+            "feature": "value_std",
+            "label": "Reading value (std dev)",
+            "raw_value": 4.2393,
+            "shap_value_logit": -0.1702
+          },
+          {
+            "feature": "rolling_mean_mean",
+            "label": "Rolling mean (mean)",
+            "raw_value": 4.3952,
+            "shap_value_logit": 0.095
+          },
+          {
+            "feature": "value_mean",
+            "label": "Reading value (mean)",
+            "raw_value": 4.3563,
+            "shap_value_logit": 0.0948
+          },
+          {
+            "feature": "rolling_std_mean",
+            "label": "Rolling std dev (mean)",
+            "raw_value": 0.0503,
+            "shap_value_logit": 0.0825
+          },
+          {
+            "feature": "rolling_std_std",
+            "label": "Rolling std dev (std dev)",
+            "raw_value": 0.1288,
+            "shap_value_logit": -0.0422
+          },
+          {
+            "feature": "flatline_flag_mean",
+            "label": "Flatline flag rate",
+            "raw_value": 0.49,
+            "shap_value_logit": 0.0226
+          }
+        ]
+      },
+      "isolation_forest_shap": {
+        "base_value": -0.41148,
+        "mean_anomaly_score": -0.36935,
+        "n_readings_total": 263,
+        "n_readings_sampled": 150,
+        "features": [
+          {
+            "feature": "rolling_std",
+            "label": "Rolling std dev",
+            "raw_value": 0.0476,
+            "shap_value": 0.00876
+          },
+          {
+            "feature": "autocorrelation",
+            "label": "Autocorrelation",
+            "raw_value": 0.0,
+            "shap_value": 0.00527
+          },
+          {
+            "feature": "rolling_cov",
+            "label": "Rolling coefficient of variation",
+            "raw_value": 0.006,
+            "shap_value": 0.00497
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-pH",
+            "label": "Correlation: BOD vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00384
+          },
+          {
+            "feature": "flatline_flag",
+            "label": "Flatline flag",
+            "raw_value": 0.4639,
+            "shap_value": 0.00378
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-TSS",
+            "label": "Correlation: Flow vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 0.00352
+          },
+          {
+            "feature": "rolling_mean",
+            "label": "Rolling mean",
+            "raw_value": 4.1613,
+            "shap_value": 0.00244
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-Flow",
+            "label": "Correlation: COD vs Flow",
+            "raw_value": 0.0,
+            "shap_value": 0.00206
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-pH",
+            "label": "Correlation: Flow vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00169
+          },
+          {
+            "feature": "value",
+            "label": "Reading value",
+            "raw_value": 4.3563,
+            "shap_value": 0.00146
+          },
+          {
+            "feature": "corr_ETP-TSS_ETP-pH",
+            "label": "Correlation: TSS vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00097
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-Flow",
+            "label": "Correlation: BOD vs Flow",
+            "raw_value": 0.0,
+            "shap_value": 0.00093
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-pH",
+            "label": "Correlation: COD vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00083
+          },
+          {
+            "feature": "limit_hugging",
+            "label": "Limit-hugging flag",
+            "raw_value": 0.0,
+            "shap_value": 0.00062
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-TSS",
+            "label": "Correlation: BOD vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 0.00049
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-COD",
+            "label": "Correlation: BOD vs COD",
+            "raw_value": 0.0,
+            "shap_value": 0.0002
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-TSS",
+            "label": "Correlation: COD vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 1e-05
+          },
+          {
+            "feature": "missing_rate",
+            "label": "Missing-data rate",
+            "raw_value": 0.0,
+            "shap_value": 0.0
+          }
+        ]
+      }
+    },
+    "site_1668": {
+      "tamper_model_shap": {
+        "base_value_logit": -0.4787,
+        "predicted_probability": 0.5744,
+        "features": [
+          {
+            "feature": "rolling_mean_std",
+            "label": "Rolling mean (std dev)",
+            "raw_value": 31.9816,
+            "shap_value_logit": 0.6539
+          },
+          {
+            "feature": "flatline_flag_std",
+            "label": "Flatline flag rate (std dev)",
+            "raw_value": 0.3855,
+            "shap_value_logit": 0.4393
+          },
+          {
+            "feature": "rolling_mean_mean",
+            "label": "Rolling mean (mean)",
+            "raw_value": 22.2654,
+            "shap_value_logit": -0.3596
+          },
+          {
+            "feature": "value_mean",
+            "label": "Reading value (mean)",
+            "raw_value": 22.2689,
+            "shap_value_logit": -0.3539
+          },
+          {
+            "feature": "value_std",
+            "label": "Reading value (std dev)",
+            "raw_value": 32.255,
+            "shap_value_logit": 0.3072
+          },
+          {
+            "feature": "flatline_flag_mean",
+            "label": "Flatline flag rate",
+            "raw_value": 0.1815,
+            "shap_value_logit": 0.1754
+          },
+          {
+            "feature": "rolling_std_mean",
+            "label": "Rolling std dev (mean)",
+            "raw_value": 0.8114,
+            "shap_value_logit": -0.0804
+          },
+          {
+            "feature": "rolling_std_std",
+            "label": "Rolling std dev (std dev)",
+            "raw_value": 4.3614,
+            "shap_value_logit": -0.0034
+          }
+        ]
+      },
+      "isolation_forest_shap": {
+        "base_value": -0.41148,
+        "mean_anomaly_score": -0.44827,
+        "n_readings_total": 62269,
+        "n_readings_sampled": 150,
+        "features": [
+          {
+            "feature": "limit_hugging",
+            "label": "Limit-hugging flag",
+            "raw_value": 0.1449,
+            "shap_value": -0.0096
+          },
+          {
+            "feature": "autocorrelation",
+            "label": "Autocorrelation",
+            "raw_value": 0.2597,
+            "shap_value": -0.00626
+          },
+          {
+            "feature": "flatline_flag",
+            "label": "Flatline flag",
+            "raw_value": 0.1814,
+            "shap_value": 0.00556
+          },
+          {
+            "feature": "value",
+            "label": "Reading value",
+            "raw_value": 22.2689,
+            "shap_value": -0.00487
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-pH",
+            "label": "Correlation: Flow vs pH",
+            "raw_value": 0.0034,
+            "shap_value": -0.00344
+          },
+          {
+            "feature": "rolling_mean",
+            "label": "Rolling mean",
+            "raw_value": 22.2528,
+            "shap_value": -0.00307
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-TSS",
+            "label": "Correlation: COD vs TSS",
+            "raw_value": 0.2398,
+            "shap_value": 0.00294
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-pH",
+            "label": "Correlation: BOD vs pH",
+            "raw_value": -0.0888,
+            "shap_value": -0.00293
+          },
+          {
+            "feature": "rolling_cov",
+            "label": "Rolling coefficient of variation",
+            "raw_value": 0.0528,
+            "shap_value": 0.00259
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-Flow",
+            "label": "Correlation: COD vs Flow",
+            "raw_value": -0.0255,
+            "shap_value": -0.0023
+          },
+          {
+            "feature": "rolling_std",
+            "label": "Rolling std dev",
+            "raw_value": 0.8109,
+            "shap_value": 0.002
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-Flow",
+            "label": "Correlation: BOD vs Flow",
+            "raw_value": -0.0296,
+            "shap_value": -0.00165
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-pH",
+            "label": "Correlation: COD vs pH",
+            "raw_value": -0.0528,
+            "shap_value": -0.00123
+          },
+          {
+            "feature": "corr_ETP-TSS_ETP-pH",
+            "label": "Correlation: TSS vs pH",
+            "raw_value": -0.0047,
+            "shap_value": -0.00112
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-TSS",
+            "label": "Correlation: BOD vs TSS",
+            "raw_value": -0.0108,
+            "shap_value": -0.00071
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-TSS",
+            "label": "Correlation: Flow vs TSS",
+            "raw_value": -0.0243,
+            "shap_value": -0.00066
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-COD",
+            "label": "Correlation: BOD vs COD",
+            "raw_value": 0.0703,
+            "shap_value": 0.00015
+          },
+          {
+            "feature": "missing_rate",
+            "label": "Missing-data rate",
+            "raw_value": 0.0,
+            "shap_value": 0.0
+          }
+        ]
+      }
+    },
+    "site_1756": {
+      "tamper_model_shap": {
+        "base_value_logit": -0.4787,
+        "predicted_probability": 0.4844,
+        "features": [
+          {
+            "feature": "flatline_flag_std",
+            "label": "Flatline flag rate (std dev)",
+            "raw_value": 0.3888,
+            "shap_value_logit": 0.4706
+          },
+          {
+            "feature": "rolling_mean_std",
+            "label": "Rolling mean (std dev)",
+            "raw_value": 23.8608,
+            "shap_value_logit": 0.3916
+          },
+          {
+            "feature": "rolling_mean_mean",
+            "label": "Rolling mean (mean)",
+            "raw_value": 18.1338,
+            "shap_value_logit": -0.2545
+          },
+          {
+            "feature": "value_mean",
+            "label": "Reading value (mean)",
+            "raw_value": 18.1403,
+            "shap_value_logit": -0.2505
+          },
+          {
+            "feature": "value_std",
+            "label": "Reading value (std dev)",
+            "raw_value": 23.8691,
+            "shap_value_logit": 0.1643
+          },
+          {
+            "feature": "flatline_flag_mean",
+            "label": "Flatline flag rate",
+            "raw_value": 0.8144,
+            "shap_value_logit": -0.1382
+          },
+          {
+            "feature": "rolling_std_mean",
+            "label": "Rolling std dev (mean)",
+            "raw_value": 0.0955,
+            "shap_value_logit": 0.0728
+          },
+          {
+            "feature": "rolling_std_std",
+            "label": "Rolling std dev (std dev)",
+            "raw_value": 0.3647,
+            "shap_value_logit": -0.04
+          }
+        ]
+      },
+      "isolation_forest_shap": {
+        "base_value": -0.41148,
+        "mean_anomaly_score": -0.41498,
+        "n_readings_total": 51559,
+        "n_readings_sampled": 150,
+        "features": [
+          {
+            "feature": "rolling_std",
+            "label": "Rolling std dev",
+            "raw_value": 0.0955,
+            "shap_value": 0.00896
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-Flow",
+            "label": "Correlation: COD vs Flow",
+            "raw_value": 0.0162,
+            "shap_value": -0.00622
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-TSS",
+            "label": "Correlation: Flow vs TSS",
+            "raw_value": 0.0081,
+            "shap_value": -0.00494
+          },
+          {
+            "feature": "value",
+            "label": "Reading value",
+            "raw_value": 18.1403,
+            "shap_value": -0.00475
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-Flow",
+            "label": "Correlation: BOD vs Flow",
+            "raw_value": 0.0136,
+            "shap_value": -0.00443
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-TSS",
+            "label": "Correlation: COD vs TSS",
+            "raw_value": 0.1803,
+            "shap_value": 0.00301
+          },
+          {
+            "feature": "rolling_mean",
+            "label": "Rolling mean",
+            "raw_value": 18.1215,
+            "shap_value": -0.00242
+          },
+          {
+            "feature": "corr_ETP-TSS_ETP-pH",
+            "label": "Correlation: TSS vs pH",
+            "raw_value": -0.0335,
+            "shap_value": -0.00162
+          },
+          {
+            "feature": "flatline_flag",
+            "label": "Flatline flag",
+            "raw_value": 0.8138,
+            "shap_value": -0.00136
+          },
+          {
+            "feature": "autocorrelation",
+            "label": "Autocorrelation",
+            "raw_value": 0.0375,
+            "shap_value": 0.00095
+          },
+          {
+            "feature": "rolling_cov",
+            "label": "Rolling coefficient of variation",
+            "raw_value": 0.0591,
+            "shap_value": 0.00075
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-pH",
+            "label": "Correlation: BOD vs pH",
+            "raw_value": -0.0213,
+            "shap_value": -0.00061
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-pH",
+            "label": "Correlation: COD vs pH",
+            "raw_value": -0.02,
+            "shap_value": -0.00058
+          },
+          {
+            "feature": "limit_hugging",
+            "label": "Limit-hugging flag",
+            "raw_value": 0.0,
+            "shap_value": 0.00056
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-pH",
+            "label": "Correlation: Flow vs pH",
+            "raw_value": 0.005,
+            "shap_value": 0.00037
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-TSS",
+            "label": "Correlation: BOD vs TSS",
+            "raw_value": 0.2054,
+            "shap_value": -0.00037
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-COD",
+            "label": "Correlation: BOD vs COD",
+            "raw_value": 0.2391,
+            "shap_value": -0.0001
+          },
+          {
+            "feature": "missing_rate",
+            "label": "Missing-data rate",
+            "raw_value": 0.0,
+            "shap_value": 0.0
+          }
+        ]
+      }
+    },
+    "site_1787": {
+      "tamper_model_shap": {
+        "base_value_logit": -0.4787,
+        "predicted_probability": 0.1346,
+        "features": [
+          {
+            "feature": "flatline_flag_std",
+            "label": "Flatline flag rate (std dev)",
+            "raw_value": 0.2455,
+            "shap_value_logit": -0.8733
+          },
+          {
+            "feature": "rolling_std_mean",
+            "label": "Rolling std dev (mean)",
+            "raw_value": 2.0781,
+            "shap_value_logit": -0.3516
+          },
+          {
+            "feature": "rolling_mean_std",
+            "label": "Rolling mean (std dev)",
+            "raw_value": 1.9562,
+            "shap_value_logit": -0.3158
+          },
+          {
+            "feature": "flatline_flag_mean",
+            "label": "Flatline flag rate",
+            "raw_value": 0.0644,
+            "shap_value_logit": 0.2335
+          },
+          {
+            "feature": "value_std",
+            "label": "Reading value (std dev)",
+            "raw_value": 2.9976,
+            "shap_value_logit": -0.1913
+          },
+          {
+            "feature": "rolling_mean_mean",
+            "label": "Rolling mean (mean)",
+            "raw_value": 5.2041,
+            "shap_value_logit": 0.0744
+          },
+          {
+            "feature": "value_mean",
+            "label": "Reading value (mean)",
+            "raw_value": 5.204,
+            "shap_value_logit": 0.0736
+          },
+          {
+            "feature": "rolling_std_std",
+            "label": "Rolling std dev (std dev)",
+            "raw_value": 1.2569,
+            "shap_value_logit": -0.0319
+          }
+        ]
+      },
+      "isolation_forest_shap": {
+        "base_value": -0.41148,
+        "mean_anomaly_score": -0.42113,
+        "n_readings_total": 34161,
+        "n_readings_sampled": 150,
+        "features": [
+          {
+            "feature": "rolling_std",
+            "label": "Rolling std dev",
+            "raw_value": 2.0776,
+            "shap_value": -0.02086
+          },
+          {
+            "feature": "rolling_cov",
+            "label": "Rolling coefficient of variation",
+            "raw_value": 0.4929,
+            "shap_value": -0.0172
+          },
+          {
+            "feature": "flatline_flag",
+            "label": "Flatline flag",
+            "raw_value": 0.0641,
+            "shap_value": 0.0046
+          },
+          {
+            "feature": "autocorrelation",
+            "label": "Autocorrelation",
+            "raw_value": -0.018,
+            "shap_value": 0.00406
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-pH",
+            "label": "Correlation: BOD vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00341
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-TSS",
+            "label": "Correlation: Flow vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 0.00321
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-Flow",
+            "label": "Correlation: COD vs Flow",
+            "raw_value": 0.0,
+            "shap_value": 0.00184
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-pH",
+            "label": "Correlation: Flow vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00172
+          },
+          {
+            "feature": "value",
+            "label": "Reading value",
+            "raw_value": 5.204,
+            "shap_value": 0.00167
+          },
+          {
+            "feature": "rolling_mean",
+            "label": "Rolling mean",
+            "raw_value": 5.203,
+            "shap_value": 0.00164
+          },
+          {
+            "feature": "corr_ETP-TSS_ETP-pH",
+            "label": "Correlation: TSS vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.0014
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-Flow",
+            "label": "Correlation: BOD vs Flow",
+            "raw_value": 0.0,
+            "shap_value": 0.00098
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-pH",
+            "label": "Correlation: COD vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00083
+          },
+          {
+            "feature": "limit_hugging",
+            "label": "Limit-hugging flag",
+            "raw_value": 0.0,
+            "shap_value": 0.00076
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-TSS",
+            "label": "Correlation: BOD vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 0.00048
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-COD",
+            "label": "Correlation: BOD vs COD",
+            "raw_value": 0.0,
+            "shap_value": 0.00021
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-TSS",
+            "label": "Correlation: COD vs TSS",
+            "raw_value": 0.0,
+            "shap_value": -2e-05
+          },
+          {
+            "feature": "missing_rate",
+            "label": "Missing-data rate",
+            "raw_value": 0.0,
+            "shap_value": 0.0
+          }
+        ]
+      }
+    },
+    "site_1789": {
+      "tamper_model_shap": {
+        "base_value_logit": -0.4787,
+        "predicted_probability": 0.923,
+        "features": [
+          {
+            "feature": "flatline_flag_std",
+            "label": "Flatline flag rate (std dev)",
+            "raw_value": 0.474,
+            "shap_value_logit": 1.2694
+          },
+          {
+            "feature": "rolling_mean_std",
+            "label": "Rolling mean (std dev)",
+            "raw_value": 50.7534,
+            "shap_value_logit": 1.2602
+          },
+          {
+            "feature": "value_std",
+            "label": "Reading value (std dev)",
+            "raw_value": 53.6524,
+            "shap_value_logit": 0.6717
+          },
+          {
+            "feature": "value_mean",
+            "label": "Reading value (mean)",
+            "raw_value": 13.787,
+            "shap_value_logit": -0.1415
+          },
+          {
+            "feature": "rolling_std_mean",
+            "label": "Rolling std dev (mean)",
+            "raw_value": 1.0588,
+            "shap_value_logit": -0.1334
+          },
+          {
+            "feature": "rolling_mean_mean",
+            "label": "Rolling mean (mean)",
+            "raw_value": 13.3041,
+            "shap_value_logit": -0.1316
+          },
+          {
+            "feature": "flatline_flag_mean",
+            "label": "Flatline flag rate",
+            "raw_value": 0.3407,
+            "shap_value_logit": 0.0966
+          },
+          {
+            "feature": "rolling_std_std",
+            "label": "Rolling std dev (std dev)",
+            "raw_value": 12.5337,
+            "shap_value_logit": 0.0714
+          }
+        ]
+      },
+      "isolation_forest_shap": {
+        "base_value": -0.41148,
+        "mean_anomaly_score": -0.39324,
+        "n_readings_total": 6429,
+        "n_readings_sampled": 150,
+        "features": [
+          {
+            "feature": "autocorrelation",
+            "label": "Autocorrelation",
+            "raw_value": 0.2724,
+            "shap_value": -0.00884
+          },
+          {
+            "feature": "rolling_std",
+            "label": "Rolling std dev",
+            "raw_value": 1.0542,
+            "shap_value": 0.00715
+          },
+          {
+            "feature": "limit_hugging",
+            "label": "Limit-hugging flag",
+            "raw_value": 0.0516,
+            "shap_value": -0.00484
+          },
+          {
+            "feature": "rolling_cov",
+            "label": "Rolling coefficient of variation",
+            "raw_value": 0.0125,
+            "shap_value": 0.0044
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-pH",
+            "label": "Correlation: BOD vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00336
+          },
+          {
+            "feature": "flatline_flag",
+            "label": "Flatline flag",
+            "raw_value": 0.3392,
+            "shap_value": 0.00314
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-TSS",
+            "label": "Correlation: Flow vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 0.00304
+          },
+          {
+            "feature": "rolling_mean",
+            "label": "Rolling mean",
+            "raw_value": 13.2462,
+            "shap_value": 0.00302
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-Flow",
+            "label": "Correlation: COD vs Flow",
+            "raw_value": 0.0,
+            "shap_value": 0.00208
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-pH",
+            "label": "Correlation: Flow vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00159
+          },
+          {
+            "feature": "value",
+            "label": "Reading value",
+            "raw_value": 13.787,
+            "shap_value": 0.00143
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-Flow",
+            "label": "Correlation: BOD vs Flow",
+            "raw_value": 0.0,
+            "shap_value": 0.00119
+          },
+          {
+            "feature": "corr_ETP-TSS_ETP-pH",
+            "label": "Correlation: TSS vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00115
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-pH",
+            "label": "Correlation: COD vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00077
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-TSS",
+            "label": "Correlation: BOD vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 0.00059
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-COD",
+            "label": "Correlation: BOD vs COD",
+            "raw_value": 0.0,
+            "shap_value": 6e-05
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-TSS",
+            "label": "Correlation: COD vs TSS",
+            "raw_value": 0.0,
+            "shap_value": -0.0
+          },
+          {
+            "feature": "missing_rate",
+            "label": "Missing-data rate",
+            "raw_value": 0.0,
+            "shap_value": 0.0
+          }
+        ]
+      }
+    },
+    "site_1799": {
+      "tamper_model_shap": {
+        "base_value_logit": -0.4787,
+        "predicted_probability": 0.4812,
+        "features": [
+          {
+            "feature": "flatline_flag_std",
+            "label": "Flatline flag rate (std dev)",
+            "raw_value": 0.3993,
+            "shap_value_logit": 0.5692
+          },
+          {
+            "feature": "flatline_flag_mean",
+            "label": "Flatline flag rate",
+            "raw_value": 0.8009,
+            "shap_value_logit": -0.1315
+          },
+          {
+            "feature": "rolling_std_mean",
+            "label": "Rolling std dev (mean)",
+            "raw_value": 0.0307,
+            "shap_value_logit": 0.0867
+          },
+          {
+            "feature": "value_std",
+            "label": "Reading value (std dev)",
+            "raw_value": 11.4376,
+            "shap_value_logit": -0.0475
+          },
+          {
+            "feature": "rolling_std_std",
+            "label": "Rolling std dev (std dev)",
+            "raw_value": 0.2716,
+            "shap_value_logit": -0.0409
+          },
+          {
+            "feature": "rolling_mean_mean",
+            "label": "Rolling mean (mean)",
+            "raw_value": 8.5861,
+            "shap_value_logit": -0.0116
+          },
+          {
+            "feature": "value_mean",
+            "label": "Reading value (mean)",
+            "raw_value": 8.5871,
+            "shap_value_logit": -0.0112
+          },
+          {
+            "feature": "rolling_mean_std",
+            "label": "Rolling mean (std dev)",
+            "raw_value": 11.4322,
+            "shap_value_logit": -0.0098
+          }
+        ]
+      },
+      "isolation_forest_shap": {
+        "base_value": -0.41148,
+        "mean_anomaly_score": -0.42734,
+        "n_readings_total": 74565,
+        "n_readings_sampled": 150,
+        "features": [
+          {
+            "feature": "corr_ETP-BOD_ETP-pH",
+            "label": "Correlation: BOD vs pH",
+            "raw_value": 0.0776,
+            "shap_value": -0.01446
+          },
+          {
+            "feature": "rolling_std",
+            "label": "Rolling std dev",
+            "raw_value": 0.0307,
+            "shap_value": 0.01118
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-pH",
+            "label": "Correlation: COD vs pH",
+            "raw_value": 0.0814,
+            "shap_value": -0.0074
+          },
+          {
+            "feature": "limit_hugging",
+            "label": "Limit-hugging flag",
+            "raw_value": 0.0661,
+            "shap_value": -0.00552
+          },
+          {
+            "feature": "rolling_cov",
+            "label": "Rolling coefficient of variation",
+            "raw_value": 0.022,
+            "shap_value": 0.00546
+          },
+          {
+            "feature": "autocorrelation",
+            "label": "Autocorrelation",
+            "raw_value": 0.0665,
+            "shap_value": -0.00453
+          },
+          {
+            "feature": "flatline_flag",
+            "label": "Flatline flag",
+            "raw_value": 0.8005,
+            "shap_value": -0.00346
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-TSS",
+            "label": "Correlation: Flow vs TSS",
+            "raw_value": 0.0003,
+            "shap_value": 0.00202
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-TSS",
+            "label": "Correlation: COD vs TSS",
+            "raw_value": -0.0094,
+            "shap_value": -0.00139
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-Flow",
+            "label": "Correlation: COD vs Flow",
+            "raw_value": -0.0011,
+            "shap_value": 0.001
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-pH",
+            "label": "Correlation: Flow vs pH",
+            "raw_value": -0.0034,
+            "shap_value": 0.00087
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-Flow",
+            "label": "Correlation: BOD vs Flow",
+            "raw_value": -0.0012,
+            "shap_value": 0.00069
+          },
+          {
+            "feature": "value",
+            "label": "Reading value",
+            "raw_value": 8.5871,
+            "shap_value": -0.00059
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-TSS",
+            "label": "Correlation: BOD vs TSS",
+            "raw_value": -0.0093,
+            "shap_value": -0.00049
+          },
+          {
+            "feature": "corr_ETP-TSS_ETP-pH",
+            "label": "Correlation: TSS vs pH",
+            "raw_value": -0.032,
+            "shap_value": -0.00033
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-COD",
+            "label": "Correlation: BOD vs COD",
+            "raw_value": 0.5215,
+            "shap_value": -0.0001
+          },
+          {
+            "feature": "rolling_mean",
+            "label": "Rolling mean",
+            "raw_value": 8.582,
+            "shap_value": 5e-05
+          },
+          {
+            "feature": "missing_rate",
+            "label": "Missing-data rate",
+            "raw_value": 0.0,
+            "shap_value": 0.0
+          }
+        ]
+      }
+    },
+    "site_1905": {
+      "tamper_model_shap": {
+        "base_value_logit": -0.4787,
+        "predicted_probability": 0.3682,
+        "features": [
+          {
+            "feature": "rolling_mean_std",
+            "label": "Rolling mean (std dev)",
+            "raw_value": 1.0397,
+            "shap_value_logit": -0.3454
+          },
+          {
+            "feature": "flatline_flag_std",
+            "label": "Flatline flag rate (std dev)",
+            "raw_value": 0.3632,
+            "shap_value_logit": 0.2309
+          },
+          {
+            "feature": "rolling_mean_mean",
+            "label": "Rolling mean (mean)",
+            "raw_value": 0.1894,
+            "shap_value_logit": 0.202
+          },
+          {
+            "feature": "value_mean",
+            "label": "Reading value (mean)",
+            "raw_value": 0.1893,
+            "shap_value_logit": 0.1992
+          },
+          {
+            "feature": "value_std",
+            "label": "Reading value (std dev)",
+            "raw_value": 2.7405,
+            "shap_value_logit": -0.1957
+          },
+          {
+            "feature": "flatline_flag_mean",
+            "label": "Flatline flag rate",
+            "raw_value": 0.8436,
+            "shap_value_logit": -0.1527
+          },
+          {
+            "feature": "rolling_std_mean",
+            "label": "Rolling std dev (mean)",
+            "raw_value": 0.3465,
+            "shap_value_logit": 0.0191
+          },
+          {
+            "feature": "rolling_std_std",
+            "label": "Rolling std dev (std dev)",
+            "raw_value": 2.6891,
+            "shap_value_logit": -0.0187
+          }
+        ]
+      },
+      "isolation_forest_shap": {
+        "base_value": -0.41148,
+        "mean_anomaly_score": -0.38864,
+        "n_readings_total": 15762,
+        "n_readings_sampled": 150,
+        "features": [
+          {
+            "feature": "rolling_cov",
+            "label": "Rolling coefficient of variation",
+            "raw_value": 0.3193,
+            "shap_value": -0.00981
+          },
+          {
+            "feature": "rolling_std",
+            "label": "Rolling std dev",
+            "raw_value": 0.3463,
+            "shap_value": 0.00694
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-pH",
+            "label": "Correlation: BOD vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00343
+          },
+          {
+            "feature": "autocorrelation",
+            "label": "Autocorrelation",
+            "raw_value": 0.048,
+            "shap_value": 0.00316
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-TSS",
+            "label": "Correlation: Flow vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 0.00298
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-Flow",
+            "label": "Correlation: COD vs Flow",
+            "raw_value": 0.0,
+            "shap_value": 0.00198
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-pH",
+            "label": "Correlation: Flow vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00175
+          },
+          {
+            "feature": "rolling_mean",
+            "label": "Rolling mean",
+            "raw_value": 0.1893,
+            "shap_value": 0.00138
+          },
+          {
+            "feature": "corr_ETP-TSS_ETP-pH",
+            "label": "Correlation: TSS vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00129
+          },
+          {
+            "feature": "value",
+            "label": "Reading value",
+            "raw_value": 0.1893,
+            "shap_value": 0.00104
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-Flow",
+            "label": "Correlation: BOD vs Flow",
+            "raw_value": 0.0,
+            "shap_value": 0.00089
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-pH",
+            "label": "Correlation: COD vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.0008
+          },
+          {
+            "feature": "limit_hugging",
+            "label": "Limit-hugging flag",
+            "raw_value": 0.0,
+            "shap_value": 0.00075
+          },
+          {
+            "feature": "flatline_flag",
+            "label": "Flatline flag",
+            "raw_value": 0.8432,
+            "shap_value": 0.00058
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-TSS",
+            "label": "Correlation: BOD vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 0.00057
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-COD",
+            "label": "Correlation: BOD vs COD",
+            "raw_value": 0.0,
+            "shap_value": 0.00015
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-TSS",
+            "label": "Correlation: COD vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 1e-05
+          },
+          {
+            "feature": "missing_rate",
+            "label": "Missing-data rate",
+            "raw_value": 0.0,
+            "shap_value": 0.0
+          }
+        ]
+      }
+    },
+    "site_1909": {
+      "tamper_model_shap": {
+        "base_value_logit": -0.4787,
+        "predicted_probability": 0.692,
+        "features": [
+          {
+            "feature": "flatline_flag_std",
+            "label": "Flatline flag rate (std dev)",
+            "raw_value": 0.4956,
+            "shap_value_logit": 1.472
+          },
+          {
+            "feature": "rolling_mean_std",
+            "label": "Rolling mean (std dev)",
+            "raw_value": 3.9292,
+            "shap_value_logit": -0.2521
+          },
+          {
+            "feature": "value_std",
+            "label": "Reading value (std dev)",
+            "raw_value": 3.9295,
+            "shap_value_logit": -0.1754
+          },
+          {
+            "feature": "rolling_mean_mean",
+            "label": "Rolling mean (mean)",
+            "raw_value": 3.9146,
+            "shap_value_logit": 0.1072
+          },
+          {
+            "feature": "value_mean",
+            "label": "Reading value (mean)",
+            "raw_value": 3.9146,
+            "shap_value_logit": 0.1059
+          },
+          {
+            "feature": "rolling_std_mean",
+            "label": "Rolling std dev (mean)",
+            "raw_value": 0.0211,
+            "shap_value_logit": 0.0888
+          },
+          {
+            "feature": "rolling_std_std",
+            "label": "Rolling std dev (std dev)",
+            "raw_value": 0.0456,
+            "shap_value_logit": -0.0429
+          },
+          {
+            "feature": "flatline_flag_mean",
+            "label": "Flatline flag rate",
+            "raw_value": 0.5665,
+            "shap_value_logit": -0.0153
+          }
+        ]
+      },
+      "isolation_forest_shap": {
+        "base_value": -0.41148,
+        "mean_anomaly_score": -0.37969,
+        "n_readings_total": 7222,
+        "n_readings_sampled": 150,
+        "features": [
+          {
+            "feature": "rolling_std",
+            "label": "Rolling std dev",
+            "raw_value": 0.0211,
+            "shap_value": 0.00978
+          },
+          {
+            "feature": "rolling_cov",
+            "label": "Rolling coefficient of variation",
+            "raw_value": 0.0059,
+            "shap_value": 0.005
+          },
+          {
+            "feature": "autocorrelation",
+            "label": "Autocorrelation",
+            "raw_value": 0.2279,
+            "shap_value": -0.00375
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-pH",
+            "label": "Correlation: BOD vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00344
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-TSS",
+            "label": "Correlation: Flow vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 0.00296
+          },
+          {
+            "feature": "flatline_flag",
+            "label": "Flatline flag",
+            "raw_value": 0.5654,
+            "shap_value": 0.0028
+          },
+          {
+            "feature": "rolling_mean",
+            "label": "Rolling mean",
+            "raw_value": 3.907,
+            "shap_value": 0.00243
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-Flow",
+            "label": "Correlation: COD vs Flow",
+            "raw_value": 0.0,
+            "shap_value": 0.00202
+          },
+          {
+            "feature": "value",
+            "label": "Reading value",
+            "raw_value": 3.9146,
+            "shap_value": 0.00156
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-pH",
+            "label": "Correlation: Flow vs pH",
+            "raw_value": 0.0018,
+            "shap_value": 0.00146
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-Flow",
+            "label": "Correlation: BOD vs Flow",
+            "raw_value": 0.0,
+            "shap_value": 0.00122
+          },
+          {
+            "feature": "corr_ETP-TSS_ETP-pH",
+            "label": "Correlation: TSS vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00115
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-pH",
+            "label": "Correlation: COD vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00082
+          },
+          {
+            "feature": "limit_hugging",
+            "label": "Limit-hugging flag",
+            "raw_value": 0.0087,
+            "shap_value": 0.00076
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-TSS",
+            "label": "Correlation: BOD vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 0.00064
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-COD",
+            "label": "Correlation: BOD vs COD",
+            "raw_value": 0.0,
+            "shap_value": 0.00017
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-TSS",
+            "label": "Correlation: COD vs TSS",
+            "raw_value": 0.0,
+            "shap_value": -1e-05
+          },
+          {
+            "feature": "missing_rate",
+            "label": "Missing-data rate",
+            "raw_value": 0.0,
+            "shap_value": 0.0
+          }
+        ]
+      }
+    },
+    "site_2070": {
+      "tamper_model_shap": {
+        "base_value_logit": -0.4787,
+        "predicted_probability": 0.1737,
+        "features": [
+          {
+            "feature": "flatline_flag_std",
+            "label": "Flatline flag rate (std dev)",
+            "raw_value": 0.2627,
+            "shap_value_logit": -0.7118
+          },
+          {
+            "feature": "rolling_mean_std",
+            "label": "Rolling mean (std dev)",
+            "raw_value": 2.4046,
+            "shap_value_logit": -0.3013
+          },
+          {
+            "feature": "value_std",
+            "label": "Reading value (std dev)",
+            "raw_value": 2.4272,
+            "shap_value_logit": -0.201
+          },
+          {
+            "feature": "flatline_flag_mean",
+            "label": "Flatline flag rate",
+            "raw_value": 0.9256,
+            "shap_value_logit": -0.1933
+          },
+          {
+            "feature": "value_mean",
+            "label": "Reading value (mean)",
+            "raw_value": 2.2291,
+            "shap_value_logit": 0.1481
+          },
+          {
+            "feature": "rolling_mean_mean",
+            "label": "Rolling mean (mean)",
+            "raw_value": 2.3286,
+            "shap_value_logit": 0.1476
+          },
+          {
+            "feature": "rolling_std_mean",
+            "label": "Rolling std dev (mean)",
+            "raw_value": 0.1101,
+            "shap_value_logit": 0.0697
+          },
+          {
+            "feature": "rolling_std_std",
+            "label": "Rolling std dev (std dev)",
+            "raw_value": 0.4777,
+            "shap_value_logit": -0.039
+          }
+        ]
+      },
+      "isolation_forest_shap": {
+        "base_value": -0.41148,
+        "mean_anomaly_score": -0.38209,
+        "n_readings_total": 559,
+        "n_readings_sampled": 150,
+        "features": [
+          {
+            "feature": "rolling_std",
+            "label": "Rolling std dev",
+            "raw_value": 0.1032,
+            "shap_value": 0.01276
+          },
+          {
+            "feature": "autocorrelation",
+            "label": "Autocorrelation",
+            "raw_value": 0.0,
+            "shap_value": 0.00505
+          },
+          {
+            "feature": "rolling_cov",
+            "label": "Rolling coefficient of variation",
+            "raw_value": 0.055,
+            "shap_value": 0.0042
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-TSS",
+            "label": "Correlation: Flow vs TSS",
+            "raw_value": 0.0,
+            "shap_value": 0.00308
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-Flow",
+            "label": "Correlation: COD vs Flow",
+            "raw_value": 0.0,
+            "shap_value": 0.00183
+          },
+          {
+            "feature": "rolling_mean",
+            "label": "Rolling mean",
+            "raw_value": 2.1828,
+            "shap_value": 0.00165
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-pH",
+            "label": "Correlation: Flow vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00144
+          },
+          {
+            "feature": "value",
+            "label": "Reading value",
+            "raw_value": 2.2291,
+            "shap_value": 0.00137
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-Flow",
+            "label": "Correlation: BOD vs Flow",
+            "raw_value": 0.0,
+            "shap_value": 0.00105
+          },
+          {
+            "feature": "limit_hugging",
+            "label": "Limit-hugging flag",
+            "raw_value": 0.0,
+            "shap_value": 0.00082
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-TSS",
+            "label": "Correlation: BOD vs TSS",
+            "raw_value": 0.0011,
+            "shap_value": 0.00057
+          },
+          {
+            "feature": "flatline_flag",
+            "label": "Flatline flag",
+            "raw_value": 0.8676,
+            "shap_value": -0.00031
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-pH",
+            "label": "Correlation: COD vs pH",
+            "raw_value": 0.0707,
+            "shap_value": -0.00026
+          },
+          {
+            "feature": "corr_ETP-TSS_ETP-pH",
+            "label": "Correlation: TSS vs pH",
+            "raw_value": -0.046,
+            "shap_value": -0.0002
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-pH",
+            "label": "Correlation: BOD vs pH",
+            "raw_value": 0.0707,
+            "shap_value": 7e-05
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-COD",
+            "label": "Correlation: BOD vs COD",
+            "raw_value": 0.0984,
+            "shap_value": 3e-05
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-TSS",
+            "label": "Correlation: COD vs TSS",
+            "raw_value": 0.0011,
+            "shap_value": 1e-05
+          },
+          {
+            "feature": "missing_rate",
+            "label": "Missing-data rate",
+            "raw_value": 0.0,
+            "shap_value": 0.0
+          }
+        ]
+      }
+    },
+    "site_887": {
+      "tamper_model_shap": {
+        "base_value_logit": -0.4787,
+        "predicted_probability": 0.5663,
+        "features": [
+          {
+            "feature": "flatline_flag_std",
+            "label": "Flatline flag rate (std dev)",
+            "raw_value": 0.4437,
+            "shap_value_logit": 0.9858
+          },
+          {
+            "feature": "rolling_mean_std",
+            "label": "Rolling mean (std dev)",
+            "raw_value": 25.7335,
+            "shap_value_logit": 0.4521
+          },
+          {
+            "feature": "rolling_mean_mean",
+            "label": "Rolling mean (mean)",
+            "raw_value": 23.0767,
+            "shap_value_logit": -0.3802
+          },
+          {
+            "feature": "value_mean",
+            "label": "Reading value (mean)",
+            "raw_value": 23.0775,
+            "shap_value_logit": -0.3742
+          },
+          {
+            "feature": "rolling_std_mean",
+            "label": "Rolling std dev (mean)",
+            "raw_value": 1.6708,
+            "shap_value_logit": -0.2644
+          },
+          {
+            "feature": "value_std",
+            "label": "Reading value (std dev)",
+            "raw_value": 26.0488,
+            "shap_value_logit": 0.2014
+          },
+          {
+            "feature": "flatline_flag_mean",
+            "label": "Flatline flag rate",
+            "raw_value": 0.2696,
+            "shap_value_logit": 0.1318
+          },
+          {
+            "feature": "rolling_std_std",
+            "label": "Rolling std dev (std dev)",
+            "raw_value": 3.9799,
+            "shap_value_logit": -0.0069
+          }
+        ]
+      },
+      "isolation_forest_shap": {
+        "base_value": -0.41148,
+        "mean_anomaly_score": -0.50504,
+        "n_readings_total": 89025,
+        "n_readings_sampled": 150,
+        "features": [
+          {
+            "feature": "corr_ETP-BOD_ETP-Flow",
+            "label": "Correlation: BOD vs Flow",
+            "raw_value": 0.0708,
+            "shap_value": -0.01251
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-TSS",
+            "label": "Correlation: Flow vs TSS",
+            "raw_value": -0.0781,
+            "shap_value": -0.01205
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-pH",
+            "label": "Correlation: Flow vs pH",
+            "raw_value": -0.1058,
+            "shap_value": -0.01163
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-pH",
+            "label": "Correlation: BOD vs pH",
+            "raw_value": 0.0911,
+            "shap_value": -0.01088
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-Flow",
+            "label": "Correlation: COD vs Flow",
+            "raw_value": -0.0383,
+            "shap_value": -0.0079
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-COD",
+            "label": "Correlation: BOD vs COD",
+            "raw_value": -0.0684,
+            "shap_value": -0.00518
+          },
+          {
+            "feature": "value",
+            "label": "Reading value",
+            "raw_value": 23.0775,
+            "shap_value": -0.00513
+          },
+          {
+            "feature": "rolling_std",
+            "label": "Rolling std dev",
+            "raw_value": 1.6701,
+            "shap_value": -0.00458
+          },
+          {
+            "feature": "corr_ETP-TSS_ETP-pH",
+            "label": "Correlation: TSS vs pH",
+            "raw_value": 0.0082,
+            "shap_value": -0.0043
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-TSS",
+            "label": "Correlation: BOD vs TSS",
+            "raw_value": -0.1742,
+            "shap_value": -0.00393
+          },
+          {
+            "feature": "autocorrelation",
+            "label": "Autocorrelation",
+            "raw_value": 0.0913,
+            "shap_value": -0.00339
+          },
+          {
+            "feature": "rolling_mean",
+            "label": "Rolling mean",
+            "raw_value": 23.0676,
+            "shap_value": -0.00315
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-TSS",
+            "label": "Correlation: COD vs TSS",
+            "raw_value": 0.399,
+            "shap_value": 0.00209
+          },
+          {
+            "feature": "flatline_flag",
+            "label": "Flatline flag",
+            "raw_value": 0.2685,
+            "shap_value": 0.00186
+          },
+          {
+            "feature": "limit_hugging",
+            "label": "Limit-hugging flag",
+            "raw_value": 0.0237,
+            "shap_value": -0.00118
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-pH",
+            "label": "Correlation: COD vs pH",
+            "raw_value": 0.0122,
+            "shap_value": -0.00093
+          },
+          {
+            "feature": "rolling_cov",
+            "label": "Rolling coefficient of variation",
+            "raw_value": 0.0861,
+            "shap_value": -0.00018
+          },
+          {
+            "feature": "missing_rate",
+            "label": "Missing-data rate",
+            "raw_value": 0.0,
+            "shap_value": 0.0
+          }
+        ]
+      }
+    },
+    "site_982": {
+      "tamper_model_shap": {
+        "base_value_logit": -0.4787,
+        "predicted_probability": 0.0907,
+        "features": [
+          {
+            "feature": "rolling_mean_std",
+            "label": "Rolling mean (std dev)",
+            "raw_value": 66.1566,
+            "shap_value_logit": 1.7577
+          },
+          {
+            "feature": "flatline_flag_std",
+            "label": "Flatline flag rate (std dev)",
+            "raw_value": 0.1724,
+            "shap_value_logit": -1.5588
+          },
+          {
+            "feature": "rolling_mean_mean",
+            "label": "Rolling mean (mean)",
+            "raw_value": 62.4679,
+            "shap_value_logit": -1.3822
+          },
+          {
+            "feature": "value_mean",
+            "label": "Reading value (mean)",
+            "raw_value": 62.4704,
+            "shap_value_logit": -1.3611
+          },
+          {
+            "feature": "value_std",
+            "label": "Reading value (std dev)",
+            "raw_value": 66.1598,
+            "shap_value_logit": 0.8848
+          },
+          {
+            "feature": "flatline_flag_mean",
+            "label": "Flatline flag rate",
+            "raw_value": 0.9693,
+            "shap_value_logit": -0.215
+          },
+          {
+            "feature": "rolling_std_mean",
+            "label": "Rolling std dev (mean)",
+            "raw_value": 0.0208,
+            "shap_value_logit": 0.0888
+          },
+          {
+            "feature": "rolling_std_std",
+            "label": "Rolling std dev (std dev)",
+            "raw_value": 0.2565,
+            "shap_value_logit": -0.041
+          }
+        ]
+      },
+      "isolation_forest_shap": {
+        "base_value": -0.41148,
+        "mean_anomaly_score": -0.46018,
+        "n_readings_total": 11380,
+        "n_readings_sampled": 150,
+        "features": [
+          {
+            "feature": "rolling_mean",
+            "label": "Rolling mean",
+            "raw_value": 62.3142,
+            "shap_value": -0.02258
+          },
+          {
+            "feature": "value",
+            "label": "Reading value",
+            "raw_value": 62.4704,
+            "shap_value": -0.02067
+          },
+          {
+            "feature": "rolling_std",
+            "label": "Rolling std dev",
+            "raw_value": 0.0208,
+            "shap_value": 0.01205
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-TSS",
+            "label": "Correlation: COD vs TSS",
+            "raw_value": -0.094,
+            "shap_value": -0.00779
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-TSS",
+            "label": "Correlation: BOD vs TSS",
+            "raw_value": -0.1633,
+            "shap_value": -0.00722
+          },
+          {
+            "feature": "flatline_flag",
+            "label": "Flatline flag",
+            "raw_value": 0.967,
+            "shap_value": -0.00667
+          },
+          {
+            "feature": "rolling_cov",
+            "label": "Rolling coefficient of variation",
+            "raw_value": 0.044,
+            "shap_value": 0.00453
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-pH",
+            "label": "Correlation: BOD vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00287
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-COD",
+            "label": "Correlation: BOD vs COD",
+            "raw_value": 0.1595,
+            "shap_value": -0.00209
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-pH",
+            "label": "Correlation: Flow vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00112
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-Flow",
+            "label": "Correlation: COD vs Flow",
+            "raw_value": -0.014,
+            "shap_value": -0.00103
+          },
+          {
+            "feature": "corr_ETP-TSS_ETP-pH",
+            "label": "Correlation: TSS vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00087
+          },
+          {
+            "feature": "corr_ETP-Flow_ETP-TSS",
+            "label": "Correlation: Flow vs TSS",
+            "raw_value": 0.0062,
+            "shap_value": -0.00073
+          },
+          {
+            "feature": "corr_ETP-COD_ETP-pH",
+            "label": "Correlation: COD vs pH",
+            "raw_value": 0.0,
+            "shap_value": 0.00069
+          },
+          {
+            "feature": "autocorrelation",
+            "label": "Autocorrelation",
+            "raw_value": 0.0072,
+            "shap_value": 0.0005
+          },
+          {
+            "feature": "limit_hugging",
+            "label": "Limit-hugging flag",
+            "raw_value": 0.0,
+            "shap_value": 0.00048
+          },
+          {
+            "feature": "corr_ETP-BOD_ETP-Flow",
+            "label": "Correlation: BOD vs Flow",
+            "raw_value": -0.0114,
+            "shap_value": 0.00029
+          },
+          {
+            "feature": "missing_rate",
+            "label": "Missing-data rate",
+            "raw_value": 0.0,
+            "shap_value": 0.0
+          }
+        ]
+      }
+    }
+  }
+}
