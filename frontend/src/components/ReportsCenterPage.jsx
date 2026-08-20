@@ -5,6 +5,7 @@ import { API_BASE_URL } from '../config';
 export function ReportsCenterPage({ onNavigate }) {
   const [factories, setFactories] = useState([]);
   const [selectedFactory, setSelectedFactory] = useState(null);
+  const [explanation, setExplanation] = useState(null);
   const [filterTag, setFilterTag] = useState('All');
   const [loading, setLoading] = useState(true);
 
@@ -30,14 +31,14 @@ export function ReportsCenterPage({ onNavigate }) {
   };
 
   const fetchFactoryReport = async (fObj) => {
+    setExplanation(null);
     try {
-      const res = await fetch(`${API_BASE_URL}/api/factories/${fObj.factory_id}`);
-      if (res.ok) {
-        const data = await res.json();
-        setSelectedFactory(data);
-      } else {
-        setSelectedFactory(fObj);
-      }
+      const [factoryRes, shapRes] = await Promise.all([
+        fetch(`${API_BASE_URL}/api/factories/${fObj.factory_id}`),
+        fetch(`${API_BASE_URL}/api/factories/${fObj.factory_id}/shap`)
+      ]);
+      setSelectedFactory(factoryRes.ok ? await factoryRes.json() : fObj);
+      if (shapRes.ok) setExplanation(await shapRes.json());
     } catch (err) {
       setSelectedFactory(fObj);
     }
@@ -166,6 +167,83 @@ export function ReportsCenterPage({ onNavigate }) {
             <p className="text-body-sm text-[#42474f] leading-relaxed">
               Forensic AI evaluation of real-time telemetry from <strong className="text-[#191c1e]">{activeFac.factory_name || activeFac.name}</strong> ({regionStr}) revealed TSI risk score of <strong className="text-[#191c1e]">{activeFac.tsi_score !== undefined ? `${activeFac.tsi_score.toFixed(1)} / 100` : 'Not available'}</strong>. {activeFac.note ? `${activeFac.note} ` : ''}Automated compliance audit report compiled for inspector review.
             </p>
+          </div>
+
+          {/* Composite Score Breakdown -- same /shap endpoint and arithmetic as the AI Analysis & Explainability page */}
+          <div className="space-y-3 pt-4 border-t border-[#E5E7EB]">
+            <h3 className="font-headline-md text-headline-md text-[#00355f]">Composite Risk Score Breakdown</h3>
+            {!explanation?.composite_breakdown ? (
+              <p className="text-body-sm text-[#727780]">Composite breakdown not available for this factory.</p>
+            ) : (
+              <table className="w-full text-body-sm">
+                <tbody>
+                  <tr className="border-b border-[#E5E7EB]">
+                    <td className="py-1.5 text-[#42474f]">Fingerprint Checks ({(explanation.composite_breakdown.fingerprints.weight * 100).toFixed(1)}% weight, {explanation.composite_breakdown.fingerprints.triggered_count}/{explanation.composite_breakdown.fingerprints.total_checks} triggered)</td>
+                    <td className="py-1.5 text-right font-bold text-[#191c1e]">{explanation.composite_breakdown.fingerprints.contribution}</td>
+                  </tr>
+                  <tr className="border-b border-[#E5E7EB]">
+                    <td className="py-1.5 text-[#42474f]">Isolation Forest ({(explanation.composite_breakdown.isolation_forest.weight * 100).toFixed(1)}% weight)</td>
+                    <td className="py-1.5 text-right font-bold text-[#191c1e]">{explanation.composite_breakdown.isolation_forest.contribution}</td>
+                  </tr>
+                  <tr className="border-b border-[#E5E7EB]">
+                    <td className="py-1.5 text-[#42474f]">Factory-Level Tamper Model ({(explanation.composite_breakdown.tamper_model.weight * 100).toFixed(1)}% weight)</td>
+                    <td className="py-1.5 text-right font-bold text-[#191c1e]">{explanation.composite_breakdown.tamper_model.contribution}</td>
+                  </tr>
+                  <tr>
+                    <td className="py-1.5 font-bold text-[#00355f]">Total Risk Score</td>
+                    <td className="py-1.5 text-right font-bold text-[#00355f]">{explanation.composite_breakdown.total_risk_score}</td>
+                  </tr>
+                </tbody>
+              </table>
+            )}
+          </div>
+
+          {/* Fingerprint Checks -- which of the 8 triggered, and why */}
+          <div className="space-y-3 pt-4 border-t border-[#E5E7EB]">
+            <h3 className="font-headline-md text-headline-md text-[#00355f]">Fingerprint Check Detail</h3>
+            {!explanation?.fingerprint_checks?.length ? (
+              <p className="text-body-sm text-[#727780]">Fingerprint check detail not available for this factory.</p>
+            ) : (
+              <ul className="text-body-sm text-[#42474f] space-y-1">
+                {explanation.fingerprint_checks.map((chk) => (
+                  <li key={chk.key} className="flex justify-between gap-4">
+                    <span className={chk.triggered ? 'font-bold text-[#D32F2F]' : ''}>
+                      {chk.triggered ? '⚠ ' : '✓ '}{chk.label}
+                    </span>
+                    <span className="text-xs text-[#727780]">
+                      {chk.raw_value === null ? 'Not available' : `value: ${chk.raw_value.toFixed(2)}${chk.unit}`} (trigger: {chk.threshold_desc})
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+          {/* SHAP Explanation Summary -- reuses the same precomputed explanations as the AI Analysis & Explainability page */}
+          <div className="space-y-3 pt-4 border-t border-[#E5E7EB]">
+            <h3 className="font-headline-md text-headline-md text-[#00355f]">SHAP Feature Attribution</h3>
+            {!explanation?.shap ? (
+              <p className="text-body-sm text-[#727780]">SHAP explanation not available for this factory.</p>
+            ) : (
+              <div className="grid grid-cols-2 gap-6 text-body-sm">
+                <div>
+                  <div className="text-xs font-bold text-[#727780] uppercase mb-1">Tamper Model (top drivers)</div>
+                  <ul className="space-y-0.5 text-[#42474f]">
+                    {explanation.shap.tamper_model_shap?.features.slice(0, 3).map((f, idx) => (
+                      <li key={idx}>{f.label}: <strong className={f.shap_value_logit > 0 ? 'text-[#D32F2F]' : 'text-[#1b6d24]'}>{f.shap_value_logit > 0 ? '+' : ''}{f.shap_value_logit}</strong></li>
+                    ))}
+                  </ul>
+                </div>
+                <div>
+                  <div className="text-xs font-bold text-[#727780] uppercase mb-1">Isolation Forest (top drivers)</div>
+                  <ul className="space-y-0.5 text-[#42474f]">
+                    {explanation.shap.isolation_forest_shap?.features.slice(0, 3).map((f, idx) => (
+                      <li key={idx}>{f.label}: <strong className={f.shap_value < 0 ? 'text-[#D32F2F]' : 'text-[#1b6d24]'}>{f.shap_value}</strong></li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </section>
