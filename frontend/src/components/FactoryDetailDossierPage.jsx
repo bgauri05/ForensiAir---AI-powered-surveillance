@@ -28,7 +28,7 @@ export function FactoryDetailDossierPage({ onNavigate, selectedFactoryId }) {
 
   const fetchFactories = async () => {
     try {
-      const res = await fetch(`${API_BASE_URL}/api/factories`);
+      const res = await apiFetch(`/api/factories`);
       if (res.ok) {
         const data = await res.json();
         setFactoriesList(data);
@@ -50,8 +50,8 @@ export function FactoryDetailDossierPage({ onNavigate, selectedFactoryId }) {
   const fetchFactoryDetail = async (fid) => {
     try {
       const [factoryRes, inspectionsRes] = await Promise.all([
-        fetch(`${API_BASE_URL}/api/factories/${fid}`),
-        fetch(`${API_BASE_URL}/api/factories/${fid}/inspections`)
+        apiFetch(`/api/factories/${fid}`),
+        apiFetch(`/api/factories/${fid}/inspections`)
       ]);
       if (factoryRes.ok) {
         setFactoryData(await factoryRes.json());

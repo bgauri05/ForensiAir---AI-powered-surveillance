@@ -1,30 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { TrendingUp, TrendingDown, AlertTriangle, ShieldCheck, AlertCircle, Lock } from 'lucide-react';
-import { API_BASE_URL } from '../config';
+import { TrendingUp, TrendingDown, AlertCircle, Lock } from 'lucide-react';
+import { apiFetch } from '../config';
 
-// BRIDGE FIX (2026-08): /api/data-quality is admin-gated
-// (require_role(["admin"])), and this frontend has no real login/auth flow
-// yet -- no request anywhere in this app ever sends an Authorization
-// header, regardless of the demo Role selector in TopHeader. That means
-// this fetch 401s on every single load today, and this page silently
-// showed fabricated fallback numbers 100% of the time with zero
-// disclosure -- worse than any other page audited this session. This adds
-// the same isDemoData banner pattern AdminPortalPage.jsx already uses.
+// QC FIX (2026-08, Phase 5): /api/data-quality is admin-gated
+// (require_role(["admin"])). Real auth now exists and every request sends
+// its Authorization header (see config.js apiFetch), so this endpoint
+// actually succeeds for a logged-in admin now -- previously it 401'd on
+// every load with zero disclosure.
 //
-// Separately: even a successful fetch wouldn't produce real numbers here
-// without further work -- the real endpoint's shape
-// ({dataset_summaries, total_records_processed, pipeline_health_status})
-// doesn't match what this page renders (coverage_by_factory,
+// That alone wasn't enough, though: the real endpoint's shape
+// ({dataset_summaries: [...], total_records_processed, pipeline_health_status})
+// never matched what this page rendered before (coverage_by_factory,
 // parameter_stability, an "AI Readiness Grade" concept that doesn't exist
-// server-side at all). The shape check below treats a shape-mismatched
-// 200 response as demo data too, so this doesn't start silently showing
-// fake numbers with the banner hidden the moment auth is fixed.
-//
-// TODO(future auth phase): once real login exists, (1) send the real
-// Authorization header here, and (2) reshape this page around the real
-// dataset_summaries (per-factory coverage/missing/duplicate/quality_grade/
-// readiness_score) response instead of the aggregate/parameter-stability
-// shape assumed today -- they're not the same data model.
+// server-side). This page is now built around the real dataset_summaries
+// array -- per-factory coverage/missing/duplicate/quality_grade/readiness_score
+// -- instead of assuming a shape the backend never produced. The
+// "Parameter Stability Audit" panel is gone (nothing server-side backs
+// that concept); replaced with a real Quality Grade Distribution computed
+// from the real per-factory quality_grade field.
 export function DatasetQualityPage({ onNavigate }) {
   const [qualityData, setQualityData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -36,10 +29,10 @@ export function DatasetQualityPage({ onNavigate }) {
 
   const fetchDataQuality = async () => {
     try {
-      const res = await fetch(`${API_BASE_URL}/api/data-quality`);
+      const res = await apiFetch('/api/data-quality');
       if (res.ok) {
         const data = await res.json();
-        if (data && Array.isArray(data.coverage_by_factory)) {
+        if (data && Array.isArray(data.dataset_summaries)) {
           setQualityData(data);
           setIsDemoData(false);
         } else {
@@ -62,16 +55,32 @@ export function DatasetQualityPage({ onNavigate }) {
     return <div className="p-8 font-body-md text-[#42474f]">Loading Dataset Quality Overview...</div>;
   }
 
-  const {
-    coverage = "98.4%",
-    duplicates = "0.12%",
-    missing_data = "4.2%",
-    records_count = "1,138,064",
-    coverage_by_factory = [],
-    quality_distribution = [],
-    parameter_stability = [],
-    missing_heatmap = { grid: [] }
-  } = qualityData;
+  const summaries = qualityData.dataset_summaries || [];
+  const avg = (key) => summaries.length
+    ? summaries.reduce((sum, s) => sum + (s[key] || 0), 0) / summaries.length
+    : 0;
+
+  const avgCoverage = avg('coverage_percentage');
+  const avgMissing = avg('missing_percentage');
+  const avgDuplicate = avg('duplicate_percentage');
+  const avgReadiness = avg('readiness_score');
+  const totalRecords = qualityData.total_records_processed ?? summaries.reduce((s, x) => s + (x.total_records || 0), 0);
+  const pipelineStatus = qualityData.pipeline_health_status || 'Not available';
+
+  const gradeCounts = summaries.reduce((acc, s) => {
+    const g = s.quality_grade || 'N/A';
+    acc[g] = (acc[g] || 0) + 1;
+    return acc;
+  }, {});
+  const gradeOrder = ['A', 'B', 'C', 'D', 'F', 'N/A'];
+  const gradeDistribution = gradeOrder
+    .filter(g => gradeCounts[g])
+    .map(g => ({ grade: g, count: gradeCounts[g], pct: (gradeCounts[g] / summaries.length) * 100 }));
+
+  const coverageByFactory = [...summaries]
+    .sort((a, b) => (a.coverage_percentage || 0) - (b.coverage_percentage || 0))
+    .slice(0, 8)
+    .map(s => ({ name: s.factory_name, pct: s.coverage_percentage }));
 
   return (
     <div className="p-8 max-w-[1600px] mx-auto space-y-8">
@@ -91,7 +100,7 @@ export function DatasetQualityPage({ onNavigate }) {
             <span className="text-[#191c1e] font-bold">Dataset Quality Overview</span>
           </nav>
           <h2 className="font-headline-lg text-headline-lg text-[#00355f]">Dataset Quality Overview</h2>
-          <p className="font-body-md text-[#42474f] mt-1">Institutional audit of environmental sensor network integrity and AI readiness.</p>
+          <p className="font-body-md text-[#42474f] mt-1">Institutional audit of environmental sensor network integrity, {summaries.length} facilities.</p>
         </div>
         <div className="flex gap-3">
           <button disabled title="Date-range selection isn't implemented yet -- this is a static historical dataset, not a live daily feed" className="px-4 py-2 bg-white border border-[#E5E7EB] text-[#727780] font-medium rounded-lg flex items-center gap-2 text-body-sm cursor-not-allowed opacity-60">
@@ -107,81 +116,79 @@ export function DatasetQualityPage({ onNavigate }) {
 
       {/* 5 KPI Cards Row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
-        {/* Coverage */}
         <div className="bg-white border border-[#E5E7EB] p-5 rounded-xl shadow-xs">
           <div className="flex justify-between items-start mb-2">
-            <span className="font-label-caps text-label-caps text-[#42474f]">COVERAGE</span>
-            <span className="px-2 py-0.5 bg-[#1b6d24]/10 text-[#1b6d24] text-[10px] font-bold rounded border border-[#1b6d24]/20">HEALTHY</span>
+            <span className="font-label-caps text-label-caps text-[#42474f]">AVG COVERAGE</span>
+            <span className={`px-2 py-0.5 text-[10px] font-bold rounded border ${avgCoverage >= 95 ? 'bg-[#1b6d24]/10 text-[#1b6d24] border-[#1b6d24]/20' : 'bg-[#F57C00]/10 text-[#F57C00] border-[#F57C00]/20'}`}>
+              {avgCoverage >= 95 ? 'HEALTHY' : 'REVIEW'}
+            </span>
           </div>
-          <div className="font-display-kpi text-display-kpi text-[#00355f]">{coverage}</div>
-          <div className="text-[11px] text-[#1b6d24] mt-1 flex items-center gap-1 font-semibold">
-            <TrendingUp size={14} /> +0.2% from last audit
+          <div className="font-display-kpi text-display-kpi text-[#00355f]">{avgCoverage.toFixed(1)}%</div>
+          <div className="text-[11px] text-[#727780] mt-1 flex items-center gap-1">
+            <TrendingUp size={14} /> across {summaries.length} facilities
           </div>
         </div>
 
-        {/* Duplicates */}
         <div className="bg-white border border-[#E5E7EB] p-5 rounded-xl shadow-xs">
           <div className="flex justify-between items-start mb-2">
-            <span className="font-label-caps text-label-caps text-[#42474f]">DUPLICATES</span>
+            <span className="font-label-caps text-label-caps text-[#42474f]">AVG DUPLICATES</span>
             <span className="px-2 py-0.5 bg-[#1b6d24]/10 text-[#1b6d24] text-[10px] font-bold rounded border border-[#1b6d24]/20">LOW</span>
           </div>
-          <div className="font-display-kpi text-display-kpi text-[#00355f]">{duplicates}</div>
-          <div className="text-[11px] text-[#1b6d24] mt-1 flex items-center gap-1 font-semibold">
-            <TrendingDown size={14} /> -0.05% vs baseline
+          <div className="font-display-kpi text-display-kpi text-[#00355f]">{avgDuplicate.toFixed(2)}%</div>
+          <div className="text-[11px] text-[#727780] mt-1 flex items-center gap-1">
+            <TrendingDown size={14} /> mean duplicate rate
           </div>
         </div>
 
-        {/* Missing Data */}
         <div className="bg-white border border-[#E5E7EB] p-5 rounded-xl shadow-xs">
           <div className="flex justify-between items-start mb-2">
-            <span className="font-label-caps text-label-caps text-[#42474f]">MISSING DATA</span>
-            <span className="px-2 py-0.5 bg-[#F57C00]/10 text-[#F57C00] text-[10px] font-bold rounded border border-[#F57C00]/20">IN TOLERANCE</span>
+            <span className="font-label-caps text-label-caps text-[#42474f]">AVG MISSING DATA</span>
+            <span className={`px-2 py-0.5 text-[10px] font-bold rounded border ${avgMissing < 5 ? 'bg-[#1b6d24]/10 text-[#1b6d24] border-[#1b6d24]/20' : 'bg-[#F57C00]/10 text-[#F57C00] border-[#F57C00]/20'}`}>
+              {avgMissing < 5 ? 'IN TOLERANCE' : 'ELEVATED'}
+            </span>
           </div>
-          <div className="font-display-kpi text-display-kpi text-[#00355f]">{missing_data}</div>
+          <div className="font-display-kpi text-display-kpi text-[#00355f]">{avgMissing.toFixed(1)}%</div>
           <div className="text-[11px] text-[#42474f] mt-1 flex items-center gap-1">
             Expected &lt; 5.0% threshold
           </div>
         </div>
 
-        {/* Total Records */}
         <div className="bg-white border border-[#E5E7EB] p-5 rounded-xl shadow-xs">
           <div className="flex justify-between items-start mb-2">
             <span className="font-label-caps text-label-caps text-[#42474f]">TOTAL RECORDS</span>
-            <span className="px-2 py-0.5 bg-[#1b6d24]/10 text-[#1b6d24] text-[10px] font-bold rounded border border-[#1b6d24]/20">SYNCED</span>
+            <span className="px-2 py-0.5 bg-[#1b6d24]/10 text-[#1b6d24] text-[10px] font-bold rounded border border-[#1b6d24]/20">{pipelineStatus}</span>
           </div>
-          <div className="font-display-kpi text-display-kpi text-[#00355f]">{records_count}</div>
+          <div className="font-display-kpi text-display-kpi text-[#00355f]">{totalRecords.toLocaleString()}</div>
           <div className="text-[11px] text-[#1b6d24] mt-1 flex items-center gap-1 font-semibold">
-            100% telemetry ingested
+            across all facilities
           </div>
         </div>
 
-        {/* AI Readiness Grade */}
         <div className="bg-white border border-[#E5E7EB] p-5 rounded-xl shadow-xs border-l-4 border-l-[#1b6d24]">
           <div className="flex justify-between items-start mb-2">
-            <span className="font-label-caps text-label-caps text-[#1b6d24]">AI READINESS GRADE</span>
-            <ShieldCheck size={18} className="text-[#1b6d24]" />
+            <span className="font-label-caps text-label-caps text-[#1b6d24]">AVG READINESS SCORE</span>
           </div>
-          <div className="font-display-kpi text-display-kpi text-[#1b6d24]">GRADE A</div>
+          <div className="font-display-kpi text-display-kpi text-[#1b6d24]">{avgReadiness.toFixed(1)}</div>
           <div className="text-[11px] text-[#1b6d24] mt-1 font-bold">
-            High Quality Inference Ready
+            mean of real per-factory readiness_score
           </div>
         </div>
       </div>
 
-      {/* Grid Section: Coverage by Factory + Quality Distribution */}
+      {/* Grid Section: Coverage by Factory + Quality Grade Distribution */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Coverage by Factory */}
         <div className="lg:col-span-7 bg-white border border-[#E5E7EB] p-6 rounded-xl shadow-xs">
-          <h3 className="font-headline-md text-headline-md text-[#00355f] mb-4">Coverage by Industrial Facility</h3>
+          <h3 className="font-headline-md text-headline-md text-[#00355f] mb-1">Lowest Coverage Facilities</h3>
+          <p className="text-body-sm text-[#727780] mb-4">Bottom {coverageByFactory.length} of {summaries.length} facilities by real coverage_percentage.</p>
           <div className="space-y-4">
-            {coverage_by_factory.map((item, idx) => (
+            {coverageByFactory.map((item, idx) => (
               <div key={idx}>
                 <div className="flex justify-between text-body-sm font-semibold mb-1">
                   <span className="text-[#191c1e]">{item.name}</span>
-                  <span className="text-[#00355f] font-bold">{item.pct}%</span>
+                  <span className="text-[#00355f] font-bold">{item.pct?.toFixed(1)}%</span>
                 </div>
                 <div className="w-full h-2 bg-[#edeef0] rounded-full overflow-hidden">
-                  <div 
+                  <div
                     className={`h-full rounded-full ${item.pct > 95 ? 'bg-[#1b6d24]' : item.pct > 90 ? 'bg-[#F57C00]' : 'bg-[#D32F2F]'}`}
                     style={{ width: `${item.pct}%` }}
                   ></div>
@@ -191,20 +198,19 @@ export function DatasetQualityPage({ onNavigate }) {
           </div>
         </div>
 
-        {/* Parameter Stability & Completeness */}
         <div className="lg:col-span-5 bg-white border border-[#E5E7EB] p-6 rounded-xl shadow-xs flex flex-col justify-between">
-          <h3 className="font-headline-md text-headline-md text-[#00355f] mb-4">Parameter Stability Audit</h3>
+          <h3 className="font-headline-md text-headline-md text-[#00355f] mb-4">Quality Grade Distribution</h3>
           <div className="space-y-3.5 flex-1">
-            {parameter_stability.map((p, idx) => (
+            {gradeDistribution.map((g, idx) => (
               <div key={idx} className="p-3 border border-[#E5E7EB] rounded-lg bg-[#f8f9fb] flex items-center justify-between">
                 <div>
-                  <div className="text-body-sm font-bold text-[#191c1e]">{p.param}</div>
-                  <div className="text-xs text-[#42474f]">{p.desc}</div>
+                  <div className="text-body-sm font-bold text-[#191c1e]">Grade {g.grade}</div>
+                  <div className="text-xs text-[#42474f]">{g.count} of {summaries.length} facilities</div>
                 </div>
                 <span className={`px-2.5 py-1 text-xs font-bold rounded ${
-                  p.status === 'Optimal' ? 'bg-[#1b6d24]/10 text-[#1b6d24]' : 'bg-[#F57C00]/10 text-[#F57C00]'
+                  g.grade === 'A' || g.grade === 'B' ? 'bg-[#1b6d24]/10 text-[#1b6d24]' : g.grade === 'C' ? 'bg-[#F57C00]/10 text-[#F57C00]' : 'bg-[#D32F2F]/10 text-[#D32F2F]'
                 }`}>
-                  {p.status}
+                  {g.pct.toFixed(0)}%
                 </span>
               </div>
             ))}
@@ -217,27 +223,14 @@ export function DatasetQualityPage({ onNavigate }) {
 
 function getFallbackDataQuality() {
   return {
-    coverage: "98.4%",
-    duplicates: "0.12%",
-    missing_data: "4.2%",
-    records_count: "1,138,064",
-    coverage_by_factory: [
-      { name: "Galaxy Surfactants Limited", pct: 99.2 },
-      { name: "Anmol Chemicals Pvt Ltd", pct: 97.8 },
-      { name: "Super Petroleum Products Pvt Ltd", pct: 94.5 },
-      { name: "Cyklo Pharma Chem Pvt Ltd", pct: 91.2 },
-      { name: "Privi Speciality Chemicals Ltd", pct: 98.6 }
+    dataset_summaries: [
+      { factory_id: 'demo_1', factory_name: 'Galaxy Surfactants Limited', coverage_percentage: 99.2, missing_percentage: 0.8, duplicate_percentage: 0.1, quality_grade: 'A', readiness_score: 92, total_records: 250000 },
+      { factory_id: 'demo_2', factory_name: 'Anmol Chemicals Pvt Ltd', coverage_percentage: 97.8, missing_percentage: 2.2, duplicate_percentage: 0.15, quality_grade: 'B', readiness_score: 85, total_records: 180000 },
+      { factory_id: 'demo_3', factory_name: 'Super Petroleum Products Pvt Ltd', coverage_percentage: 94.5, missing_percentage: 5.5, duplicate_percentage: 0.2, quality_grade: 'C', readiness_score: 74, total_records: 160000 },
+      { factory_id: 'demo_4', factory_name: 'Cyklo Pharma Chem Pvt Ltd', coverage_percentage: 91.2, missing_percentage: 8.8, duplicate_percentage: 0.3, quality_grade: 'D', readiness_score: 61, total_records: 140000 },
+      { factory_id: 'demo_5', factory_name: 'Privi Speciality Chemicals Ltd', coverage_percentage: 98.6, missing_percentage: 1.4, duplicate_percentage: 0.12, quality_grade: 'A', readiness_score: 90, total_records: 210000 }
     ],
-    quality_distribution: [
-      { grade: "Grade A (Optimal)", pct: 72 },
-      { grade: "Grade B (Minor Noise)", pct: 21 },
-      { grade: "Grade C (Requires Calibration)", pct: 7 }
-    ],
-    parameter_stability: [
-      { param: "pH Telemetry", desc: "0.01 drift variance", status: "Optimal" },
-      { param: "BOD Flow Sensor", desc: "Intermittent flatlines detected", status: "Review Needed" },
-      { param: "COD Concentration", desc: "98.9% correlation", status: "Optimal" },
-      { param: "TSS Effluent Scanner", desc: "0.04 noise index", status: "Optimal" }
-    ]
+    total_records_processed: 940000,
+    pipeline_health_status: 'DEMO'
   };
 }

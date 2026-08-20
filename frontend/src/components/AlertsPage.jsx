@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { AlertTriangle, ChevronRight, ShieldAlert } from 'lucide-react';
-import { API_BASE_URL } from '../config';
+import { apiFetch } from '../config';
 
 // This nav item previously had no case in App.jsx's switch and silently
 // fell through to the Dashboard with no indication anything was wrong.
@@ -19,7 +19,7 @@ export function AlertsPage({ onNavigate }) {
 
   const fetchFlagged = async () => {
     try {
-      const res = await fetch(`${API_BASE_URL}/api/factories`);
+      const res = await apiFetch(`/api/factories`);
       if (res.ok) {
         const data = await res.json();
         const flagged = (data || [])

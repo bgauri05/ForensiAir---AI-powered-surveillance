@@ -344,6 +344,22 @@ def login(req: LoginRequest):
             detail="Invalid credentials. Check username and password."
         )
 
+@app.get("/api/me")
+def get_me(user: Dict[str, Any] = Depends(get_current_user)):
+    """
+    Reuses get_current_user, the same dependency every protected route
+    already validates against -- this just exposes what that dependency
+    already decoded, so the frontend can show the real logged-in
+    username/role/session-expiry instead of a client-side demo toggle.
+    Handles both real JWTs (sub/role/exp claims) and the literal
+    admin_token/inspector_token test strings (username/role only, no exp).
+    """
+    return {
+        "username": user.get("sub") or user.get("username"),
+        "role": user.get("role"),
+        "exp": user.get("exp")
+    }
+
 # -------------------------------------------------------------
 # 1. Executive Dashboard Summary
 # -------------------------------------------------------------

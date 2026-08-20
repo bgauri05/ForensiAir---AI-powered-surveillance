@@ -5,12 +5,15 @@ import {
   BrainCircuit,
   AlertTriangle,
   FileText,
-  Database,
-  ShieldAlert,
-  Settings
+  Database, 
+  ShieldAlert, 
+  Settings 
 } from 'lucide-react';
 
-export function Sidebar({ activeTab, setActiveTab }) {
+export function Sidebar({ activeTab, setActiveTab, currentUser }) {
+  const username = currentUser?.username || 'Not available';
+  const role = currentUser?.role;
+  const initials = username.slice(0, 2).toUpperCase();
   const surveillanceItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'factories', label: 'Factories', icon: Building2 },
@@ -86,18 +89,15 @@ export function Sidebar({ activeTab, setActiveTab }) {
         })}
       </nav>
 
-      {/* User / Inspector Profile */}
+      {/* User / Inspector Profile -- real logged-in session, not a
+          hardcoded name swapped by which page happened to be open */}
       <div className="px-6 pt-4 mt-auto border-t border-white/10 flex items-center gap-3">
         <div className="w-9 h-9 rounded-full bg-[#0f4c81] text-white flex items-center justify-center font-bold text-xs shrink-0 border border-white/20">
-          {activeTab === 'dataset-quality' ? 'DC' : 'AD'}
+          {initials}
         </div>
         <div className="overflow-hidden">
-          <div className="text-xs font-bold text-white truncate">
-            {activeTab === 'dataset-quality' ? 'Director Chen' : 'Admin Controller'}
-          </div>
-          <div className="text-[10px] text-white/60 truncate">
-            {activeTab === 'dataset-quality' ? 'Audit Div. Lead' : 'System Inspectorate'}
-          </div>
+          <div className="text-xs font-bold text-white truncate">{username}</div>
+          <div className="text-[10px] text-white/60 truncate uppercase">{role === 'admin' ? 'Administrator' : 'Field Inspector'}</div>
         </div>
       </div>
     </aside>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Download } from 'lucide-react';
-import { API_BASE_URL } from '../config';
+import { apiFetch } from '../config';
 
 export function ReportsCenterPage({ onNavigate }) {
   const [factories, setFactories] = useState([]);
@@ -15,7 +15,7 @@ export function ReportsCenterPage({ onNavigate }) {
 
   const fetchFactories = async () => {
     try {
-      const res = await fetch(`${API_BASE_URL}/api/factories`);
+      const res = await apiFetch(`/api/factories`);
       if (res.ok) {
         const data = await res.json();
         setFactories(data);
@@ -34,8 +34,8 @@ export function ReportsCenterPage({ onNavigate }) {
     setExplanation(null);
     try {
       const [factoryRes, shapRes] = await Promise.all([
-        fetch(`${API_BASE_URL}/api/factories/${fObj.factory_id}`),
-        fetch(`${API_BASE_URL}/api/factories/${fObj.factory_id}/shap`)
+        apiFetch(`/api/factories/${fObj.factory_id}`),
+        apiFetch(`/api/factories/${fObj.factory_id}/shap`)
       ]);
       setSelectedFactory(factoryRes.ok ? await factoryRes.json() : fObj);
       if (shapRes.ok) setExplanation(await shapRes.json());

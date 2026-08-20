@@ -3,7 +3,7 @@ import { Plus, Edit2, Trash2, Shield, Settings, Check, AlertCircle } from 'lucid
 import { AddFactoryModal } from './AddFactoryModal';
 import { ModelVersionsTab } from './ModelVersionsTab';
 import { ThresholdSettingsTab } from './ThresholdSettingsTab';
-import { API_BASE_URL } from '../config';
+import { apiFetch } from '../config';
 
 export function AdminPortalPage({ onNavigate }) {
   const [activeTab, setActiveTab] = useState('factories');
@@ -42,7 +42,7 @@ export function AdminPortalPage({ onNavigate }) {
       // "Drugs & Pharmaceuticals" contain a literal "&", which truncated the
       // query param and silently returned zero results for the real value.
       const params = new URLSearchParams({ district: districtFilter, industry: industryFilter });
-      const fRes = await fetch(`${API_BASE_URL}/api/admin/factories?${params.toString()}`);
+      const fRes = await apiFetch(`/api/admin/factories?${params.toString()}`);
       if (fRes.ok) {
         const fData = await fRes.json();
         setFactories(fData);
@@ -51,15 +51,24 @@ export function AdminPortalPage({ onNavigate }) {
         flags.factories = true;
       }
 
-      const uRes = await fetch(`${API_BASE_URL}/api/admin/users`);
-      if (uRes.ok) setUsers(await uRes.json());
-      else { setUsers(getFallbackUsers()); flags.users = true; }
+      // GET /api/admin/users is a real, auth-gated endpoint, but still a
+      // {"status": "not_implemented"} stub server-side (no user management
+      // DB model exists yet) -- a 200 from it is not the same as real data.
+      // Checking for an array here (same pattern as Dataset Quality) keeps
+      // this section honestly in its demo-fallback state instead of
+      // crashing users.map() on the stub object once auth stops 401-ing it.
+      const uRes = await apiFetch(`/api/admin/users`);
+      if (uRes.ok) {
+        const uData = await uRes.json();
+        if (Array.isArray(uData)) { setUsers(uData); }
+        else { setUsers(getFallbackUsers()); flags.users = true; }
+      } else { setUsers(getFallbackUsers()); flags.users = true; }
 
-      const cRes = await fetch(`${API_BASE_URL}/api/admin/consent-limits`);
+      const cRes = await apiFetch(`/api/admin/consent-limits`);
       if (cRes.ok) setConsentLimits(await cRes.json());
       else { setConsentLimits(getFallbackConsentLimits()); flags.consentLimits = true; }
 
-      const nRes = await fetch(`${API_BASE_URL}/api/admin/notifications`);
+      const nRes = await apiFetch(`/api/admin/notifications`);
       if (nRes.ok) setNotifications(await nRes.json());
       else { setNotifications(getFallbackNotifications()); flags.notifications = true; }
 
@@ -78,7 +87,7 @@ export function AdminPortalPage({ onNavigate }) {
   const handleDeleteFactory = async (factoryId) => {
     if (!window.confirm(`Are you sure you want to remove factory ${factoryId}?`)) return;
     try {
-      const res = await fetch(`${API_BASE_URL}/api/admin/factories/${factoryId}`, { method: 'DELETE' });
+      const res = await apiFetch(`/api/admin/factories/${factoryId}`, { method: 'DELETE' });
       if (res.ok) {
         fetchAdminData();
       } else {

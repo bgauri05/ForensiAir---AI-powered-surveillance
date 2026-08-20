@@ -30,8 +30,8 @@ export function ExecutiveDashboardPage({ onNavigate }) {
   const fetchDashboard = async () => {
     try {
       const [sumRes, facRes] = await Promise.all([
-        fetch(`${API_BASE_URL}/api/dashboard/summary`),
-        fetch(`${API_BASE_URL}/api/factories`)
+        apiFetch(`/api/dashboard/summary`),
+        apiFetch(`/api/factories`)
       ]);
 
       if (sumRes.ok && facRes.ok) {
