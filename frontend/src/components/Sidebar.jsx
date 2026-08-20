@@ -1,14 +1,13 @@
 import React from 'react';
-import { 
-  LayoutDashboard, 
-  Building2, 
-  BrainCircuit, 
-  HelpCircle,
-  AlertTriangle, 
-  FileText, 
-  Database, 
-  ShieldAlert, 
-  Settings 
+import {
+  LayoutDashboard,
+  Building2,
+  BrainCircuit,
+  AlertTriangle,
+  FileText,
+  Database,
+  ShieldAlert,
+  Settings
 } from 'lucide-react';
 
 export function Sidebar({ activeTab, setActiveTab }) {
@@ -16,7 +15,6 @@ export function Sidebar({ activeTab, setActiveTab }) {
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'factories', label: 'Factories', icon: Building2 },
     { id: 'ai-analysis', label: 'AI Analysis', icon: BrainCircuit },
-    { id: 'explainability', label: 'Explainability', icon: HelpCircle },
     { id: 'institutional-oversight', label: 'Institutional Oversight', icon: ShieldAlert },
     { id: 'alerts', label: 'Alerts', icon: AlertTriangle },
     { id: 'reports', label: 'Reports', icon: FileText },

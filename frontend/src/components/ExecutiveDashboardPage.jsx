@@ -345,7 +345,7 @@ export function ExecutiveDashboardPage({ onNavigate }) {
                 <div className="text-body-sm font-bold text-[var(--color-text)]">{item.name}</div>
                 <div className="text-xs text-[var(--color-text-secondary)]">Avg Risk Score: {item.avg_risk}</div>
               </div>
-              <button className="text-[var(--color-primary)] hover:underline text-xs font-bold" onClick={() => onNavigate('explainability', item.factory_id)}>
+              <button className="text-[var(--color-primary)] hover:underline text-xs font-bold" onClick={() => onNavigate('ai-analysis', item.factory_id)}>
                 Inspect
               </button>
             </div>

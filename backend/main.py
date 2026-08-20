@@ -15,6 +15,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 from backend.config import (
     SECRET_KEY, ALGORITHM, ADMIN_USERNAME, ADMIN_PASSWORD, INSPECTOR_USERNAME, INSPECTOR_PASSWORD
 )
+from ml_pipeline.risk_engine import WEIGHT_XGB, WEIGHT_ISO, WEIGHT_FINGERPRINTS
 
 app = FastAPI(
     title="ForensiAIR Backend API",
@@ -173,12 +174,27 @@ def get_data_cache():
     if "tsi" not in _data_cache:
         _data_cache["tsi"] = _load_factory_scores()
 
-    if "shap" not in _data_cache:
-        shap_path = "Data/RawData/factory_shap_attributions.csv"
+    if "shap_explanations" not in _data_cache:
+        # QC FIX (2026-08, Phase 3): previously read
+        # Data/RawData/factory_shap_attributions.csv, which attributes SHAP
+        # values to a 25-feature schema matching the removed Stage-2 model
+        # -- that model doesn't exist anywhere in the app anymore, so the
+        # file was explaining a prediction nothing actually makes. Replaced
+        # with real, precomputed SHAP for the two models that ARE part of
+        # calculate_composite_risk(): factory_tamper_model.joblib (LR, via
+        # shap.LinearExplainer) and iso_forest.joblib (via
+        # shap.KernelExplainer against score_samples, since TreeExplainer
+        # verified non-additive for IsolationForest). See
+        # ml_pipeline/compute_shap_explanations.py. Old CSV left on disk,
+        # unused.
+        shap_path = "Data/RawData/factory_shap_explanations.json"
         if not os.path.exists(shap_path):
             shap_path = os.path.join(os.path.dirname(__file__), "..", shap_path)
-        df_shap = pd.read_csv(shap_path) if os.path.exists(shap_path) else pd.DataFrame()
-        _data_cache["shap"] = df_shap
+        if os.path.exists(shap_path):
+            with open(shap_path, 'r') as f:
+                _data_cache["shap_explanations"] = json.load(f).get("factories", {})
+        else:
+            _data_cache["shap_explanations"] = {}
 
     if "real_features" not in _data_cache:
         rf_path = "Data/RawData/real_features.parquet"
@@ -216,15 +232,18 @@ def get_data_cache():
                     cto_null_sites.add(fid)
         _data_cache["limited_cto_sites"] = cto_null_sites
 
-    if "stage1_matched_sites" not in _data_cache:
-        models_dir = os.path.join(os.path.dirname(__file__), "..", "ml_pipeline", "models")
-        matched = set()
-        if os.path.exists(models_dir):
-            for fname in os.listdir(models_dir):
-                if fname.startswith("stage1_") and (fname.endswith(".joblib") or fname.endswith(".json")):
-                    fid = fname.replace("stage1_", "").replace(".joblib", "").replace(".json", "")
-                    matched.add(fid)
-        _data_cache["stage1_matched_sites"] = matched
+    if "corr_break_threshold" not in _data_cache:
+        # Reproduces fingerprint_engine.py's exact formula (typical_mean -
+        # 1.0 * typical_std across all factories' correlation_break values)
+        # -- that script prints the threshold to console but never
+        # persists it, so it's recomputed here from the same real data.
+        df_tsi = _data_cache["tsi"]
+        if not df_tsi.empty and 'correlation_break' in df_tsi.columns:
+            vals = df_tsi['correlation_break'].dropna()
+            # ddof=0 (population std) to match fingerprint_engine.py's np.std()
+            _data_cache["corr_break_threshold"] = float(vals.mean() - 1.0 * vals.std(ddof=0)) if not vals.empty else None
+        else:
+            _data_cache["corr_break_threshold"] = None
 
     if "iso_summary" not in _data_cache:
         iso_sum_path = os.path.join(os.path.dirname(__file__), "..", "ml_pipeline", "models", "isolation_forest_summary.json")
@@ -495,82 +514,124 @@ def get_factory_detail(factory_id: str):
         "peak_variance": peak_variance,
         "tamper_probability": tamper_prob,
         "raw_fingerprint_signals": raw_signals,
-        "stage2_prediction": classification
+        "note": explanation['note']
     }
 
 # -------------------------------------------------------------
-# 4. Factory SHAP Attributions
+# 4. Factory Risk Explanation (composite breakdown + fingerprint detail + SHAP)
 # -------------------------------------------------------------
+FINGERPRINT_CHECK_DEFS = [
+    {"key": "impossible_ph_range", "label": "Impossible pH Range", "unit": "%",
+     "threshold_desc": "> 0.0% of readings"},
+    {"key": "inspection_dip", "label": "Pre-Inspection Dip", "unit": "%",
+     "threshold_desc": "average pre-inspection change < -20.0%"},
+    {"key": "flatline", "label": "Flatline", "unit": "%",
+     "threshold_desc": "> 5.0% of readings"},
+    {"key": "limit_hugging", "label": "Limit Hugging", "unit": "%",
+     "threshold_desc": "> 5.0% of readings"},
+    {"key": "correlation_break", "label": "Correlation Break", "unit": "",
+     "threshold_desc": None},  # filled in per-request from corr_break_threshold
+    {"key": "copy_paste", "label": "Copy-Paste", "unit": "%",
+     "threshold_desc": "> 1.0% of readings (autocorrelation > 0.95)"},
+    {"key": "coordinated_missing_data", "label": "Coordinated Missing Data", "unit": "σ",
+     "threshold_desc": "> 1.5 std dev above dataset median missing rate"},
+    {"key": "data_integrity", "label": "Data Integrity (Error Rate)", "unit": "σ",
+     "threshold_desc": "> 1.5 std dev above dataset median error rate"},
+]
+
+
 @app.get("/api/factories/{factory_id}/shap")
 def get_factory_shap(factory_id: str):
     cache = get_data_cache()
-    df_shap = cache["shap"]
-    
-    sub = df_shap[df_shap['factory_id'] == factory_id]
+    df_tsi = cache["tsi"]
+    sub = df_tsi[df_tsi['factory_id'] == factory_id]
     if sub.empty:
-        sub = df_shap.head(25)
-        
-    rows = []
-    for _, r in sub.iterrows():
-        rows.append({
-            "fingerprint_name": str(r.get('fingerprint_name', '')),
-            "shap_value": float(r.get('shap_value', 0.0)),
-            "direction": str(r.get('direction', 'NEUTRAL')),
-            "abs_shap": abs(float(r.get('shap_value', 0.0)))
+        raise HTTPException(status_code=404, detail="Factory not found")
+    row = sub.iloc[0]
+
+    # --- Composite score breakdown: risk_engine.py's real arithmetic ---
+    xgb_prob = float(row.get('xgb_probability', 0.0))
+    iso_score_norm = float(row.get('anomaly_score_norm', 0.0))
+    triggered_count = int(row.get('total_fingerprints_triggered', 0))
+    fp_ratio = triggered_count / 8.0
+
+    fp_contribution = round(WEIGHT_FINGERPRINTS * fp_ratio * 100, 1)
+    iso_contribution = round(WEIGHT_ISO * iso_score_norm * 100, 1)
+    tamper_contribution = round(WEIGHT_XGB * xgb_prob * 100, 1)
+
+    composite_breakdown = {
+        "fingerprints": {
+            "weight": WEIGHT_FINGERPRINTS,
+            "triggered_count": triggered_count,
+            "total_checks": 8,
+            "ratio": round(fp_ratio, 4),
+            "contribution": fp_contribution
+        },
+        "isolation_forest": {
+            "weight": WEIGHT_ISO,
+            "score_norm": round(iso_score_norm, 4),
+            "contribution": iso_contribution
+        },
+        "tamper_model": {
+            "weight": WEIGHT_XGB,
+            "probability": round(xgb_prob, 4),
+            "contribution": tamper_contribution
+        },
+        "total_risk_score": round(fp_contribution + iso_contribution + tamper_contribution, 1)
+    }
+
+    # --- Fingerprint checks: real magnitudes + real thresholds + real trigger decisions ---
+    corr_threshold = cache["corr_break_threshold"]
+    fingerprint_checks = []
+    for check in FINGERPRINT_CHECK_DEFS:
+        key = check["key"]
+        raw_value = row.get(key)
+        raw_value = float(raw_value) if pd.notna(raw_value) else None
+        triggered = bool(row.get(f"trig_{key}", 0))
+        threshold_desc = check["threshold_desc"]
+        if key == "correlation_break":
+            threshold_desc = (
+                f"< {corr_threshold:.4f} (dataset mean - 1 std dev)" if corr_threshold is not None
+                else "insufficient data to compute dataset threshold"
+            )
+        fingerprint_checks.append({
+            "key": key,
+            "label": check["label"],
+            "raw_value": raw_value,
+            "unit": check["unit"],
+            "threshold_desc": threshold_desc,
+            "triggered": triggered
         })
-        
-    rows.sort(key=lambda x: x['abs_shap'], reverse=True)
-    for r in rows:
-        del r['abs_shap']
-        
-    return rows
+
+    # --- SHAP explanations (precomputed, see ml_pipeline/compute_shap_explanations.py) ---
+    shap_explanation = cache["shap_explanations"].get(factory_id)
+
+    return {
+        "factory_id": factory_id,
+        "composite_breakdown": composite_breakdown,
+        "fingerprint_checks": fingerprint_checks,
+        "shap": shap_explanation
+    }
 
 # -------------------------------------------------------------
 # 5. Factory AI Predictions
 # -------------------------------------------------------------
 @app.get("/api/factories/{factory_id}/predictions")
 def get_factory_predictions(factory_id: str):
+    """
+    QC FIX (2026-08): previously ran live Stage 1 (per-factory XGBoost)
+    and Stage 2 (9-class XGBoost) inference here. Both have been removed
+    from the app entirely -- neither had a training script anywhere in
+    this repo (undocumented .joblib artifacts with no reproducible
+    provenance), and neither fed calculate_composite_risk() -- they were
+    diagnostic-only. What's left is the real composite tamper_probability
+    (fingerprints + Isolation Forest + factory-level tamper model) plus
+    the real Isolation Forest anomaly score.
+    """
     cache = get_data_cache()
-    df_tsi = cache["tsi"]
-    matched_sites = cache["stage1_matched_sites"]
-    
-    sub_tsi = df_tsi[df_tsi['factory_id'] == factory_id]
-    iso_score = float(sub_tsi.iloc[0].get('anomaly_score', 0.42)) if not sub_tsi.empty else 0.42
-    
-    has_stage1 = factory_id in matched_sites
-    stage1_models = cache["models"]["stage1"]
-    s1_cols = cache["models"]["s1_cols"]
-    
-    if has_stage1 and factory_id in stage1_models:
-        xgb_s1 = stage1_models[factory_id]
-        s1_feats = get_factory_row_features(factory_id, s1_cols)
-        s1_df = pd.DataFrame([s1_feats], columns=s1_cols)
-        s1_prob = float(xgb_s1.predict_proba(s1_df)[0, 1])
-        stage1_prob = round(s1_prob, 4)
-        stage1_status = "AVAILABLE"
-        stage1_reason = None
-    else:
-        stage1_prob = None
-        stage1_status = "NOT_AVAILABLE"
-        stage1_reason = "Stage 1 per-factory model un-matched for this site"
-        
-    xgb2 = cache["models"]["xgb2"]
-    le = cache["models"]["le"]
-    scaler = cache["models"]["scaler"]
-    feature_cols = cache["models"]["cols"]
-    
-    row_feat_dict = get_factory_row_features(factory_id, feature_cols)
-    f_df = pd.DataFrame([row_feat_dict], columns=feature_cols)
-    f_scaled = scaler.transform(f_df)
-    probs = xgb2.predict_proba(f_scaled)[0]
-    top_idx = int(np.argmax(probs))
-    pred_cls = str(le.classes_[top_idx])
-    pred_conf = round(float(probs[top_idx]) * 100, 1)
-
     df_tsi = cache["tsi"]
     sub_tsi = df_tsi[df_tsi['factory_id'] == factory_id]
     r_row = sub_tsi.iloc[0] if not sub_tsi.empty else {}
-    risk_tier = str(r_row.get('risk_tier', 'Low'))
     risk_category = str(r_row.get('true_risk_category', 'LOW'))
     tsi_score = float(r_row.get('tsi_score', 0.0))
     iso_score = float(r_row.get('anomaly_score', 0.42))

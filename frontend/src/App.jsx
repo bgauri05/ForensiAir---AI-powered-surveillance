@@ -3,7 +3,6 @@ import { Sidebar } from './components/Sidebar';
 import { TopHeader } from './components/TopHeader';
 import { ExecutiveDashboardPage } from './components/ExecutiveDashboardPage';
 import { AIAnalysisPage } from './components/AIAnalysisPage';
-import { ExplainabilityPage } from './components/ExplainabilityPage';
 import { FactoryDetailDossierPage } from './components/FactoryDetailDossierPage';
 import { ReportsCenterPage } from './components/ReportsCenterPage';
 import { DatasetQualityPage } from './components/DatasetQualityPage';
@@ -49,9 +48,7 @@ export default function App() {
       case 'dashboard':
         return <ExecutiveDashboardPage onNavigate={handleNavigate} />;
       case 'ai-analysis':
-        return <AIAnalysisPage onNavigate={handleNavigate} />;
-      case 'explainability':
-        return <ExplainabilityPage onNavigate={handleNavigate} selectedFactoryId={selectedFactoryId} />;
+        return <AIAnalysisPage onNavigate={handleNavigate} selectedFactoryId={selectedFactoryId} />;
       case 'institutional-oversight':
         return <InstitutionalOversightPage onNavigate={handleNavigate} />;
       case 'factories':
