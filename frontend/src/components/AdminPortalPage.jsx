@@ -17,14 +17,16 @@ export function AdminPortalPage({ onNavigate }) {
 
   const [showAddFactoryModal, setShowAddFactoryModal] = useState(false);
   // Tracks which sections are showing fallback/demo data because their
-  // backend endpoint returned an error or doesn't exist yet (consent-limits
-  // and factories POST/DELETE aren't implemented in backend/main.py as of
-  // this session). Previously this was silent -- the UI looked identical
-  // whether data was live or fake.
+  // backend endpoint returned an error (factories POST/DELETE aren't
+  // implemented in backend/main.py as of this session). Previously this was
+  // silent -- the UI looked identical whether data was live or fake.
   // Model Versions and Threshold Settings are deliberately excluded: neither
   // tab's content ever came from /api/admin/models or /api/admin/thresholds
   // (those endpoints don't exist and were never consumed), so a failed fetch
   // to them said nothing true about whether those tabs were live or fake.
+  // Consent Limits is real now (GET /api/admin/consent-limits, backed by the
+  // consent_limits table) -- still flagged on failure/wrong-shape, same as
+  // every other real-but-checkable endpoint here.
   const [demoFlags, setDemoFlags] = useState({});
 
   useEffect(() => {
@@ -63,15 +65,21 @@ export function AdminPortalPage({ onNavigate }) {
         else { setUsers(getFallbackUsers()); flags.users = true; }
       } else { setUsers(getFallbackUsers()); flags.users = true; }
 
+      // GET /api/admin/consent-limits is real, backed by the consent_limits
+      // table -- check for an array same as Users, so a non-2xx or an
+      // unexpected shape doesn't render garbage.
       const cRes = await apiFetch(`/api/admin/consent-limits`);
-      if (cRes.ok) setConsentLimits(await cRes.json());
-      else { setConsentLimits(getFallbackConsentLimits()); flags.consentLimits = true; }
+      if (cRes.ok) {
+        const cData = await cRes.json();
+        if (Array.isArray(cData)) { setConsentLimits(cData); }
+        else { setConsentLimits([]); flags.consentLimits = true; }
+      } else { setConsentLimits([]); flags.consentLimits = true; }
 
       setDemoFlags(flags);
     } catch (err) {
       setFactories(getFallbackFactories());
       setUsers(getFallbackUsers());
-      setConsentLimits(getFallbackConsentLimits());
+      setConsentLimits([]);
       setDemoFlags({ factories: true, users: true, consentLimits: true });
     } finally {
       setLoading(false);
@@ -250,18 +258,20 @@ export function AdminPortalPage({ onNavigate }) {
           </div>
         )}
 
-        {/* Tab 3: Consent Limits */}
+        {/* Tab 3: Consent Limits -- real regulatory min/max per parameter,
+            from the consent_limits table (GET /api/admin/consent-limits) */}
         {activeTab === 'consent-limits' && (
           <div className="p-6 space-y-4">
-            <h3 className="font-headline-md text-headline-md text-[#00355f]">Industry Consent Limit Enforcements</h3>
+            <h3 className="font-headline-md text-headline-md text-[#00355f]">Regulatory Consent Limits</h3>
+            <p className="text-body-sm text-[#727780]">Industry-wide enforcement standards used across all facilities.</p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {consentLimits.map((c, i) => (
-                <div key={i} className="p-4 border border-[#E5E7EB] rounded-lg bg-[#f8f9fb]">
-                  <div className="font-bold text-[#191c1e] text-body-md">{c.industry || c.category}</div>
+              {consentLimits.map((c) => (
+                <div key={c.parameter_id} className="p-4 border border-[#E5E7EB] rounded-lg bg-[#f8f9fb]">
+                  <div className="font-bold text-[#191c1e] text-body-md">{c.parameter_name}</div>
+                  <div className="text-[10px] text-[#727780] uppercase font-label-caps mt-0.5">{c.category}</div>
                   <div className="text-xs text-[#42474f] mt-2 space-y-1">
-                    <div>BOD Max: <span className="font-bold text-[#D32F2F]">{c.bod_limit || 30} mg/L</span></div>
-                    <div>COD Max: <span className="font-bold text-[#F57C00]">{c.cod_limit || 250} mg/L</span></div>
-                    <div>pH Range: <span className="font-bold text-[#1b6d24]">{c.ph_min || 5.5} - {c.ph_max || 9.0}</span></div>
+                    <div>Range: <span className="font-bold text-[#1b6d24]">{c.min_limit ?? 'Not available'} - {c.max_limit ?? 'Not available'} {c.unit}</span></div>
+                    <div>Standard: <span className="font-semibold">{c.regulatory_standard}</span></div>
                   </div>
                 </div>
               ))}
@@ -309,9 +319,3 @@ function getFallbackUsers() {
   ];
 }
 
-function getFallbackConsentLimits() {
-  return [
-    { industry: "Chemical Manufacturing", bod_limit: 30, cod_limit: 250, ph_min: 5.5, ph_max: 9.0 },
-    { industry: "Petrochemicals", bod_limit: 50, cod_limit: 300, ph_min: 6.0, ph_max: 8.5 }
-  ];
-}

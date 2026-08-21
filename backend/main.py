@@ -829,6 +829,50 @@ def list_admin_factories(district: Optional[str] = Query(None), industry: Option
 
     return results
 
+@app.get("/api/admin/consent-limits", dependencies=[Depends(require_role(["admin"]))])
+def list_consent_limits():
+    """
+    Real, backed by the consent_limits table (backend/models.py::ConsentLimit,
+    seeded by database/seed_db.py) -- regulatory min/max per parameter (pH,
+    BOD, COD, TSS, Flow, DO, Temperature), not the fabricated
+    "per-industry bod_limit/cod_limit/ph_min/ph_max" shape the frontend used
+    to assume with no endpoint behind it at all.
+
+    Note: Original Data/consent_limits.csv holds a separate, richer dataset
+    -- ~380 real per-factory extracted CTO limits -- already surfaced
+    per-factory on FactoryDetailDossierPage.jsx. This endpoint is the
+    industry-wide regulatory standard used for admin-level enforcement
+    settings, a different (also real) thing.
+    """
+    import sqlite3
+    db_path = os.path.join(os.path.dirname(__file__), "..", "forensiair.db")
+    if not os.path.exists(db_path):
+        db_path = "forensiair.db"
+    if not os.path.exists(db_path):
+        return []
+
+    conn = sqlite3.connect(db_path)
+    try:
+        rows = conn.execute(
+            "SELECT parameter_id, parameter_name, unit, min_limit, max_limit, "
+            "regulatory_standard, category FROM consent_limits ORDER BY category, parameter_name"
+        ).fetchall()
+    finally:
+        conn.close()
+
+    return [
+        {
+            "parameter_id": r[0],
+            "parameter_name": r[1],
+            "unit": r[2],
+            "min_limit": r[3],
+            "max_limit": r[4],
+            "regulatory_standard": r[5],
+            "category": r[6]
+        }
+        for r in rows
+    ]
+
 @app.get("/api/admin/users", dependencies=[Depends(require_role(["admin"]))])
 def list_users():
     return {
