@@ -101,8 +101,8 @@ export function FactoryDetailDossierPage({ onNavigate, selectedFactoryId }) {
   const plotAddress = fObj.address || 'Not available';
   const plantHead = fObj.contact_person || 'Not available';
 
-  const bodAvg = fObj.avg_bod !== undefined ? `${fObj.avg_bod} mg/L` : 'Not available';
-  const codAvg = fObj.avg_cod !== undefined ? `${fObj.avg_cod} mg/L` : 'Not available';
+  const bodAvg = (fObj.avg_bod !== undefined && fObj.avg_bod !== null) ? `${fObj.avg_bod} mg/L` : 'Not available';
+  const codAvg = (fObj.avg_cod !== undefined && fObj.avg_cod !== null) ? `${fObj.avg_cod} mg/L` : 'Not available';
   const phAvg = 'Not available';
 
   const tamperProbVal = fObj.tamper_probability !== undefined

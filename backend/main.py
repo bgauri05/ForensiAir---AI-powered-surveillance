@@ -255,27 +255,35 @@ def get_data_cache():
 
     return _data_cache
 
-def get_factory_row_features(factory_id: str, feature_list: List[str]) -> Dict[str, float]:
+def get_factory_parameter_mean(factory_id: str, parameter_id: str) -> Optional[float]:
+    """
+    QC FIX (2026-08): replaces the old get_factory_row_features() helper,
+    which took the median of 'value' across ALL parameter_ids for a factory
+    (ETP-Flow, ETP-pH, ETP-BOD, ETP-COD, ETP-TSS mixed together into one
+    number) and then fed that meaningless blend into arbitrary scaling
+    formulas (e.g. val * 0.8 + 12.0) to fake a plausible-looking avg_bod/
+    avg_cod/avg_flow. This computes a real per-factory, per-parameter mean
+    directly from real_features.parquet's raw `value` column (falling back
+    to synthetic_features.parquet only if a factory has no real rows, same
+    fallback order the old helper used) -- e.g. parameter_id='ETP-BOD' gives
+    this factory's actual average BOD reading.
+    """
     cache = get_data_cache()
     df_rf = cache["real_features"]
-    
+
     sub = pd.DataFrame()
-    if not df_rf.empty and 'factory_id' in df_rf.columns:
-        sub = df_rf[df_rf['factory_id'] == factory_id]
-        
+    if not df_rf.empty and 'factory_id' in df_rf.columns and 'parameter_id' in df_rf.columns:
+        sub = df_rf[(df_rf['factory_id'] == factory_id) & (df_rf['parameter_id'] == parameter_id)]
+
     if sub.empty:
         df_sf = cache["syn_features"]
-        if not df_sf.empty and 'factory_id' in df_sf.columns:
-            sub = df_sf[df_sf['factory_id'] == factory_id]
-            
-    vec = {}
-    for col in feature_list:
-        if not sub.empty and col in sub.columns:
-            val = float(sub[col].median())
-            vec[col] = 0.0 if np.isnan(val) else val
-        else:
-            vec[col] = 0.0
-    return vec
+        if not df_sf.empty and 'factory_id' in df_sf.columns and 'parameter_id' in df_sf.columns:
+            sub = df_sf[(df_sf['factory_id'] == factory_id) & (df_sf['parameter_id'] == parameter_id)]
+
+    if sub.empty or 'value' not in sub.columns:
+        return None
+    val = float(sub['value'].mean())
+    return None if np.isnan(val) else round(val, 1)
 
 # Auth Pydantic models
 class LoginRequest(BaseModel):
@@ -486,12 +494,6 @@ def get_factory_detail(factory_id: str):
         "coordinated_missing_flag": float(row.get('coordinated_missing_flag', 0.0))
     }
     
-    # value/rolling_mean/rolling_std are the only real-feature columns this
-    # endpoint actually needs (for the BOD/COD/Flow estimates below) --
-    # previously fetched the full Stage 2 feature vector just to get these
-    # three, as a side effect of running Stage 2 inference here.
-    row_feat_dict = get_factory_row_features(factory_id, ['value', 'rolling_mean', 'rolling_std'])
-
     risk_tier = str(row.get('risk_tier', 'Low'))
     risk_category = str(row.get('true_risk_category', 'LOW'))
     tsi_score = float(row.get('tsi_score', 0.0))
@@ -499,14 +501,14 @@ def get_factory_detail(factory_id: str):
     explanation = _explain_risk_drivers(risk_category, tsi_score, raw_signals)
     tamper_prob = explanation['tamper_probability']
 
-    # Calculate effluent averages from row features
-    val = row_feat_dict.get('value', 20.0)
-    rmean = row_feat_dict.get('rolling_mean', 120.0)
-    bod_val = round(max(8.0, min(48.0, val * 0.8 + 12.0)), 1)
-    cod_val = round(max(45.0, min(320.0, rmean * 1.2 + 30.0)), 1)
-    flow_val = round(max(0.4, min(4.8, 1.2 + tsi_score * 0.018)), 1)
-    peak_variance = round(max(4.0, min(45.0, float(row_feat_dict.get('rolling_std', 5.0)) * 2.8 + 8.0)), 1)
-    
+    # Real per-factory averages of the raw OCEMS readings -- see
+    # get_factory_parameter_mean(). None (rendered as "Not available" by the
+    # frontend) if this factory has no real or synthetic rows for that
+    # parameter, same honest treatment as phAvg already gets client-side.
+    bod_val = get_factory_parameter_mean(factory_id, 'ETP-BOD')
+    cod_val = get_factory_parameter_mean(factory_id, 'ETP-COD')
+    flow_val = get_factory_parameter_mean(factory_id, 'ETP-Flow')
+
     return {
         "factory_id": factory_id,
         "factory_name": name,
@@ -527,7 +529,6 @@ def get_factory_detail(factory_id: str):
         "avg_bod": bod_val,
         "avg_cod": cod_val,
         "avg_flow": flow_val,
-        "peak_variance": peak_variance,
         "tamper_probability": tamper_prob,
         "raw_fingerprint_signals": raw_signals,
         "note": explanation['note']
