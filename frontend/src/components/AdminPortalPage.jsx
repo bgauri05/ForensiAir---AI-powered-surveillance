@@ -10,7 +10,6 @@ export function AdminPortalPage({ onNavigate }) {
   const [factories, setFactories] = useState([]);
   const [users, setUsers] = useState([]);
   const [consentLimits, setConsentLimits] = useState([]);
-  const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const [districtFilter, setDistrictFilter] = useState('');
@@ -18,10 +17,10 @@ export function AdminPortalPage({ onNavigate }) {
 
   const [showAddFactoryModal, setShowAddFactoryModal] = useState(false);
   // Tracks which sections are showing fallback/demo data because their
-  // backend endpoint returned an error or doesn't exist yet (consent-limits,
-  // notifications, and factories POST/DELETE aren't implemented in
-  // backend/main.py as of this session). Previously this was silent -- the
-  // UI looked identical whether data was live or fake.
+  // backend endpoint returned an error or doesn't exist yet (consent-limits
+  // and factories POST/DELETE aren't implemented in backend/main.py as of
+  // this session). Previously this was silent -- the UI looked identical
+  // whether data was live or fake.
   // Model Versions and Threshold Settings are deliberately excluded: neither
   // tab's content ever came from /api/admin/models or /api/admin/thresholds
   // (those endpoints don't exist and were never consumed), so a failed fetch
@@ -68,17 +67,12 @@ export function AdminPortalPage({ onNavigate }) {
       if (cRes.ok) setConsentLimits(await cRes.json());
       else { setConsentLimits(getFallbackConsentLimits()); flags.consentLimits = true; }
 
-      const nRes = await apiFetch(`/api/admin/notifications`);
-      if (nRes.ok) setNotifications(await nRes.json());
-      else { setNotifications(getFallbackNotifications()); flags.notifications = true; }
-
       setDemoFlags(flags);
     } catch (err) {
       setFactories(getFallbackFactories());
       setUsers(getFallbackUsers());
       setConsentLimits(getFallbackConsentLimits());
-      setNotifications(getFallbackNotifications());
-      setDemoFlags({ factories: true, users: true, consentLimits: true, notifications: true });
+      setDemoFlags({ factories: true, users: true, consentLimits: true });
     } finally {
       setLoading(false);
     }
@@ -130,8 +124,7 @@ export function AdminPortalPage({ onNavigate }) {
             { id: 'users', label: 'Users' },
             { id: 'consent-limits', label: 'Consent Limits' },
             { id: 'models', label: 'Model Versions' },
-            { id: 'thresholds', label: 'Threshold Settings' },
-            { id: 'notifications', label: 'Notification Rules' }
+            { id: 'thresholds', label: 'Threshold Settings' }
           ].map(tab => (
             <button
               key={tab.id}
@@ -150,7 +143,6 @@ export function AdminPortalPage({ onNavigate }) {
         {(() => {
           const tabToFlag = {
             factories: 'factories', users: 'users', 'consent-limits': 'consentLimits',
-            notifications: 'notifications',
           };
           const key = tabToFlag[activeTab];
           if (!key || !demoFlags[key]) return null;
@@ -286,35 +278,6 @@ export function AdminPortalPage({ onNavigate }) {
         {activeTab === 'thresholds' && (
           <ThresholdSettingsTab />
         )}
-
-        {/* Tab 6: Notification Rules -- previously this tab was clickable
-            (listed above) but had no matching render case at all, so
-            clicking it just showed a blank content area with no
-            indication anything was wrong. */}
-        {activeTab === 'notifications' && (
-          <div className="p-6 space-y-4">
-            <h3 className="font-headline-md text-headline-md text-[#00355f]">Notification Rules</h3>
-            {notifications.length === 0 ? (
-              <div className="p-6 text-center text-body-sm text-[#42474f] border border-dashed border-[#E5E7EB] rounded-lg">
-                No notification rules configured yet.
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {notifications.map((n, i) => (
-                  <div key={i} className="p-4 border border-[#E5E7EB] rounded-lg bg-[#f8f9fb] flex items-center justify-between">
-                    <div>
-                      <div className="font-bold text-[#191c1e] text-body-sm">{n.name || n.trigger}</div>
-                      <div className="text-xs text-[#42474f] mt-1">{n.description || n.condition}</div>
-                    </div>
-                    <span className={`px-3 py-1 rounded-full text-[11px] font-bold uppercase ${n.enabled ? 'bg-[#eaf6ec] text-[#1b6d24]' : 'bg-[#edeef0] text-[#727780]'}`}>
-                      {n.enabled ? 'Active' : 'Disabled'}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
       </div>
 
       {showAddFactoryModal && (
@@ -352,5 +315,3 @@ function getFallbackConsentLimits() {
     { industry: "Petrochemicals", bod_limit: 50, cod_limit: 300, ph_min: 6.0, ph_max: 8.5 }
   ];
 }
-
-function getFallbackNotifications() { return []; }
