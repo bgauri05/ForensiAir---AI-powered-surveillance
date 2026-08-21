@@ -2,6 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Download } from 'lucide-react';
 import { apiFetch } from '../config';
 
+// QC FIX (2026-08): report IDs were hardcoded as FR-2024-#{factory_id} --
+// a static "2024" regardless of the real date. There's no persisted
+// report-generation timestamp anywhere in the backend (these dossiers are
+// rendered live, on demand, not stored), so the honest real value is the
+// current year at render time, not an invented per-report date.
+const REPORT_YEAR = new Date().getFullYear();
+
 export function ReportsCenterPage({ onNavigate }) {
   const [factories, setFactories] = useState([]);
   const [selectedFactory, setSelectedFactory] = useState(null);
@@ -116,7 +123,7 @@ export function ReportsCenterPage({ onNavigate }) {
                 }`}
               >
                 <div className="flex justify-between items-start mb-1">
-                  <span className="text-[10px] font-bold text-[#727780] uppercase">FR-2024-#{fItem.factory_id}</span>
+                  <span className="text-[10px] font-bold text-[#727780] uppercase">FR-{REPORT_YEAR}-#{fItem.factory_id}</span>
                   <span className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase ${
                     itemHigh ? 'bg-[#D32F2F]/10 text-[#D32F2F]' : itemMed ? 'bg-[#F57C00]/10 text-[#F57C00]' : 'bg-[#1b6d24]/10 text-[#1b6d24]'
                   }`}>
