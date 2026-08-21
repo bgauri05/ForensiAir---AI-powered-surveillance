@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { TrendingUp, TrendingDown, AlertCircle, Lock } from 'lucide-react';
-import { apiFetch } from '../config';
+import { TrendingUp, TrendingDown, RefreshCw, Download } from 'lucide-react';
+import { apiFetch, API_BASE_URL } from '../config';
 
 // QC FIX (2026-08, Phase 5): /api/data-quality is admin-gated
 // (require_role(["admin"])). Real auth now exists and every request sends
@@ -18,41 +18,65 @@ import { apiFetch } from '../config';
 // "Parameter Stability Audit" panel is gone (nothing server-side backs
 // that concept); replaced with a real Quality Grade Distribution computed
 // from the real per-factory quality_grade field.
+//
+// QC FIX (2026-08): removed the fabricated getFallbackDataQuality() dataset
+// (5 fake factories, a made-up 940,000 record count) entirely. It was
+// masking real failures -- e.g. a fetch that fails because the backend is
+// mid-restart (not a 401, apiFetch's interceptor has nothing to catch)
+// landed here and silently rendered plausible-looking fake numbers with
+// only a small banner as the tell, and this component only ever fetches
+// once on mount, so that fake state stuck around indefinitely even after
+// the backend came back. Same honest-error pattern as
+// ExecutiveDashboardPage.jsx's loadError, plus a real Retry action.
 export function DatasetQualityPage({ onNavigate }) {
   const [qualityData, setQualityData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [isDemoData, setIsDemoData] = useState(false);
+  const [loadError, setLoadError] = useState(false);
 
   useEffect(() => {
     fetchDataQuality();
   }, []);
 
   const fetchDataQuality = async () => {
+    setLoading(true);
     try {
       const res = await apiFetch('/api/data-quality');
       if (res.ok) {
         const data = await res.json();
         if (data && Array.isArray(data.dataset_summaries)) {
           setQualityData(data);
-          setIsDemoData(false);
+          setLoadError(false);
         } else {
-          setQualityData(getFallbackDataQuality());
-          setIsDemoData(true);
+          setLoadError(true);
         }
       } else {
-        setQualityData(getFallbackDataQuality());
-        setIsDemoData(true);
+        setLoadError(true);
       }
     } catch (err) {
-      setQualityData(getFallbackDataQuality());
-      setIsDemoData(true);
+      setLoadError(true);
     } finally {
       setLoading(false);
     }
   };
 
-  if (loading || !qualityData) {
+  if (loading) {
     return <div className="p-8 font-body-md text-[#42474f]">Loading Dataset Quality Overview...</div>;
+  }
+
+  if (loadError || !qualityData) {
+    return (
+      <div className="min-h-[60vh] flex flex-col items-center justify-center gap-3 text-center px-8">
+        <span className="material-symbols-outlined text-4xl text-[var(--color-danger)]">cloud_off</span>
+        <p className="font-body-md text-body-md font-semibold text-[#191c1e]">Unable to load Dataset Quality data</p>
+        <p className="font-body-sm text-body-sm text-[#727780] max-w-md">Confirm the backend is running at {API_BASE_URL}, then retry.</p>
+        <button
+          onClick={fetchDataQuality}
+          className="mt-2 flex items-center gap-2 px-4 py-2 bg-[#00355f] text-white font-bold rounded-lg text-body-sm hover:opacity-90"
+        >
+          <RefreshCw size={14} /> Retry
+        </button>
+      </div>
+    );
   }
 
   const summaries = qualityData.dataset_summaries || [];
@@ -84,13 +108,6 @@ export function DatasetQualityPage({ onNavigate }) {
 
   return (
     <div className="p-8 max-w-[1600px] mx-auto space-y-8">
-      {isDemoData && (
-        <div className="flex items-center gap-2 px-6 py-3 bg-[#fff3e6] border border-[#F57C00]/20 text-[#8F6400] text-body-sm font-semibold rounded-lg">
-          <AlertCircle size={16} />
-          Showing demo data -- this section's backend endpoint isn't available right now, so nothing here reflects your live database.
-        </div>
-      )}
-
       {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
@@ -102,13 +119,12 @@ export function DatasetQualityPage({ onNavigate }) {
           <h2 className="font-headline-lg text-headline-lg text-[#00355f]">Dataset Quality Overview</h2>
           <p className="font-body-md text-[#42474f] mt-1">Institutional audit of environmental sensor network integrity, {summaries.length} facilities.</p>
         </div>
-        <div className="flex gap-3">
-          <button disabled title="Date-range selection isn't implemented yet -- this is a static historical dataset, not a live daily feed" className="px-4 py-2 bg-white border border-[#E5E7EB] text-[#727780] font-medium rounded-lg flex items-center gap-2 text-body-sm cursor-not-allowed opacity-60">
-            <Lock size={14} />
-            Last 30 Days
-          </button>
-          <button disabled title="Report export isn't implemented yet" className="px-4 py-2 bg-[#00355f] text-white font-medium rounded-lg flex items-center gap-2 text-body-sm shadow-sm cursor-not-allowed opacity-60">
-            <Lock size={14} />
+        <div className="flex gap-3 print:hidden">
+          <button
+            onClick={() => window.print()}
+            className="px-4 py-2 bg-[#00355f] text-white font-medium rounded-lg flex items-center gap-2 text-body-sm shadow-sm hover:opacity-90"
+          >
+            <Download size={14} />
             Export Audit Report
           </button>
         </div>
@@ -219,18 +235,4 @@ export function DatasetQualityPage({ onNavigate }) {
       </div>
     </div>
   );
-}
-
-function getFallbackDataQuality() {
-  return {
-    dataset_summaries: [
-      { factory_id: 'demo_1', factory_name: 'Galaxy Surfactants Limited', coverage_percentage: 99.2, missing_percentage: 0.8, duplicate_percentage: 0.1, quality_grade: 'A', readiness_score: 92, total_records: 250000 },
-      { factory_id: 'demo_2', factory_name: 'Anmol Chemicals Pvt Ltd', coverage_percentage: 97.8, missing_percentage: 2.2, duplicate_percentage: 0.15, quality_grade: 'B', readiness_score: 85, total_records: 180000 },
-      { factory_id: 'demo_3', factory_name: 'Super Petroleum Products Pvt Ltd', coverage_percentage: 94.5, missing_percentage: 5.5, duplicate_percentage: 0.2, quality_grade: 'C', readiness_score: 74, total_records: 160000 },
-      { factory_id: 'demo_4', factory_name: 'Cyklo Pharma Chem Pvt Ltd', coverage_percentage: 91.2, missing_percentage: 8.8, duplicate_percentage: 0.3, quality_grade: 'D', readiness_score: 61, total_records: 140000 },
-      { factory_id: 'demo_5', factory_name: 'Privi Speciality Chemicals Ltd', coverage_percentage: 98.6, missing_percentage: 1.4, duplicate_percentage: 0.12, quality_grade: 'A', readiness_score: 90, total_records: 210000 }
-    ],
-    total_records_processed: 940000,
-    pipeline_health_status: 'DEMO'
-  };
 }
