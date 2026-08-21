@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Bolt, AlertTriangle, Download, CheckCircle2, XCircle } from 'lucide-react';
+import { Bolt, AlertTriangle, Download, CheckCircle2, XCircle, RefreshCw } from 'lucide-react';
 import { apiFetch } from '../config';
 
 export function AIAnalysisPage({ onNavigate, selectedFactoryId: initialFactoryId }) {
@@ -8,6 +8,16 @@ export function AIAnalysisPage({ onNavigate, selectedFactoryId: initialFactoryId
   const [selectedFactoryData, setSelectedFactoryData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [analyzing, setAnalyzing] = useState(false);
+  // QC FIX (2026-08): a successful re-fetch of unchanged data looked
+  // identical to the button doing nothing at all -- the only feedback was
+  // the button's own label flicking back from "Running..." to "Run
+  // Analysis". This tracks what handleRunAnalysis's re-fetch actually
+  // resolved to: 'changed' | 'unchanged' | 'error', so there's always a
+  // real, visible signal tied to the actual fetch outcome. Only set by the
+  // explicit Run Analysis click, not by switching factories (which always
+  // "changes" the displayed data by definition, so that comparison would
+  // be meaningless noise).
+  const [refreshResult, setRefreshResult] = useState(null);
 
   useEffect(() => {
     fetchInitialData();
@@ -53,13 +63,12 @@ export function AIAnalysisPage({ onNavigate, selectedFactoryId: initialFactoryId
       if (facDetailRes.ok) detail = await facDetailRes.json();
       if (shapRes.ok) explanation = await shapRes.json();
 
-      setSelectedFactoryData({
-        factory: detail,
-        predictions: predictions,
-        explanation: explanation
-      });
+      const result = { factory: detail, predictions, explanation };
+      setSelectedFactoryData(result);
+      return result;
     } catch (err) {
       console.error(err);
+      return null;
     }
   };
 
@@ -75,9 +84,21 @@ export function AIAnalysisPage({ onNavigate, selectedFactoryId: initialFactoryId
   // computed state for this factory via the same endpoints used on load.
   const handleRunAnalysis = async () => {
     setAnalyzing(true);
+    setRefreshResult(null);
     const fObj = factories.find(f => f.factory_id === selectedFactoryId);
-    await fetchFactoryAnalysis(selectedFactoryId, fObj);
+    const previous = selectedFactoryData;
+    const updated = await fetchFactoryAnalysis(selectedFactoryId, fObj);
     setAnalyzing(false);
+    if (!updated) {
+      setRefreshResult('error');
+    } else {
+      const changed = JSON.stringify({ p: previous?.predictions, e: previous?.explanation })
+        !== JSON.stringify({ p: updated.predictions, e: updated.explanation });
+      setRefreshResult(changed ? 'changed' : 'unchanged');
+    }
+    // Auto-clears so it reads as a one-time confirmation of this click,
+    // not a persistent status bar that goes stale.
+    setTimeout(() => setRefreshResult(null), 6000);
   };
 
   if (loading) {
@@ -168,6 +189,35 @@ export function AIAnalysisPage({ onNavigate, selectedFactoryId: initialFactoryId
           </button>
         </div>
       </div>
+
+      {/* Run Analysis feedback -- resolved-state signal for handleRunAnalysis,
+          separate from the button's own pending-state label/spin (analyzing).
+          Without this, a re-fetch that returned identical data looked exactly
+          like the button doing nothing. */}
+      {analyzing && (
+        <div className="flex items-center gap-2 text-body-sm text-[#727780] print:hidden">
+          <RefreshCw size={14} className="animate-spin" />
+          Fetching the latest computed state for this factory...
+        </div>
+      )}
+      {!analyzing && refreshResult === 'unchanged' && (
+        <div className="flex items-center gap-2 text-body-sm text-[#1b6d24] print:hidden">
+          <CheckCircle2 size={14} />
+          Refreshed -- data is already current, no change since last check.
+        </div>
+      )}
+      {!analyzing && refreshResult === 'changed' && (
+        <div className="flex items-center gap-2 text-body-sm text-[#0f4c81] print:hidden">
+          <RefreshCw size={14} />
+          Refreshed -- values updated since last check.
+        </div>
+      )}
+      {!analyzing && refreshResult === 'error' && (
+        <div className="flex items-center gap-2 text-body-sm text-[#D32F2F] print:hidden">
+          <XCircle size={14} />
+          Refresh failed -- showing the last successfully loaded data.
+        </div>
+      )}
 
       {/* Analysis Results KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
