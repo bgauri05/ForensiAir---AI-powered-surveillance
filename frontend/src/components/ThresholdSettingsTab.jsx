@@ -5,6 +5,16 @@ export function ThresholdSettingsTab() {
   const [showProposeModal, setShowProposeModal] = useState(false);
 
   // 8 Fingerprints + Coordinated Missing Data (Locked Empirical Set)
+  //
+  // QC FIX (2026-08): each entry used to carry a lastValidated date (Oct
+  // 2024, invented) and a separationMetric stat ("17x Tampered vs
+  // Baseline", "0.779 vs 0.345 Split", etc. -- also invented; the latter
+  // was never even rendered anywhere, dead data). Checked
+  // ml_pipeline/risk_engine.py, ml_pipeline/train_xgboost_weak_supervision.py,
+  // and fingerprint_engine.py's own printed threshold documentation for a
+  // real equivalent -- no per-fingerprint validation date or separation/
+  // discrimination statistic exists anywhere in this repo, so both fields
+  // are removed rather than reworded.
   const thresholdsData = [
     {
       id: 'FP1',
@@ -12,9 +22,7 @@ export function ThresholdSettingsTab() {
       description: 'Rolling-window standard deviation invariant signal detection',
       thresholdValue: 'Adaptive (per-factory baseline)',
       isAdaptive: true,
-      lastValidated: 'Oct 12, 2024',
-      status: 'Validated',
-      separationMetric: 'Relative scaling'
+      status: 'Validated'
     },
     {
       id: 'FP2',
@@ -22,9 +30,7 @@ export function ThresholdSettingsTab() {
       description: 'Rolling 24h Pearson correlation between COD & BOD effluent streams',
       thresholdValue: '< Regional Baseline (r < 0.65)',
       isAdaptive: false,
-      lastValidated: 'Oct 12, 2024',
-      status: 'Validated',
-      separationMetric: 'Pearson r < 0.65'
+      status: 'Validated'
     },
     {
       id: 'FP7',
@@ -32,9 +38,7 @@ export function ThresholdSettingsTab() {
       description: 'Percentage of telemetry readings within tight band below CTO consent limit',
       thresholdValue: '5.0% Band',
       isAdaptive: false,
-      lastValidated: 'Oct 10, 2024',
-      status: 'Validated',
-      separationMetric: '17x Tampered vs Baseline'
+      status: 'Validated'
     },
     {
       id: 'FP8',
@@ -42,9 +46,7 @@ export function ThresholdSettingsTab() {
       description: 'Lag-96 (24h period) autocorrelation pattern repetition rate',
       thresholdValue: 'Autocorrelation > 0.95',
       isAdaptive: false,
-      lastValidated: 'Oct 10, 2024',
-      status: 'Validated',
-      separationMetric: '0.779 vs 0.345 Split'
+      status: 'Validated'
     },
     {
       id: 'FP11',
@@ -52,9 +54,7 @@ export function ThresholdSettingsTab() {
       description: 'Percentage of Below Detection Limit (BDL) zero-variance reporting',
       thresholdValue: '> 15.0% BDL Rate',
       isAdaptive: false,
-      lastValidated: 'Oct 08, 2024',
-      status: 'Validated',
-      separationMetric: 'BDL Ratio Cutoff'
+      status: 'Validated'
     },
     {
       id: 'FP12',
@@ -62,9 +62,7 @@ export function ThresholdSettingsTab() {
       description: 'Maximum consecutive identical raw telemetry sensor readings',
       thresholdValue: '> 12 Consecutive Timestamps',
       isAdaptive: false,
-      lastValidated: 'Oct 08, 2024',
-      status: 'Validated',
-      separationMetric: 'Zero Delta Runs'
+      status: 'Validated'
     },
     {
       id: 'FP13',
@@ -72,9 +70,7 @@ export function ThresholdSettingsTab() {
       description: 'Physical hard range bounds violation (e.g. pH ∉ [0,14] or negative concentration)',
       thresholdValue: '> 0.0% Hard Bounds Violations',
       isAdaptive: false,
-      lastValidated: 'Oct 05, 2024',
-      status: 'Validated',
-      separationMetric: 'Physical Bound Breach'
+      status: 'Validated'
     },
     {
       id: 'FP15',
@@ -82,9 +78,7 @@ export function ThresholdSettingsTab() {
       description: 'Coefficient of variation cutoff for abnormal parameter dispersion',
       thresholdValue: 'CV Cutoff > 2.50',
       isAdaptive: false,
-      lastValidated: 'Oct 05, 2024',
-      status: 'Validated',
-      separationMetric: 'Dispersion Index'
+      status: 'Validated'
     },
     {
       id: 'CMD',
@@ -92,9 +86,7 @@ export function ThresholdSettingsTab() {
       description: 'Synchronized telemetry missingness across regional facility clusters',
       thresholdValue: '> 1.5 σ Above Regional Median',
       isAdaptive: false,
-      lastValidated: 'Oct 01, 2024',
-      status: 'Validated',
-      separationMetric: 'Regional Cluster Outage'
+      status: 'Validated'
     }
   ];
 
@@ -169,7 +161,6 @@ export function ThresholdSettingsTab() {
                 <th className="px-6 py-3 font-label-caps text-[11px] text-[#42474f] uppercase">Fingerprint Name</th>
                 <th className="px-6 py-3 font-label-caps text-[11px] text-[#42474f] uppercase">Description</th>
                 <th className="px-6 py-3 font-label-caps text-[11px] text-[#42474f] uppercase">Threshold Value</th>
-                <th className="px-6 py-3 font-label-caps text-[11px] text-[#42474f] uppercase">Last Validated</th>
                 <th className="px-6 py-3 font-label-caps text-[11px] text-[#42474f] uppercase text-right">Status</th>
               </tr>
             </thead>
@@ -191,7 +182,6 @@ export function ThresholdSettingsTab() {
                       </span>
                     )}
                   </td>
-                  <td className="px-6 py-3.5 text-[#727780] text-xs">{row.lastValidated}</td>
                   <td className="px-6 py-3.5 text-right">
                     <span className="px-2.5 py-1 bg-[#1b6d24]/10 text-[#1b6d24] border border-[#1b6d24]/20 rounded text-[11px] font-bold uppercase inline-flex items-center gap-1">
                       <CheckCircle2 size={12} /> {row.status}
@@ -207,7 +197,7 @@ export function ThresholdSettingsTab() {
         <div className="p-4 bg-[#f8f9fb] border-t border-[#E5E7EB] text-xs text-[#727780] flex items-start gap-2">
           <Info size={16} className="text-[#0f4c81] shrink-0 mt-0.5" />
           <p className="leading-relaxed">
-            <strong>Statistical Note:</strong> Thresholds are derived from statistical validation against real OCEMS data (see Model Versions changelog). Changes require formal re-validation against the full 33-factory baseline before deployment.
+            <strong>Statistical Note:</strong> These are the fingerprint engine's configured detection thresholds. Changes require formal re-validation against the full 33-factory baseline before deployment.
           </p>
         </div>
       </div>
