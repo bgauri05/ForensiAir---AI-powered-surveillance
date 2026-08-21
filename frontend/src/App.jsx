@@ -134,7 +134,7 @@ export default function App() {
       case 'alerts':
         return <AlertsPage onNavigate={handleNavigate} />;
       case 'settings':
-        return <SettingsPage onNavigate={handleNavigate} />;
+        return <SettingsPage currentUser={currentUser} onLogout={handleLogout} />;
       default:
         return <ExecutiveDashboardPage onNavigate={handleNavigate} />;
     }
