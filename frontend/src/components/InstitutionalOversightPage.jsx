@@ -1,10 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { ShieldAlert, AlertTriangle, ChevronRight, CheckCircle, RefreshCw } from 'lucide-react';
+import { AlertCircle, RefreshCw } from 'lucide-react';
 import { apiFetch } from '../config';
 
+// QC FIX (2026-08): getFallbackOversight() used to activate silently on a
+// failed/unreachable /api/oversight (e.g. the backend mid-restart -- not a
+// 401, so the auth interceptor doesn't catch it either) with no visible
+// indication the numbers on screen were frozen, unlike every other page in
+// the app that falls back to demo data (Admin Portal, Dataset Quality).
+// isDemoData adds the same "Showing demo data" banner here.
 export function InstitutionalOversightPage({ onNavigate }) {
   const [oversightData, setOversightData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isDemoData, setIsDemoData] = useState(false);
 
   useEffect(() => {
     fetchOversight();
@@ -16,11 +23,14 @@ export function InstitutionalOversightPage({ onNavigate }) {
       if (res.ok) {
         const data = await res.json();
         setOversightData(data);
+        setIsDemoData(false);
       } else {
         setOversightData(getFallbackOversight());
+        setIsDemoData(true);
       }
     } catch (err) {
       setOversightData(getFallbackOversight());
+      setIsDemoData(true);
     } finally {
       setLoading(false);
     }
@@ -52,6 +62,13 @@ export function InstitutionalOversightPage({ onNavigate }) {
 
   return (
     <div className="p-8 max-w-[1600px] mx-auto space-y-8">
+      {isDemoData && (
+        <div className="flex items-center gap-2 px-6 py-3 bg-[#fff3e6] border border-[#F57C00]/20 text-[#8F6400] text-body-sm font-semibold rounded-lg">
+          <AlertCircle size={16} />
+          Showing demo data -- this section's backend endpoint isn't available right now, so nothing here reflects your live database.
+        </div>
+      )}
+
       {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
