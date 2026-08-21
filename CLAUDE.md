@@ -67,7 +67,10 @@ It loads, in order: `Original Data/dataset_quality_summary*.csv`, factory + fing
 `forensiair.db` (SQLite, via `_load_factory_scores()` — **not** `Data/RawData/tsi_scores.csv`, which has no
 generator script anywhere in this repo and is no longer read), `Data/RawData/factory_shap_explanations.json`
 (real precomputed SHAP, see above — replaces the now-unread `Data/RawData/factory_shap_attributions.csv`, which
-matched the removed Stage-2 model's feature set and is left on disk untouched but unused), `Data/RawData/real_features.parquet`,
+matched the removed Stage-2 model's feature set and is left on disk untouched and unused — `ModelVersionsTab.jsx`
+used to cite it as an "Active" model source with fabricated trained/retrained dates; that whole entry, along with
+an invented changelog and a fake training-metadata panel, has since been removed, so nothing in the app reads or
+displays this file anymore), `Data/RawData/real_features.parquet`,
 `Data/SynData/synthetic_features.parquet`. The backend does **not** load any `.joblib` model file or run live
 inference — Stage 1/2 removal took the last live-inference code path with it; `ml_pipeline/models/*.joblib` is
 read only by the offline training/SHAP-precompute scripts, never by `backend/main.py`. Paths are resolved
@@ -156,10 +159,23 @@ the other test account, the same as a real deployment would require.
 Two admin-gated pages worth knowing the real state of: `DatasetQualityPage.jsx` (`GET /api/data-quality`) is a
 real, working endpoint and now renders its actual response shape (`dataset_summaries`, per-factory
 coverage/missing/duplicate/quality_grade/readiness_score) — it used to assume a shape the backend never
-produced, so it silently showed fabricated fallback data even when auth was working. `GET /api/admin/users`, by
+produced, so it silently showed fabricated fallback data even when auth was working. Its fallback dataset (5 fake
+factories, a made-up 940,000 record count) has since been removed entirely; a failed fetch or unexpected shape now
+renders an honest "Unable to load" screen with a Retry button instead, since a fallback silently masked real
+failures (e.g. the backend being mid-restart, which isn't a 401 and so isn't caught by the auth interceptor
+either) for as long as the component stayed mounted. `GET /api/admin/users`, by
 contrast, is still a `{"status": "not_implemented"}` stub — no user-management DB model exists — and
 `AdminPortalPage.jsx`'s Users tab correctly stays in its honest demo-fallback banner state; a 200 response from
-that endpoint is not the same as real data, and code reading it checks for an array, not just `res.ok`.
+that endpoint is not the same as real data, and code reading it checks for an array, not just `res.ok`. Its
+Consent Limits tab, by contrast, is real: `GET /api/admin/consent-limits` reads the `consent_limits` table
+(regulatory min/max per parameter — pH, BOD, COD, TSS, Flow, DO, Temperature — seeded by `database/seed_db.py`),
+replacing an old fabricated per-industry shape that had no endpoint behind it at all. The old Notification Rules
+tab (no backing endpoint ever existed) has been removed rather than left as a dead stub.
+
+`SettingsPage.jsx` is real, not a placeholder: it shows the same `currentUser` session data (username, role, JWT
+`exp` as session expiry) `App.jsx` already hydrates from `GET /api/me` for `Sidebar.jsx`/`TopHeader.jsx`, plus a
+working Logout button. It does not show theme or notification preferences — no user-preferences table exists
+anywhere in the backend — and says so rather than inventing controls that wouldn't do anything.
 
 ## Frontend structure
 
@@ -171,7 +187,7 @@ above). Once logged in, page switching is done via `activeTab` state and a `swit
 `require_role`). Pages live in `frontend/src/components/*Page.jsx`, one per dashboard section (Executive
 Dashboard, **AI Analysis** — merged with the former standalone Explainability page, which no longer exists as a
 separate route/file — Factory Detail Dossier, Reports Center, Dataset Quality, Admin Portal, Institutional
-Oversight). Styling is Tailwind v4 (via `@tailwindcss/vite`) plus some inline styles and `App.css`/`index.css`. Charts use `recharts`, icons use `lucide-react`.
+Oversight, Alerts, Settings). Styling is Tailwind v4 (via `@tailwindcss/vite`) plus some inline styles and `App.css`/`index.css`. Charts use `recharts`, icons use `lucide-react`.
 
 ## Notes on repo hygiene
 
