@@ -132,13 +132,17 @@ export function AIAnalysisPage({ onNavigate, selectedFactoryId: initialFactoryId
           </p>
         </div>
 
-        <div className="flex items-center gap-3 bg-white border border-[#E5E7EB] p-4 rounded-xl shadow-xs print:hidden">
+        {/* QC FIX (2026-08): no flex-wrap meant this row (select + two
+            buttons) forced real horizontal page overflow below ~700px --
+            confirmed live at 375px. flex-wrap plus a capped select width
+            let it wrap onto its own line instead of pushing the page wide. */}
+        <div className="flex flex-wrap items-center gap-3 bg-white border border-[#E5E7EB] p-4 rounded-xl shadow-xs print:hidden">
           <div className="text-right">
             <div className="text-label-caps text-[#727780] uppercase font-bold">Target Facility</div>
             <select
               value={selectedFactoryId}
               onChange={(e) => handleSelectFactory(e.target.value)}
-              className="text-body-sm font-bold text-[#00355f] bg-[#f8f9fb] border border-[#E5E7EB] rounded px-3 py-1 cursor-pointer focus:outline-none"
+              className="max-w-[180px] text-body-sm font-bold text-[#00355f] bg-[#f8f9fb] border border-[#E5E7EB] rounded px-3 py-1 cursor-pointer focus:outline-none"
             >
               {factories.map(f => (
                 <option key={f.factory_id} value={f.factory_id}>
@@ -224,26 +228,30 @@ export function AIAnalysisPage({ onNavigate, selectedFactoryId: initialFactoryId
           <p className="text-body-sm text-[#727780]">Composite breakdown not available for this factory.</p>
         ) : (
           <div className="space-y-4">
+            {/* QC FIX (2026-08): w-56 label + w-16 value (288px) plus gaps
+                left no room for the bar at 375px wide (card content area is
+                ~263px there) -- confirmed live, forced real page overflow.
+                Narrower fixed widths below sm:, full size at sm: and up. */}
             {[
               { label: 'Fingerprint Checks', weight: breakdown.fingerprints.weight, detail: `${breakdown.fingerprints.triggered_count} / ${breakdown.fingerprints.total_checks} triggered`, contribution: breakdown.fingerprints.contribution },
               { label: 'Isolation Forest', weight: breakdown.isolation_forest.weight, detail: `normalized anomaly score ${breakdown.isolation_forest.score_norm}`, contribution: breakdown.isolation_forest.contribution },
               { label: 'Factory-Level Tamper Model', weight: breakdown.tamper_model.weight, detail: `predicted probability ${(breakdown.tamper_model.probability * 100).toFixed(1)}%`, contribution: breakdown.tamper_model.contribution },
             ].map((row, idx) => (
-              <div key={idx} className="flex items-center gap-4">
-                <div className="w-56 shrink-0">
+              <div key={idx} className="flex items-center gap-3 sm:gap-4">
+                <div className="w-28 sm:w-56 shrink-0">
                   <div className="font-bold text-body-sm text-[#191c1e]">{row.label}</div>
                   <div className="text-xs text-[#727780]">{(row.weight * 100).toFixed(1)}% weight · {row.detail}</div>
                 </div>
                 <div className="flex-1 h-3 bg-[#f2f4f6] rounded-full overflow-hidden">
                   <div className="h-full rounded-full bg-[#0f4c81]" style={{ width: `${Math.min(100, (row.contribution / breakdown.total_risk_score) * 100 || 0)}%` }}></div>
                 </div>
-                <div className="w-16 text-right font-bold text-body-sm text-[#191c1e]">{row.contribution}</div>
+                <div className="w-14 sm:w-16 text-right font-bold text-body-sm text-[#191c1e]">{row.contribution}</div>
               </div>
             ))}
-            <div className="flex items-center gap-4 pt-3 border-t border-[#E5E7EB]">
-              <div className="w-56 shrink-0 font-bold text-body-sm text-[#00355f]">Total Risk Score</div>
+            <div className="flex items-center gap-3 sm:gap-4 pt-3 border-t border-[#E5E7EB]">
+              <div className="w-28 sm:w-56 shrink-0 font-bold text-body-sm text-[#00355f]">Total Risk Score</div>
               <div className="flex-1"></div>
-              <div className="w-16 text-right font-display-kpi text-headline-md" style={{ color: riskColor }}>{breakdown.total_risk_score}</div>
+              <div className="w-14 sm:w-16 text-right font-display-kpi text-headline-md" style={{ color: riskColor }}>{breakdown.total_risk_score}</div>
             </div>
           </div>
         )}

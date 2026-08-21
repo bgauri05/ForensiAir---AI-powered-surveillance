@@ -72,23 +72,28 @@ export function AlertsPage({ onNavigate }) {
         </div>
       )}
 
+      {/* QC FIX (2026-08): this row had no flex-wrap and the factory name
+          had no truncation, so a long name plus the risk badge/score/chevron
+          on the right forced real horizontal page overflow at 375px --
+          confirmed live. flex-wrap plus truncate lets it wrap or clip
+          instead of pushing the page wide. */}
       <div className="space-y-3">
         {factories.map((f) => {
           const c = tierColor(f.risk_tier);
           return (
             <div
               key={f.factory_id}
-              className={`card p-4 flex items-center justify-between cursor-pointer hover:shadow-md transition-shadow ${c.border}`}
+              className={`card p-4 flex flex-wrap items-center justify-between gap-3 cursor-pointer hover:shadow-md transition-shadow ${c.border}`}
               onClick={() => onNavigate('factory-detail', f.factory_id)}
             >
-              <div className="flex items-center gap-4">
-                <div className={`w-2 h-10 rounded-full ${c.bg.replace('bg-', 'bg-')}`} style={{ backgroundColor: f.risk_tier === 'High' ? '#D32F2F' : '#F57C00' }} />
-                <div>
-                  <div className="font-bold text-body-md text-[#191c1e]">{f.factory_name}</div>
+              <div className="flex items-center gap-4 min-w-0">
+                <div className={`w-2 h-10 rounded-full shrink-0 ${c.bg.replace('bg-', 'bg-')}`} style={{ backgroundColor: f.risk_tier === 'High' ? '#D32F2F' : '#F57C00' }} />
+                <div className="min-w-0">
+                  <div className="font-bold text-body-md text-[#191c1e] truncate">{f.factory_name}</div>
                   <div className="text-body-sm text-[#727780]">{f.region || f.district}</div>
                 </div>
               </div>
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-4 shrink-0">
                 <span className={`px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wide ${c.bg} ${c.text}`}>
                   {f.risk_tier} risk
                 </span>

@@ -79,10 +79,16 @@ export function ReportsCenterPage({ onNavigate }) {
     : 'Not available';
 
   return (
-    <div className="h-[calc(100vh-64px)] flex overflow-hidden print:h-auto print:block">
+    // QC FIX (2026-08): fixed w-1/3/w-2/3 inside an overflow-hidden row
+    // with no responsive stacking meant the right panel's real content --
+    // including the Download PDF button -- got silently clipped and
+    // completely unreachable below md (no scrollbar, since overflow-hidden
+    // isn't overflow-auto): confirmed live at 375px. Stacks to full-width
+    // sections in normal document flow below md; unchanged at md and up.
+    <div className="flex flex-col md:h-[calc(100vh-64px)] md:flex-row md:overflow-hidden print:h-auto print:block">
       {/* Left Sidebar: Report Archive List (1/3) -- hidden when printing, only
           the dossier preview on the right should end up in the exported PDF. */}
-      <section className="w-1/3 border-r border-[#E5E7EB] flex flex-col bg-[#f8f9fb] print:hidden">
+      <section className="w-full md:w-1/3 border-r border-[#E5E7EB] flex flex-col bg-[#f8f9fb] print:hidden">
         <div className="p-4 border-b border-[#E5E7EB] space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="font-headline-md text-headline-md text-[#00355f]">Reports Center</h2>
@@ -141,7 +147,7 @@ export function ReportsCenterPage({ onNavigate }) {
       </section>
 
       {/* Right Column: Dynamic PDF Preview Canvas (2/3) */}
-      <section className="w-2/3 flex flex-col bg-[#edeef0] p-8 overflow-y-auto print:w-full print:bg-white print:p-0 print:overflow-visible">
+      <section className="w-full md:w-2/3 flex flex-col bg-[#edeef0] p-8 overflow-y-auto print:w-full print:bg-white print:p-0 print:overflow-visible">
         <div className="max-w-3xl mx-auto w-full bg-white border border-[#E5E7EB] rounded-xl p-8 shadow-md space-y-6 print:max-w-full print:border-none print:shadow-none print:rounded-none">
           <div className="flex justify-between items-start border-b border-[#E5E7EB] pb-6">
             <div>

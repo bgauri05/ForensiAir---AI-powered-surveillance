@@ -148,11 +148,14 @@ export function FactoryDetailDossierPage({ onNavigate, selectedFactoryId }) {
             </div>
           </div>
 
-          <div className="flex items-center gap-3 print:hidden">
+          {/* QC FIX (2026-08): this select had no max-width, so a long
+              factory name in the selected option forced real horizontal
+              page overflow on narrow screens -- confirmed live at 375px. */}
+          <div className="flex flex-wrap items-center gap-3 print:hidden">
             <select
               value={selectedFid}
               onChange={(e) => handleSelectFactory(e.target.value)}
-              className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg px-3 py-2 text-body-sm font-bold text-[var(--color-primary)] cursor-pointer transition-colors hover:border-[var(--color-border-strong)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)]"
+              className="max-w-[200px] bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg px-3 py-2 text-body-sm font-bold text-[var(--color-primary)] cursor-pointer transition-colors hover:border-[var(--color-border-strong)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)]"
             >
               {factoriesList.map(f => (
                 <option key={f.factory_id} value={f.factory_id}>

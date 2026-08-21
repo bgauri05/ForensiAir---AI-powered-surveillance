@@ -144,7 +144,7 @@ export default function App() {
     <div className="min-h-screen bg-[#f8f9fb]">
       <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} userRole={userRole} currentUser={currentUser} />
       <TopHeader activeTab={activeTab} currentUser={currentUser} onLogout={handleLogout} />
-      <main className="ml-[280px] pt-16 min-h-screen bg-[#f8f9fb] text-[#191c1e]">
+      <main className="ml-16 md:ml-[280px] pt-16 min-h-screen bg-[#f8f9fb] text-[#191c1e]">
         {renderActiveModule()}
       </main>
     </div>
