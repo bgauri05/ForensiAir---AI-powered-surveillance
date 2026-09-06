@@ -20,6 +20,8 @@ venv/
 original_index.css.txt
 saved_index_854.css
 Data/SynData/monitoring_data_temp.csv
+_tmp_chunks/
+_to_delete/
 
 # SQLite DB
 *.db

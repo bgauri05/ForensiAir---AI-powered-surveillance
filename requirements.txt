@@ -1,0 +1,22 @@
+# Core Backend & API
+fastapi
+uvicorn[standard]
+sqlalchemy
+pyjwt
+pydantic
+python-dotenv
+
+# Data Processing & Machine Learning
+pandas
+numpy
+scipy
+joblib
+scikit-learn
+pyarrow
+pyyaml
+
+# Data Ingestion, Database & Scrapers
+requests
+psycopg2-binary
+beautifulsoup4
+pdfplumber
