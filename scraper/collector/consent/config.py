@@ -7,7 +7,7 @@ DB_CONFIG = {
     "port": 5434,
     "user": "postgres",
     "password": "Gauri@123",
-    "database": "forensiair"
+    "database": "forensier"
 }
 
 # MPCB portal URLs

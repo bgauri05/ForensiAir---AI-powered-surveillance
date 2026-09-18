@@ -40,7 +40,7 @@ def parse_cell(cell_str):
 
 def main():
     # 1. Load backend env to get DATABASE_URL
-    dotenv_path = "c:/Users/gauri/OneDrive/Desktop/forensiair/backend/.env"
+    dotenv_path = "c:/Users/gauri/OneDrive/Desktop/forensier/backend/.env"
     load_dotenv(dotenv_path=dotenv_path, override=True)
     database_url = os.getenv("DATABASE_URL")
     

@@ -13,7 +13,7 @@ def get_connection():
         port=DB_CONFIG.get("port", 5434),
         user=DB_CONFIG.get("user", "postgres"),
         password=DB_CONFIG.get("password", ""),
-        database=DB_CONFIG.get("database", "forensiair")
+        database=DB_CONFIG.get("database", "forensier")
     )
 
 def init_db():

@@ -1,0 +1,5 @@
+- [x] Generate requirements.txt
+- [ ] Update CORS to read from ALLOWED_ORIGINS env var
+- [ ] Create render.yaml
+- [ ] Create frontend/vercel.json
+- [ ] Verify .gitignore doesn't block forensier.db from being committed (or handle via seed at startup)

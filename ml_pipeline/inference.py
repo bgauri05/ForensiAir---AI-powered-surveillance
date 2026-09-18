@@ -20,7 +20,7 @@ from ml_pipeline.risk_engine import calculate_composite_risk
 FACTORY_LEVEL_RAW_COLS = ['value', 'rolling_mean', 'rolling_std', 'flatline_flag']
 
 
-class ForensiAirInference:
+class ForensierInference:
     def __init__(self, models_dir: str = None):
         if models_dir is None:
             models_dir = os.path.join(os.path.dirname(__file__), "models")
@@ -89,8 +89,8 @@ class ForensiAirInference:
 
 _inference_instance = None
 
-def get_inference_engine() -> ForensiAirInference:
+def get_inference_engine() -> ForensierInference:
     global _inference_instance
     if _inference_instance is None:
-        _inference_instance = ForensiAirInference()
+        _inference_instance = ForensierInference()
     return _inference_instance

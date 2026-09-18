@@ -18,14 +18,20 @@ from backend.config import (
 from ml_pipeline.risk_engine import WEIGHT_XGB, WEIGHT_ISO, WEIGHT_FINGERPRINTS
 
 app = FastAPI(
-    title="ForensiAIR Backend API",
+    title="Forensier Backend API",
     description="AI-Powered Industrial Environmental Surveillance & Tampering Detection Backend",
     version="2.3.0"
 )
 
+# In production, set ALLOWED_ORIGINS to your Vercel URL (comma-separated).
+# e.g. ALLOWED_ORIGINS=https://forensier.vercel.app,https://forensier-git-main.vercel.app
+# Falls back to ["*"] for local dev when the env var is not set.
+_raw_origins = os.getenv("ALLOWED_ORIGINS", "")
+_allowed_origins = [o.strip() for o in _raw_origins.split(",") if o.strip()] or ["*"]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=_allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -38,15 +44,15 @@ _data_cache = {}
 # with no generator script anywhere in this repo, meaning nothing
 # reproduced it and it did not reflect the quality-filter fix, the real
 # model inference wiring, or the fingerprint trigger fixes made this
-# session. The live API now reads forensiair.db, the same database
+# session. The live API now reads forensier.db, the same database
 # database/seed_db.py populates from the real, fixed pipeline. This
 # function reshapes that data into the column names the rest of this file
 # already expects, so the rest of the API code didn't need a rewrite.
 def _load_factory_scores() -> pd.DataFrame:
     import sqlite3
-    db_path = os.path.join(os.path.dirname(__file__), "..", "forensiair.db")
+    db_path = os.path.join(os.path.dirname(__file__), "..", "forensier.db")
     if not os.path.exists(db_path):
-        db_path = "forensiair.db"
+        db_path = "forensier.db"
     if not os.path.exists(db_path):
         return pd.DataFrame()
 
@@ -676,14 +682,185 @@ def get_factory_predictions(factory_id: str):
     }
 
 # -------------------------------------------------------------
+# 5c. Factory Telemetry Time Series (real per-parameter OCEMS readings,
+# resampled to daily, with real consent-limit bounds for overlay)
+# -------------------------------------------------------------
+PARAM_TO_CONSENT_ID = {
+    'ETP-pH': 'pH',
+    'ETP-BOD': 'BOD',
+    'ETP-COD': 'COD',
+    'ETP-TSS': 'TSS',
+    'ETP-Flow': 'FLOW',
+}
+
+
+def _get_consent_limit(parameter_id: str):
+    """
+    Industry-wide CPCB regulatory standard bounds from the consent_limits
+    table -- not this specific factory's extracted CTO document limit (that
+    richer, sparser per-factory dataset lives in Original Data/consent_limits.csv
+    and isn't wired into any endpoint yet). Labeled as such by the frontend.
+    """
+    consent_key = PARAM_TO_CONSENT_ID.get(parameter_id)
+    if not consent_key:
+        return None, None, None
+    import sqlite3
+    db_path = os.path.join(os.path.dirname(__file__), "..", "forensier.db")
+    if not os.path.exists(db_path):
+        db_path = "forensier.db"
+    if not os.path.exists(db_path):
+        return None, None, None
+    conn = sqlite3.connect(db_path)
+    try:
+        row = conn.execute(
+            "SELECT unit, min_limit, max_limit FROM consent_limits WHERE parameter_id = ?",
+            (consent_key,)
+        ).fetchone()
+    finally:
+        conn.close()
+    if not row:
+        return None, None, None
+    return row[0], row[1], row[2]
+
+
+@app.get("/api/factories/{factory_id}/telemetry")
+def get_factory_telemetry(factory_id: str, parameter: Optional[str] = Query(None)):
+    """
+    Real 15-min-interval OCEMS telemetry for one factory/parameter, resampled
+    to a daily series (mean/min/max value, fraction of readings flagged
+    flatline, fraction flagged limit-hugging that day) from
+    real_features.parquet -- falls back to synthetic_features.parquet only
+    for a parameter this factory has no real rows for, same per-parameter
+    fallback order as get_factory_parameter_mean().
+    """
+    cache = get_data_cache()
+    df_rf = cache["real_features"]
+    df_sf = cache["syn_features"]
+
+    def params_for(df):
+        if df is None or df.empty or 'factory_id' not in df.columns:
+            return set()
+        return set(df[df['factory_id'] == factory_id]['parameter_id'].dropna().unique().tolist())
+
+    real_params = params_for(df_rf)
+    syn_params = params_for(df_sf)
+    available_parameters = sorted(real_params | syn_params)
+
+    if not available_parameters:
+        raise HTTPException(status_code=404, detail="No telemetry available for this factory")
+
+    chosen = parameter if parameter in available_parameters else available_parameters[0]
+
+    if chosen in real_params:
+        df_source, source = df_rf, 'real'
+    else:
+        df_source, source = df_sf, 'synthetic'
+
+    sub = df_source[(df_source['factory_id'] == factory_id) & (df_source['parameter_id'] == chosen)].copy()
+    sub['date'] = pd.to_datetime(sub['timestamp']).dt.date.astype(str)
+
+    daily = sub.groupby('date').agg(
+        value_mean=('value', 'mean'),
+        value_min=('value', 'min'),
+        value_max=('value', 'max'),
+        flatline_pct=('flatline_flag', 'mean'),
+        limit_hugging_pct=('limit_hugging', 'mean'),
+        n_readings=('value', 'count'),
+    ).reset_index().sort_values('date')
+
+    def clean(v):
+        return None if pd.isna(v) else round(float(v), 4)
+
+    series = [
+        {
+            "date": r['date'],
+            "value_mean": clean(r['value_mean']),
+            "value_min": clean(r['value_min']),
+            "value_max": clean(r['value_max']),
+            "flatline_pct": clean(r['flatline_pct']),
+            "limit_hugging_pct": clean(r['limit_hugging_pct']),
+            "n_readings": int(r['n_readings']),
+        }
+        for _, r in daily.iterrows()
+    ]
+
+    unit, consent_min, consent_max = _get_consent_limit(chosen)
+
+    return {
+        "factory_id": factory_id,
+        "parameter": chosen,
+        "available_parameters": available_parameters,
+        "source": source,
+        "unit": unit,
+        "consent_min": consent_min,
+        "consent_max": consent_max,
+        "series": series,
+    }
+
+
+# -------------------------------------------------------------
+# 5d. Factory Parameter Correlation Matrix (real, from real_features.parquet's
+# rolling corr_<A>_<B> columns, aggregated per factory)
+# -------------------------------------------------------------
+@app.get("/api/factories/{factory_id}/correlation-matrix")
+def get_factory_correlation_matrix(factory_id: str):
+    """
+    Real pairwise parameter correlations for this factory, aggregated (mean,
+    NaNs dropped) from real_features.parquet's rolling corr_<A>_<B> feature
+    columns -- these are only populated for factories monitoring both
+    parameters in a given pair, so a single-parameter factory naturally
+    produces zero pairs (not an error, just nothing to correlate).
+    """
+    cache = get_data_cache()
+    df_rf = cache["real_features"]
+
+    if df_rf.empty or 'factory_id' not in df_rf.columns:
+        raise HTTPException(status_code=404, detail="No telemetry available for this factory")
+
+    sub = df_rf[df_rf['factory_id'] == factory_id]
+    if sub.empty:
+        raise HTTPException(status_code=404, detail="No telemetry available for this factory")
+
+    corr_cols = [c for c in df_rf.columns if c.startswith('corr_')]
+    pairs = []
+    params_seen = set()
+    for col in corr_cols:
+        # col looks like 'corr_ETP-Flow_ETP-pH' -- strip the 'corr_' prefix,
+        # then split on the literal '_ETP-' joiner between the two ids.
+        rest = col[len('corr_'):]
+        parts = rest.split('_ETP-')
+        if len(parts) != 2:
+            continue
+        param_a, param_b = parts[0], 'ETP-' + parts[1]
+        vals = sub[col].dropna()
+        if vals.empty:
+            continue
+        pairs.append({
+            "param_a": param_a,
+            "param_b": param_b,
+            "correlation": round(float(vals.mean()), 4),
+            "n_readings": int(vals.shape[0]),
+        })
+        params_seen.add(param_a)
+        params_seen.add(param_b)
+
+    return {
+        "factory_id": factory_id,
+        "parameters": sorted(params_seen),
+        "pairs": pairs,
+        "note": None if pairs else "Fewer than 2 monitored parameters for this factory -- no correlation pairs available.",
+    }
+
+
+# -------------------------------------------------------------
 # 5b. Factory Inspection History
 # -------------------------------------------------------------
 @app.get("/api/factories/{factory_id}/inspections")
 def get_factory_inspections(factory_id: str):
     import sqlite3
-    db_path = os.path.join(os.path.dirname(__file__), "..", "forensiair.db")
+    db_path = os.path.join(os.path.dirname(__file__), "..", "forensier.db")
     if not os.path.exists(db_path):
-        db_path = "forensiair.db"
+        db_path = "forensier.db"
     if not os.path.exists(db_path):
         return []
 
@@ -712,9 +889,9 @@ def initiate_audit(factory_id: str):
     than a fake confirmation.
     """
     import sqlite3
-    db_path = os.path.join(os.path.dirname(__file__), "..", "forensiair.db")
+    db_path = os.path.join(os.path.dirname(__file__), "..", "forensier.db")
     if not os.path.exists(db_path):
-        db_path = "forensiair.db"
+        db_path = "forensier.db"
     if not os.path.exists(db_path):
         raise HTTPException(status_code=500, detail="Database not available")
 
@@ -845,9 +1022,9 @@ def list_consent_limits():
     settings, a different (also real) thing.
     """
     import sqlite3
-    db_path = os.path.join(os.path.dirname(__file__), "..", "forensiair.db")
+    db_path = os.path.join(os.path.dirname(__file__), "..", "forensier.db")
     if not os.path.exists(db_path):
-        db_path = "forensiair.db"
+        db_path = "forensier.db"
     if not os.path.exists(db_path):
         return []
 

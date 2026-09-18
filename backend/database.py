@@ -3,7 +3,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from backend.models import Base
 
-DB_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "forensiair.db")
+DB_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "forensier.db")
 SQLALCHEMY_DATABASE_URL = f"sqlite:///{DB_PATH}"
 
 engine = create_engine(

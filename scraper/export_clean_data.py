@@ -6,18 +6,18 @@ from dotenv import load_dotenv
 
 def main():
     # 1. Load backend env to get DATABASE_URL
-    dotenv_path = "c:/Users/gauri/OneDrive/Desktop/forensiair/backend/.env"
+    dotenv_path = "c:/Users/gauri/OneDrive/Desktop/forensier/backend/.env"
     load_dotenv(dotenv_path=dotenv_path, override=True)
     database_url = os.getenv("DATABASE_URL")
     
     # Connect to database
-    if database_url and not database_url.endswith('/forensiair') and '/' in database_url:
-        forensiair_url = database_url.rsplit('/', 1)[0] + '/forensiair'
+    if database_url and not database_url.endswith('/forensier') and '/' in database_url:
+        forensier_url = database_url.rsplit('/', 1)[0] + '/forensier'
     else:
-        forensiair_url = database_url
-    print("Connecting to database:", forensiair_url)
+        forensier_url = database_url
+    print("Connecting to database:", forensier_url)
     
-    conn = psycopg2.connect(forensiair_url)
+    conn = psycopg2.connect(forensier_url)
     cur = conn.cursor()
     
     # 2. Get list of all factories

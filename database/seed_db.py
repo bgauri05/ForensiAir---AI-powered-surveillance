@@ -67,7 +67,7 @@ def get_pg_factory_mapping():
         # available" gracefully via the hardcoded NAME_MAPPING fallback above.
         pg_host = os.getenv("PG_HOST", "localhost")
         pg_port = os.getenv("PG_PORT", "5434")
-        pg_database = os.getenv("PG_DATABASE", "forensiair")
+        pg_database = os.getenv("PG_DATABASE", "forensier")
         pg_user = os.getenv("PG_USER", "postgres")
         pg_password = os.getenv("PG_PASSWORD")
 
@@ -318,8 +318,8 @@ def seed():
     db.add_all(thresholds)
 
     users = [
-        UserAccess(name="Administrator / Global Oversight", email="admin@forensiair.gov.in", role="Administrator", district_access="All Districts", status="Active", last_login="Today, 09:42 AM"),
-        UserAccess(name="Director Chen", email="chen.audit@forensiair.gov.in", role="Senior Audit Lead", district_access="Northern Industrial Zone", status="Active", last_login="Today, 08:15 AM"),
+        UserAccess(name="Administrator / Global Oversight", email="admin@forensier.gov.in", role="Administrator", district_access="All Districts", status="Active", last_login="Today, 09:42 AM"),
+        UserAccess(name="Director Chen", email="chen.audit@forensier.gov.in", role="Senior Audit Lead", district_access="Northern Industrial Zone", status="Active", last_login="Today, 08:15 AM"),
         UserAccess(name="Dr. Rajesh Sharma", email="r.sharma@cpcb.gov.in", role="Field Inspector", district_access="Coastal Sector", status="Active", last_login="Yesterday, 17:30 PM"),
         UserAccess(name="Priya Nair", email="pnair@midc.org", role="Data Analyst", district_access="Urban Fringe", status="Active", last_login="Today, 10:05 AM")
     ]

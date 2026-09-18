@@ -50,11 +50,11 @@ def main():
     load_dotenv(dotenv_path=dotenv_path, override=True)
     database_url = os.getenv("DATABASE_URL")
     
-    # Connect to forensiair database instead of JSW_PMS
-    forensiair_url = database_url.rsplit('/', 1)[0] + '/forensiair'
-    print("Connecting to database:", forensiair_url)
+    # Connect to forensier database instead of JSW_PMS
+    forensier_url = database_url.rsplit('/', 1)[0] + '/forensier'
+    print("Connecting to database:", forensier_url)
     
-    conn = psycopg2.connect(forensiair_url)
+    conn = psycopg2.connect(forensier_url)
     conn.autocommit = True
     cur = conn.cursor()
     

@@ -14,7 +14,7 @@ export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0
 // persisting indefinitely, which shrinks the window an XSS payload could
 // find a live token in. Real auth (Phase 5) -- previously no request in
 // this app ever sent an Authorization header.
-const TOKEN_KEY = 'forensiair_auth_token';
+const TOKEN_KEY = 'forensier_auth_token';
 
 export function getAuthToken() {
   return sessionStorage.getItem(TOKEN_KEY);
@@ -34,7 +34,7 @@ export function clearAuthToken() {
 // currentUser is null). A CustomEvent rather than a stored callback so
 // config.js doesn't need to know App.jsx exists, and so this fires
 // correctly even if apiFetch is ever called before App.jsx has mounted.
-export const UNAUTHORIZED_EVENT = 'forensiair:unauthorized';
+export const UNAUTHORIZED_EVENT = 'forensier:unauthorized';
 
 // Drop-in replacement for fetch(`${API_BASE_URL}${path}`, options) that
 // attaches the real Authorization: Bearer header whenever a session token

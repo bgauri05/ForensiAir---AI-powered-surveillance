@@ -33,7 +33,7 @@ if _missing:
         "credentials (admin/admin123, inspector/inspector123). Do NOT deploy like this."
     )
     ALGORITHM = "HS256"
-    SECRET_KEY = SECRET_KEY or "forensiair_secret_key_jwt_2026"
+    SECRET_KEY = SECRET_KEY or "forensier_secret_key_jwt_2026"
     ADMIN_USERNAME = ADMIN_USERNAME or "admin"
     ADMIN_PASSWORD = ADMIN_PASSWORD or "admin123"
     INSPECTOR_USERNAME = INSPECTOR_USERNAME or "inspector"

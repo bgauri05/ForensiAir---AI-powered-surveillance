@@ -1,6 +1,6 @@
 # 🎯 Master Scraper Engineering & Interview Preparation Guide
 
-This report covers all 23 files across the **ForensiAIR** data scraping and ingestion infrastructure. Each file is presented using a standardized high-level architectural template for software, data, and ML engineering interview preparation.
+This report covers all 23 files across the **Forensier** data scraping and ingestion infrastructure. Each file is presented using a standardized high-level architectural template for software, data, and ML engineering interview preparation.
 
 ---
 

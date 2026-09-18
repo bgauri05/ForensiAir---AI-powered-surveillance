@@ -1,6 +1,71 @@
 import React, { useState, useEffect } from 'react';
 import { Bolt, AlertTriangle, Download, CheckCircle2, XCircle, RefreshCw } from 'lucide-react';
+import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 import { apiFetch } from '../config';
+
+function correlationColor(value) {
+  // Diverging scale: negative -> danger red, 0 -> near-white, positive -> primary blue.
+  const clamped = Math.max(-1, Math.min(1, value));
+  if (clamped >= 0) {
+    const t = clamped;
+    const r = Math.round(255 - t * (255 - 15));
+    const g = Math.round(255 - t * (255 - 76));
+    const b = Math.round(255 - t * (255 - 129));
+    return `rgb(${r}, ${g}, ${b})`;
+  }
+  const t = -clamped;
+  const r = Math.round(255 - t * (255 - 211));
+  const g = Math.round(255 - t * (255 - 47));
+  const b = Math.round(255 - t * (255 - 47));
+  return `rgb(${r}, ${g}, ${b})`;
+}
+
+function CorrelationHeatmap({ parameters, pairs }) {
+  const lookup = {};
+  pairs.forEach(p => {
+    lookup[`${p.param_a}|${p.param_b}`] = p.correlation;
+    lookup[`${p.param_b}|${p.param_a}`] = p.correlation;
+  });
+  const label = (p) => p.replace('ETP-', '');
+  return (
+    <div className="overflow-x-auto">
+      <table className="border-collapse">
+        <thead>
+          <tr>
+            <th className="p-2"></th>
+            {parameters.map(p => (
+              <th key={p} className="p-2 text-[10px] font-bold text-[#727780] uppercase">{label(p)}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {parameters.map(rowP => (
+            <tr key={rowP}>
+              <th className="p-2 text-[10px] font-bold text-[#727780] uppercase text-right">{label(rowP)}</th>
+              {parameters.map(colP => {
+                const val = rowP === colP ? 1 : lookup[`${rowP}|${colP}`];
+                return (
+                  <td key={colP} className="p-0">
+                    <div
+                      className="w-14 h-14 flex items-center justify-center text-xs font-bold"
+                      style={{
+                        backgroundColor: val === undefined ? '#f8f9fb' : correlationColor(val),
+                        color: Math.abs(val || 0) > 0.55 ? '#fff' : '#191c1e'
+                      }}
+                      title={`${label(rowP)} vs ${label(colP)}: ${val === undefined ? 'n/a' : val.toFixed(3)}`}
+                    >
+                      {val === undefined ? '—' : val.toFixed(2)}
+                    </div>
+                  </td>
+                );
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
 
 export function AIAnalysisPage({ onNavigate, selectedFactoryId: initialFactoryId }) {
   const [factories, setFactories] = useState([]);
@@ -19,9 +84,35 @@ export function AIAnalysisPage({ onNavigate, selectedFactoryId: initialFactoryId
   // be meaningless noise).
   const [refreshResult, setRefreshResult] = useState(null);
 
+  const [telemetry, setTelemetry] = useState(null);
+  const [correlation, setCorrelation] = useState(null);
+
   useEffect(() => {
     fetchInitialData();
   }, []);
+
+  const fetchTelemetry = async (fid, parameter) => {
+    try {
+      const url = parameter
+        ? `/api/factories/${fid}/telemetry?parameter=${encodeURIComponent(parameter)}`
+        : `/api/factories/${fid}/telemetry`;
+      const res = await apiFetch(url);
+      setTelemetry(res.ok ? await res.json() : null);
+    } catch (err) {
+      console.error(err);
+      setTelemetry(null);
+    }
+  };
+
+  const fetchCorrelation = async (fid) => {
+    try {
+      const res = await apiFetch(`/api/factories/${fid}/correlation-matrix`);
+      setCorrelation(res.ok ? await res.json() : null);
+    } catch (err) {
+      console.error(err);
+      setCorrelation(null);
+    }
+  };
 
   const fetchInitialData = async () => {
     try {
@@ -38,6 +129,8 @@ export function AIAnalysisPage({ onNavigate, selectedFactoryId: initialFactoryId
             || data[0];
           setSelectedFactoryId(target.factory_id);
           fetchFactoryAnalysis(target.factory_id, target);
+          fetchTelemetry(target.factory_id);
+          fetchCorrelation(target.factory_id);
         }
       }
     } catch (err) {
@@ -76,6 +169,12 @@ export function AIAnalysisPage({ onNavigate, selectedFactoryId: initialFactoryId
     setSelectedFactoryId(fid);
     const fObj = factories.find(f => f.factory_id === fid);
     fetchFactoryAnalysis(fid, fObj);
+    fetchTelemetry(fid);
+    fetchCorrelation(fid);
+  };
+
+  const handleTelemetryParamChange = (parameter) => {
+    fetchTelemetry(selectedFactoryId, parameter);
   };
 
   // Re-fetches this factory's current predictions/explanation -- model
@@ -328,6 +427,92 @@ export function AIAnalysisPage({ onNavigate, selectedFactoryId: initialFactoryId
               </div>
             ))}
           </div>
+        )}
+      </div>
+
+      {/* Telemetry Trend -- real daily-aggregated OCEMS readings vs CPCB consent-limit band */}
+      <div className="bg-white border border-[#E5E7EB] rounded-xl p-6 shadow-xs">
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-1">
+          <h3 className="text-headline-md font-headline-md text-[#00355f]">Telemetry Trend</h3>
+          {telemetry && telemetry.available_parameters.length > 1 && (
+            <select
+              value={telemetry.parameter}
+              onChange={(e) => handleTelemetryParamChange(e.target.value)}
+              className="text-body-sm font-bold text-[#00355f] bg-[#f8f9fb] border border-[#E5E7EB] rounded px-3 py-1 cursor-pointer focus:outline-none"
+            >
+              {telemetry.available_parameters.map(p => (
+                <option key={p} value={p}>{p.replace('ETP-', '')}</option>
+              ))}
+            </select>
+          )}
+        </div>
+        {!telemetry ? (
+          <p className="text-body-sm text-[#727780]">Telemetry not available for this factory.</p>
+        ) : (
+          <>
+            <p className="text-xs text-[#727780] mb-4">
+              Daily-aggregated {telemetry.parameter.replace('ETP-', '')} readings ({telemetry.unit || 'unit n/a'}) from {telemetry.source === 'synthetic' ? 'synthetic data (no real telemetry logged for this parameter)' : 'real OCEMS telemetry'}.
+              {telemetry.consent_min !== null && telemetry.consent_max !== null && ` Dashed lines mark the CPCB regulatory standard band (${telemetry.consent_min}–${telemetry.consent_max}).`}
+            </p>
+            <ResponsiveContainer width="100%" height={260}>
+              <LineChart data={telemetry.series} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#edeef0" />
+                <XAxis dataKey="date" tick={{ fontSize: 10 }} interval={Math.max(0, Math.floor(telemetry.series.length / 8))} />
+                <YAxis tick={{ fontSize: 10 }} domain={['auto', 'auto']} />
+                <Tooltip labelFormatter={(label) => `Date: ${label}`} />
+                {telemetry.consent_min !== null && (
+                  <ReferenceLine y={telemetry.consent_min} stroke="#F57C00" strokeDasharray="4 4" label={{ value: 'Min', fontSize: 10, fill: '#F57C00' }} />
+                )}
+                {telemetry.consent_max !== null && (
+                  <ReferenceLine y={telemetry.consent_max} stroke="#D32F2F" strokeDasharray="4 4" label={{ value: 'Max', fontSize: 10, fill: '#D32F2F' }} />
+                )}
+                <Line
+                  type="monotone"
+                  dataKey="value_mean"
+                  name="Daily Mean"
+                  stroke="#0f4c81"
+                  strokeWidth={2}
+                  isAnimationActive={false}
+                  dot={(props) => {
+                    const { cx, cy, payload, index } = props;
+                    if (cx === undefined || cy === undefined) return null;
+                    const flagged = (payload.flatline_pct || 0) > 0.5;
+                    return <circle key={`dot-${index}`} cx={cx} cy={cy} r={flagged ? 3 : 1.5} fill={flagged ? '#D32F2F' : '#0f4c81'} stroke="none" />;
+                  }}
+                  activeDot={{ r: 4 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+            <div className="flex items-center gap-2 mt-2 text-xs text-[#727780]">
+              <span className="w-2 h-2 rounded-full bg-[#D32F2F] inline-block"></span>
+              Red dot = day with &gt;50% of readings flatlined
+            </div>
+
+            <div className="mt-6">
+              <div className="text-xs font-bold text-[#191c1e] mb-1">Limit-Hugging Rate (% of readings that day)</div>
+              <ResponsiveContainer width="100%" height={80}>
+                <BarChart data={telemetry.series} margin={{ top: 0, right: 20, left: 0, bottom: 0 }}>
+                  <XAxis dataKey="date" hide />
+                  <YAxis hide domain={[0, 1]} />
+                  <Tooltip formatter={(v) => (v === null ? 'n/a' : `${(v * 100).toFixed(1)}%`)} labelFormatter={(label) => `Date: ${label}`} />
+                  <Bar dataKey="limit_hugging_pct" fill="#F57C00" isAnimationActive={false} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </>
+        )}
+      </div>
+
+      {/* Parameter Correlation Matrix -- real, from real_features.parquet's rolling corr_<A>_<B> features */}
+      <div className="bg-white border border-[#E5E7EB] rounded-xl p-6 shadow-xs">
+        <h3 className="text-headline-md font-headline-md text-[#00355f] mb-1">Parameter Correlation Matrix</h3>
+        <p className="text-xs text-[#727780] mb-4">
+          Mean pairwise correlation between this factory's monitored parameters over the full telemetry history. A sudden real-world break from a typically-correlated pair is one of the eight tampering fingerprint checks above.
+        </p>
+        {!correlation || correlation.pairs.length === 0 ? (
+          <p className="text-body-sm text-[#727780]">{correlation?.note || 'Correlation matrix not available for this factory.'}</p>
+        ) : (
+          <CorrelationHeatmap parameters={correlation.parameters} pairs={correlation.pairs} />
         )}
       </div>
 

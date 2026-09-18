@@ -70,7 +70,7 @@ AUC_MIN = 0.75
 
 def load_factory_level_data(repo_root):
     real_path = os.path.join(repo_root, "Data/RawData/real_features.parquet")
-    db_path = os.path.join(repo_root, "forensiair.db")
+    db_path = os.path.join(repo_root, "forensier.db")
 
     df = pd.read_parquet(real_path)
     conn = sqlite3.connect(db_path)

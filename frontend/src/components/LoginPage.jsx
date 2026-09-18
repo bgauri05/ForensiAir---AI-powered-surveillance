@@ -40,7 +40,7 @@ export function LoginPage({ onLoginSuccess }) {
             <span className="material-symbols-outlined text-white text-2xl">cloud_done</span>
           </div>
           <div>
-            <h1 className="font-headline-md text-headline-md font-bold text-[#00355f] leading-tight">ForensiAir</h1>
+            <h1 className="font-headline-md text-headline-md font-bold text-[#00355f] leading-tight">Forensier</h1>
             <p className="text-[10px] text-[#727780] font-label-caps tracking-widest uppercase">Government Inspectorate</p>
           </div>
         </div>

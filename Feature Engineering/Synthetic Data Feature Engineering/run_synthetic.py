@@ -10,7 +10,7 @@
 # from features import assemble_feature_matrix
 
 # def main():
-#     parser = argparse.ArgumentParser(description="ForensiAIR Feature Engineering Runner")
+#     parser = argparse.ArgumentParser(description="Forensier Feature Engineering Runner")
 #     parser.add_argument('--monitoring-csv', type=str, default='../output/monitoring_data.csv',
 #                         help='Path to monitoring_data.csv')
 #     parser.add_argument('--labels-csv', type=str, default='../output/labels.csv',
@@ -24,7 +24,7 @@
 #     # Load config.yaml
 #     if not os.path.exists(args.config):
 #         # Fallback to local path if running from parent
-#         args.config = 'forensiair_features/config.yaml'
+#         args.config = 'forensier_features/config.yaml'
 #     with open(args.config, 'r') as f:
 #         config = yaml.safe_load(f)
 
@@ -113,7 +113,7 @@ from features import assemble_feature_matrix
 def main():
 
     parser = argparse.ArgumentParser(
-        description="ForensiAIR Feature Engineering Runner"
+        description="Forensier Feature Engineering Runner"
     )
 
     parser.add_argument(
@@ -158,7 +158,7 @@ def main():
     # --------------------------------------------------
 
     if not os.path.exists(args.config):
-        args.config = 'forensiair_features/config.yaml'
+        args.config = 'forensier_features/config.yaml'
 
     with open(args.config, 'r') as f:
         config = yaml.safe_load(f)

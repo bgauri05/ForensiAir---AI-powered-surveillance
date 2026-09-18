@@ -41,7 +41,7 @@ playwright install chromium
 
 ## 3. PostgreSQL Database Setup
 
-The collector is configured to store records in the existing `forensiair` database on port `5434`.
+The collector is configured to store records in the existing `forensier` database on port `5434`.
 
 The module automatically initializes two tables upon execution:
 1. **`inspection_schedule`**: Stores parsed inspection records, with a unique constraint `(factory_name, inspection_date, inspection_type)` to prevent duplicates.

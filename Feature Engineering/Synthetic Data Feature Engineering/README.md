@@ -1,6 +1,6 @@
-# ForensiAIR Feature Engineering Package (`forensiair_features`)
+# Forensier Feature Engineering Package (`forensier_features`)
 
-This package is designed as one half of a collaborative two-PC pipeline to compute diagnostic and fraud-detection features for the ForensiAIR OCEMS classifier. Both PCs share the identical, dataset-agnostic feature extraction logic in `features.py` to maintain exact engineering parity.
+This package is designed as one half of a collaborative two-PC pipeline to compute diagnostic and fraud-detection features for the Forensier OCEMS classifier. Both PCs share the identical, dataset-agnostic feature extraction logic in `features.py` to maintain exact engineering parity.
 
 ## Pipeline Structure
 - **This PC (Synthetic)**: Generates the features from simulated CY2024 monitoring data and labels.

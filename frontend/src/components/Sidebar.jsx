@@ -46,7 +46,7 @@ export function Sidebar({ activeTab, setActiveTab, currentUser }) {
           <span className="material-symbols-outlined text-white text-2xl">cloud_done</span>
         </div>
         <div className="hidden md:block">
-          <h1 className="font-headline-md text-headline-md font-bold text-white leading-tight">ForensiAir</h1>
+          <h1 className="font-headline-md text-headline-md font-bold text-white leading-tight">Forensier</h1>
           <p className="text-[10px] text-white/60 font-label-caps tracking-widest uppercase">Government Inspectorate</p>
         </div>
       </div>

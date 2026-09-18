@@ -1,4 +1,4 @@
-# Claude Code Setup — forensiair
+# Claude Code Setup — forensier
 
 Setup log from getting Claude Code running on this project (Windows/PowerShell).
 
@@ -11,9 +11,9 @@ Setup log from getting Claude Code running on this project (Windows/PowerShell).
   ```
 - **Postgres MCP server connected**, registered as `project-db`:
   ```powershell
-  claude mcp add --transport stdio project-db -- npx -y @modelcontextprotocol/server-postgres postgresql://localhost:5432/forensiair
+  claude mcp add --transport stdio project-db -- npx -y @modelcontextprotocol/server-postgres postgresql://localhost:5432/forensier
   ```
-  (Update the connection string with real username/password if the local Postgres instance requires auth — format: `postgresql://USER:PASS@localhost:5432/forensiair`.)
+  (Update the connection string with real username/password if the local Postgres instance requires auth — format: `postgresql://USER:PASS@localhost:5432/forensier`.)
 - **GitHub CLI (`gh`) installed** via `winget install --id GitHub.cli`, authenticated via `gh auth login` (device code flow, signed in as `bgauri05`).
 
 ## Next steps

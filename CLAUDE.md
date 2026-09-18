@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-ForensiAIR: an AI system that detects **data tampering** in industrial environmental telemetry (OCEMS — pH, COD, BOD, TSS, Flow, SO₂, NOx, etc.) reported by factories to regulators. It does not just flag threshold violations — it engineers "Tampering Fingerprint" features (flatline, limit hugging, correlation break, copy-paste, coordinated missing data, pre-inspection dips, impossible values) and feeds them to ML models to produce a per-factory Tamper Suspicion Index (TSI) and risk tier.
+Forensier: an AI system that detects **data tampering** in industrial environmental telemetry (OCEMS — pH, COD, BOD, TSS, Flow, SO₂, NOx, etc.) reported by factories to regulators. It does not just flag threshold violations — it engineers "Tampering Fingerprint" features (flatline, limit hugging, correlation break, copy-paste, coordinated missing data, pre-inspection dips, impossible values) and feeds them to ML models to produce a per-factory Tamper Suspicion Index (TSI) and risk tier.
 
 The repo is a monorepo containing the full pipeline: scraping → feature engineering → characterization → ML training → FastAPI backend → React dashboard.
 
@@ -40,10 +40,10 @@ ml_pipeline/compute_shap_explanations.py → real SHAP for both trained models a
 ml_pipeline/risk_engine.py     → calculate_composite_risk(): blends the factory-level tamper model probability
                                    (10% weight) + IsolationForest anomaly score (22.5%) + fingerprint trigger
                                    ratio (67.5%) into a 0-100 risk_score / CRITICAL-HIGH-MEDIUM-LOW category
-database/seed_db.py             → runs the above and writes results into forensiair.db (SQLite) -- this database,
+database/seed_db.py             → runs the above and writes results into forensier.db (SQLite) -- this database,
                                    not any CSV, is what the live backend actually reads
   ↓
-backend/ (FastAPI, run standalone, port 8000) -- reads forensiair.db + factory_shap_explanations.json;
+backend/ (FastAPI, run standalone, port 8000) -- reads forensier.db + factory_shap_explanations.json;
   runs no model inference live, only precomputed values (see "Backend data loading" below)
   ↓ (HTTP, hardcoded to http://127.0.0.1:8000, no proxy/env var, centralized in frontend/src/config.js's apiFetch())
 frontend/ (React + Vite, port 5173)
@@ -64,7 +64,7 @@ anything other than the real composite arithmetic.
 
 `backend/main.py` uses a module-level `_data_cache` dict populated lazily by `get_data_cache()` on first request.
 It loads, in order: `Original Data/dataset_quality_summary*.csv`, factory + fingerprint scores from
-`forensiair.db` (SQLite, via `_load_factory_scores()` — **not** `Data/RawData/tsi_scores.csv`, which has no
+`forensier.db` (SQLite, via `_load_factory_scores()` — **not** `Data/RawData/tsi_scores.csv`, which has no
 generator script anywhere in this repo and is no longer read), `Data/RawData/factory_shap_explanations.json`
 (real precomputed SHAP, see above — replaces the now-unread `Data/RawData/factory_shap_attributions.csv`, which
 matched the removed Stage-2 model's feature set and is left on disk untouched and unused — `ModelVersionsTab.jsx`
@@ -81,7 +81,7 @@ way (there is no invalidation).
 
 ### Persistence
 
-- `forensiair.db` — SQLite (gitignored), created via `backend/database.py` / `backend/models.py` (SQLAlchemy). Schema: `Factory`, `FingerprintScore`, `InspectionEvent`, `TelemetryRecord`, `Alert`, `ConsentLimit`, `SystemThreshold`, `UserAccess`.
+- `forensier.db` — SQLite (gitignored), created via `backend/database.py` / `backend/models.py` (SQLAlchemy). Schema: `Factory`, `FingerprintScore`, `InspectionEvent`, `TelemetryRecord`, `Alert`, `ConsentLimit`, `SystemThreshold`, `UserAccess`.
 - `database/seed_db.py` seeds SQLite from the ML risk engine output and a hardcoded `NAME_MAPPING` of `site_<id> → (name, region, industry)`. It also has an optional fallback path to read live factory names from a local Postgres instance (`get_pg_factory_mapping()`) if `psycopg2` + a running Postgres are available — this is best-effort and silently falls back to the hardcoded mapping.
 - `scraper/` has its own independent Postgres-backed ingestion path (`load_data.py`, `load_ph.py`, `collector/consent`, `collector/inspection`) — this is upstream of everything else and does not feed the FastAPI backend directly; it produces the CSVs under `Original Data/` / `Data/`.
 
@@ -133,7 +133,7 @@ python run_synthetic.py    # → Data/SynData/synthetic_features.parquet; params
 
 ### DB seeding
 ```bash
-python database/seed_db.py   # populates forensiair.db (SQLite) from ML output + NAME_MAPPING
+python database/seed_db.py   # populates forensier.db (SQLite) from ML output + NAME_MAPPING
 ```
 
 There is no test suite currently in this repo.
@@ -146,7 +146,7 @@ The frontend now actually uses this end to end. `frontend/src/components/LoginPa
 `POST /api/auth/login` for real and stores the returned JWT in `sessionStorage` (not `localStorage` — smaller
 XSS exposure window; this was an explicit, discussed tradeoff, not a default). Every request goes through
 `apiFetch()` (`frontend/src/config.js`), which attaches `Authorization: Bearer <token>` automatically. On any
-401, `apiFetch()` clears the token and dispatches a `forensiair:unauthorized` window event; `App.jsx` listens for
+401, `apiFetch()` clears the token and dispatches a `forensier:unauthorized` window event; `App.jsx` listens for
 it and clears `currentUser`, which is this app's "redirect to login" (no router exists — `App.jsx` renders
 `<LoginPage>` whenever `currentUser` is null). A 401 always means the session is dead; a 403 from `require_role`
 is left alone — that's a legitimate, informative response about the wrong role, not an auth failure, and isn't
