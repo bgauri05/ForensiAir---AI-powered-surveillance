@@ -2,20 +2,21 @@ services:
   - type: web
     name: forensier-backend
     runtime: python
-    region: oregon            # free tier region
+    pythonVersion: "3.12.0"
+    region: oregon
     plan: free
-    buildCommand: pip install -r requirements.txt && python database/seed_db.py
-    startCommand: uvicorn backend.main:app --host 0.0.0.0 --port $PORT
+    buildCommand: pip install -r requirements.txt
+    startCommand: bash start.sh
     envVars:
       - key: SECRET_KEY
-        generateValue: true   # Render auto-generates a random secret
+        generateValue: true
       - key: ADMIN_USERNAME
         value: admin
       - key: ADMIN_PASSWORD
-        sync: false           # fill in the Render dashboard — don't commit passwords
+        sync: false           # fill in Render dashboard
       - key: INSPECTOR_USERNAME
         value: inspector
       - key: INSPECTOR_PASSWORD
-        sync: false           # fill in the Render dashboard
+        sync: false           # fill in Render dashboard
       - key: ALLOWED_ORIGINS
-        sync: false           # fill in after Vercel deploy: https://<your-app>.vercel.app
+        sync: false           # set to your Vercel URL after frontend deploy
