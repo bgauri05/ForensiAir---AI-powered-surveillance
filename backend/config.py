@@ -1,4 +1,7 @@
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # QC FIX (2026-08): same category of issue as the Postgres password fix --
 # these used to have hardcoded fallback credentials (admin/admin123,
