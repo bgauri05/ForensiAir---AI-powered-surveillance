@@ -23,5 +23,6 @@ Data/SynData/monitoring_data_temp.csv
 _tmp_chunks/
 _to_delete/
 
-# SQLite DB
+# SQLite DB — ignore all except the pre-seeded production DB
 *.db
+!forensier.db
