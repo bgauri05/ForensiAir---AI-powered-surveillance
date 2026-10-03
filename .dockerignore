@@ -1,0 +1,14 @@
+.git
+.gitignore
+.vscode
+.claude
+*.zip
+frontend/node_modules
+frontend/dist
+**/__pycache__
+**/*.pyc
+**/*.pyo
+**/*.pyd
+.env
+.env.local
+*.log
