@@ -1,0 +1,8 @@
+Category,Episodes,Share (%)
+(a) Overlapping or <= 2h after event,188,45.41
+(b) 2h to 72h after event ends,47,11.35
+(c) Elsewhere (unassociated),179,43.24
+Total Alert Episodes on Injected Copies,414,100.0
+Mean Episodes per Detected Event,1.306,
+Median Episodes per Detected Event,1.0,
+Range Episodes per Detected Event,"[1, 4]",

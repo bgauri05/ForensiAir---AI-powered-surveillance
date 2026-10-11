@@ -13,3 +13,7 @@
 - Date: 2026-10-10
 - Status: Valid (dev only).
 - Description: Fix + Rerun. Fixed (a) IF/B3 calibration to compute IF raw-score reference distribution from external LOFO model with fallback; (b) F5 factory correlation reference passed into calibrate and score; (c) F3 factory_id propagated on injected copies to correctly match consent limits. Runtime guard enforcing non-NaN on applicable checks. Episode classification on injected copies: (a) overlapping/<=2h, (b) 2h-72h, (c) elsewhere; episodes per detected event; recall under 2h (primary), 24h, 72h tolerances. B4 reported at natural alert rate (~12.09 alerts/mo), labelled not budget-matched, outside pass table. All outputs written to validation_v2/runs/run2b/.
+
+## Final Run
+- Date: 2026-10-11
+- Description: FINAL: run once, hash=9b493594bb1475aa792123236f3c069308340d2b. Evaluated on 4 locked unseen factories (Cipla, Glenmark, Indoco, Zydus) per PROTOCOL_v1.md + v1.1. Injected seeds 101-105, 30 events/factory/seed. Fixed dev cutoffs from 33 dev factories. All outputs written to validation_v2/runs/final/.

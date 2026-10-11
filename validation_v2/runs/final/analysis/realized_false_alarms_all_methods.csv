@@ -1,0 +1,15 @@
+Method,Dev_Calibrated_Tau,Cipla_Episodes,Glenmark_Episodes,Indoco_Episodes,Zydus_Episodes,Total_False_Alert_Episodes,Realized_FA_per_Factory_Month
+M1_fusion,3.7955,36,20,6,35,97,4.057
+F1_eps0,2.6739,11,17,3,23,54,2.258
+F1_eps1,2.621,4,12,1,27,44,1.84
+F1_eps2,2.5335,3,12,2,24,41,1.715
+F2_copypaste,2.8168,26,41,13,26,106,4.433
+F3_limit,1.1786,72,112,31,30,245,10.247
+F5_corr,1.0376,72,70,32,131,305,12.756
+F6_shift,3.0779,30,19,19,27,95,3.973
+F6_slope,3.311,23,19,24,24,90,3.764
+IF_sensor,2.51,32,28,16,26,102,4.266
+B1_zscore,46300.0,52,0,0,0,52,2.175
+B2_pooled_if,0.2417,2,1,2,76,81,3.388
+B3_sensor_if,2.51,32,28,16,26,102,4.266
+B4_legacy_rules,0.5,175,72,146,295,688,28.775

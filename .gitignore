@@ -26,3 +26,15 @@ _to_delete/
 # SQLite DB — ignore all except the pre-seeded production DB
 *.db
 !forensier.db
+
+# Archives
+*.rar
+
+# Generated test parquets and sensitive injected evaluation data
+validation_v2/runs/*/injected/
+validation_v2/runs/final/injected/
+*.parquet
+
+# Scratch and temporary directories
+scratch/
+Data/OutputRar_Hybrid/

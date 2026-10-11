@@ -1,0 +1,3 @@
+T4 Category,Total Events,Detected Events,Recall,95% CI Lower,95% CI Upper
+obvious,27,21,0.7778,0.5,0.9286
+permit-breach,45,10,0.2222,0.2143,0.2368
