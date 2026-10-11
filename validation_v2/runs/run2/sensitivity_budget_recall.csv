@@ -1,0 +1,5 @@
+Target Budget (alerts/fac-mo),Realized Mean FA Rate,Realized Median FA Rate,Realized Min FA Rate,Realized Max FA Rate,Headline Recall,95% CI Lower,95% CI Upper
+1,0.834,0.749,0.0,3.161,0.1439,0.1178,0.1704
+2,1.664,1.431,0.0,5.408,0.2043,0.1715,0.2382
+4,3.951,3.161,0.0,18.627,0.2699,0.2357,0.3037
+10,10.129,9.068,0.0,31.373,0.4508,0.4043,0.4913

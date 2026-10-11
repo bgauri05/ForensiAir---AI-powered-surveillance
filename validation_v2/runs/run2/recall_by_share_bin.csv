@@ -1,0 +1,4 @@
+Injected Share Bin,Total Events,Detected Events,Recall,95% CI Lower,95% CI Upper
+<=2%,564,68,0.1206,0.0821,0.189
+2-10%,947,141,0.1489,0.1119,0.1844
+>10%,838,129,0.1539,0.1122,0.2006

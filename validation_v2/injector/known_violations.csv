@@ -1,0 +1,11 @@
+event_id,factory_id,seed,type,rule_broken,details
+EVT_site_1799_S1_009,site_1799,1,T6,Protocol v1.1 C Rule 2,Pre-existing NaNs in candidate window: ETP-BOD and ETP-COD 100% missing in raw telemetry
+EVT_site_887_S1_025,site_887,1,T6,Protocol v1.1 C Rule 2,Pre-existing NaNs in candidate window: ETP-BOD and ETP-COD 100% missing in raw telemetry
+EVT_site_1799_S2_024,site_1799,2,T6,Protocol v1.1 C Rule 2,Pre-existing NaNs in candidate window: ETP-BOD and ETP-COD 100% missing in raw telemetry
+EVT_site_1376_S3_029,site_1376,3,T6,Protocol v1.1 C Rule 2,Pre-existing NaNs in candidate window: ETP-BOD ETP-COD ETP-TSS 100% missing in raw telemetry
+EVT_site_1799_S3_016,site_1799,3,T6,Protocol v1.1 C Rule 2,Pre-existing NaNs in candidate window: ETP-BOD ETP-COD ETP-Flow ETP-TSS 100% missing in raw telemetry
+EVT_site_1285_S4_022,site_1285,4,T6,Protocol v1.1 C Rule 2,Pre-existing NaNs in candidate window: ETP-Flow 100% missing in raw telemetry
+EVT_site_1376_S4_020,site_1376,4,T6,Protocol v1.1 C Rule 2,Pre-existing NaNs in candidate window: ETP-BOD ETP-COD ETP-TSS 100% missing in raw telemetry
+EVT_site_1799_S4_013,site_1799,4,T6,Protocol v1.1 C Rule 2,Pre-existing NaNs in candidate window: ETP-BOD ETP-COD ETP-Flow 100% missing in raw telemetry
+EVT_site_1799_S5_008,site_1799,5,T6,Protocol v1.1 C Rule 2,Pre-existing NaNs in candidate window: ETP-BOD ETP-COD ETP-Flow 100% missing in raw telemetry
+EVT_site_887_S5_028,site_887,5,T6,Protocol v1.1 C Rule 2,Pre-existing NaNs in candidate window: ETP-BOD and ETP-COD 100% missing in raw telemetry

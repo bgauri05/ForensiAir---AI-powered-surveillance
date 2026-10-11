@@ -1,0 +1,331 @@
+factory_id,corr_column,param_1,param_2,param_1_present,param_2_present,total_factory_rows,nan_count,pct_nan,reason,detail
+site_1131,corr_ETP-Flow_ETP-pH,ETP-Flow,ETP-pH,True,False,31048,31048,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-pH
+site_1131,corr_ETP-BOD_ETP-COD,ETP-BOD,ETP-COD,False,False,31048,31048,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-COD"
+site_1131,corr_ETP-BOD_ETP-Flow,ETP-BOD,ETP-Flow,False,True,31048,31048,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-BOD
+site_1131,corr_ETP-BOD_ETP-TSS,ETP-BOD,ETP-TSS,False,False,31048,31048,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-TSS"
+site_1131,corr_ETP-BOD_ETP-pH,ETP-BOD,ETP-pH,False,False,31048,31048,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-pH"
+site_1131,corr_ETP-COD_ETP-Flow,ETP-COD,ETP-Flow,False,True,31048,31048,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-COD
+site_1131,corr_ETP-COD_ETP-TSS,ETP-COD,ETP-TSS,False,False,31048,31048,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-COD, ETP-TSS"
+site_1131,corr_ETP-COD_ETP-pH,ETP-COD,ETP-pH,False,False,31048,31048,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-COD, ETP-pH"
+site_1131,corr_ETP-Flow_ETP-TSS,ETP-Flow,ETP-TSS,True,False,31048,31048,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-TSS
+site_1131,corr_ETP-TSS_ETP-pH,ETP-TSS,ETP-pH,False,False,31048,31048,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-TSS, ETP-pH"
+site_1138,corr_ETP-Flow_ETP-pH,ETP-Flow,ETP-pH,True,False,24,24,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-pH
+site_1138,corr_ETP-BOD_ETP-COD,ETP-BOD,ETP-COD,False,False,24,24,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-COD"
+site_1138,corr_ETP-BOD_ETP-Flow,ETP-BOD,ETP-Flow,False,True,24,24,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-BOD
+site_1138,corr_ETP-BOD_ETP-TSS,ETP-BOD,ETP-TSS,False,False,24,24,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-TSS"
+site_1138,corr_ETP-BOD_ETP-pH,ETP-BOD,ETP-pH,False,False,24,24,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-pH"
+site_1138,corr_ETP-COD_ETP-Flow,ETP-COD,ETP-Flow,False,True,24,24,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-COD
+site_1138,corr_ETP-COD_ETP-TSS,ETP-COD,ETP-TSS,False,False,24,24,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-COD, ETP-TSS"
+site_1138,corr_ETP-COD_ETP-pH,ETP-COD,ETP-pH,False,False,24,24,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-COD, ETP-pH"
+site_1138,corr_ETP-Flow_ETP-TSS,ETP-Flow,ETP-TSS,True,False,24,24,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-TSS
+site_1138,corr_ETP-TSS_ETP-pH,ETP-TSS,ETP-pH,False,False,24,24,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-TSS, ETP-pH"
+site_1167,corr_ETP-Flow_ETP-pH,ETP-Flow,ETP-pH,True,False,7650,7650,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-pH
+site_1167,corr_ETP-BOD_ETP-COD,ETP-BOD,ETP-COD,False,False,7650,7650,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-COD"
+site_1167,corr_ETP-BOD_ETP-Flow,ETP-BOD,ETP-Flow,False,True,7650,7650,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-BOD
+site_1167,corr_ETP-BOD_ETP-TSS,ETP-BOD,ETP-TSS,False,False,7650,7650,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-TSS"
+site_1167,corr_ETP-BOD_ETP-pH,ETP-BOD,ETP-pH,False,False,7650,7650,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-pH"
+site_1167,corr_ETP-COD_ETP-Flow,ETP-COD,ETP-Flow,False,True,7650,7650,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-COD
+site_1167,corr_ETP-COD_ETP-TSS,ETP-COD,ETP-TSS,False,False,7650,7650,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-COD, ETP-TSS"
+site_1167,corr_ETP-COD_ETP-pH,ETP-COD,ETP-pH,False,False,7650,7650,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-COD, ETP-pH"
+site_1167,corr_ETP-Flow_ETP-TSS,ETP-Flow,ETP-TSS,True,False,7650,7650,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-TSS
+site_1167,corr_ETP-TSS_ETP-pH,ETP-TSS,ETP-pH,False,False,7650,7650,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-TSS, ETP-pH"
+site_1200,corr_ETP-Flow_ETP-pH,ETP-Flow,ETP-pH,True,False,33303,33303,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-pH
+site_1200,corr_ETP-BOD_ETP-COD,ETP-BOD,ETP-COD,False,False,33303,33303,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-COD"
+site_1200,corr_ETP-BOD_ETP-Flow,ETP-BOD,ETP-Flow,False,True,33303,33303,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-BOD
+site_1200,corr_ETP-BOD_ETP-TSS,ETP-BOD,ETP-TSS,False,False,33303,33303,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-TSS"
+site_1200,corr_ETP-BOD_ETP-pH,ETP-BOD,ETP-pH,False,False,33303,33303,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-pH"
+site_1200,corr_ETP-COD_ETP-Flow,ETP-COD,ETP-Flow,False,True,33303,33303,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-COD
+site_1200,corr_ETP-COD_ETP-TSS,ETP-COD,ETP-TSS,False,False,33303,33303,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-COD, ETP-TSS"
+site_1200,corr_ETP-COD_ETP-pH,ETP-COD,ETP-pH,False,False,33303,33303,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-COD, ETP-pH"
+site_1200,corr_ETP-Flow_ETP-TSS,ETP-Flow,ETP-TSS,True,False,33303,33303,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-TSS
+site_1200,corr_ETP-TSS_ETP-pH,ETP-TSS,ETP-pH,False,False,33303,33303,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-TSS, ETP-pH"
+site_1203,corr_ETP-Flow_ETP-pH,ETP-Flow,ETP-pH,True,False,31084,31084,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-pH
+site_1203,corr_ETP-BOD_ETP-COD,ETP-BOD,ETP-COD,False,False,31084,31084,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-COD"
+site_1203,corr_ETP-BOD_ETP-Flow,ETP-BOD,ETP-Flow,False,True,31084,31084,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-BOD
+site_1203,corr_ETP-BOD_ETP-TSS,ETP-BOD,ETP-TSS,False,False,31084,31084,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-TSS"
+site_1203,corr_ETP-BOD_ETP-pH,ETP-BOD,ETP-pH,False,False,31084,31084,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-pH"
+site_1203,corr_ETP-COD_ETP-Flow,ETP-COD,ETP-Flow,False,True,31084,31084,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-COD
+site_1203,corr_ETP-COD_ETP-TSS,ETP-COD,ETP-TSS,False,False,31084,31084,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-COD, ETP-TSS"
+site_1203,corr_ETP-COD_ETP-pH,ETP-COD,ETP-pH,False,False,31084,31084,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-COD, ETP-pH"
+site_1203,corr_ETP-Flow_ETP-TSS,ETP-Flow,ETP-TSS,True,False,31084,31084,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-TSS
+site_1203,corr_ETP-TSS_ETP-pH,ETP-TSS,ETP-pH,False,False,31084,31084,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-TSS, ETP-pH"
+site_1221,corr_ETP-Flow_ETP-pH,ETP-Flow,ETP-pH,True,True,63588,20880,32.84,Window Gaps / Constant Variance / NaN Values,Both present. 32.84% NaN in 24H rolling corr
+site_1221,corr_ETP-BOD_ETP-COD,ETP-BOD,ETP-COD,False,False,63588,63588,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-COD"
+site_1221,corr_ETP-BOD_ETP-Flow,ETP-BOD,ETP-Flow,False,True,63588,63588,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-BOD
+site_1221,corr_ETP-BOD_ETP-TSS,ETP-BOD,ETP-TSS,False,False,63588,63588,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-TSS"
+site_1221,corr_ETP-BOD_ETP-pH,ETP-BOD,ETP-pH,False,True,63588,63588,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-BOD
+site_1221,corr_ETP-COD_ETP-Flow,ETP-COD,ETP-Flow,False,True,63588,63588,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-COD
+site_1221,corr_ETP-COD_ETP-TSS,ETP-COD,ETP-TSS,False,False,63588,63588,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-COD, ETP-TSS"
+site_1221,corr_ETP-COD_ETP-pH,ETP-COD,ETP-pH,False,True,63588,63588,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-COD
+site_1221,corr_ETP-Flow_ETP-TSS,ETP-Flow,ETP-TSS,True,False,63588,63588,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-TSS
+site_1221,corr_ETP-TSS_ETP-pH,ETP-TSS,ETP-pH,False,True,63588,63588,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-TSS
+site_1232,corr_ETP-Flow_ETP-pH,ETP-Flow,ETP-pH,False,True,28462,28462,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-Flow
+site_1232,corr_ETP-BOD_ETP-COD,ETP-BOD,ETP-COD,False,False,28462,28462,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-COD"
+site_1232,corr_ETP-BOD_ETP-Flow,ETP-BOD,ETP-Flow,False,False,28462,28462,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-Flow"
+site_1232,corr_ETP-BOD_ETP-TSS,ETP-BOD,ETP-TSS,False,False,28462,28462,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-TSS"
+site_1232,corr_ETP-BOD_ETP-pH,ETP-BOD,ETP-pH,False,True,28462,28462,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-BOD
+site_1232,corr_ETP-COD_ETP-Flow,ETP-COD,ETP-Flow,False,False,28462,28462,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-COD, ETP-Flow"
+site_1232,corr_ETP-COD_ETP-TSS,ETP-COD,ETP-TSS,False,False,28462,28462,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-COD, ETP-TSS"
+site_1232,corr_ETP-COD_ETP-pH,ETP-COD,ETP-pH,False,True,28462,28462,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-COD
+site_1232,corr_ETP-Flow_ETP-TSS,ETP-Flow,ETP-TSS,False,False,28462,28462,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-Flow, ETP-TSS"
+site_1232,corr_ETP-TSS_ETP-pH,ETP-TSS,ETP-pH,False,True,28462,28462,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-TSS
+site_1247,corr_ETP-Flow_ETP-pH,ETP-Flow,ETP-pH,True,False,25956,25956,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-pH
+site_1247,corr_ETP-BOD_ETP-COD,ETP-BOD,ETP-COD,False,False,25956,25956,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-COD"
+site_1247,corr_ETP-BOD_ETP-Flow,ETP-BOD,ETP-Flow,False,True,25956,25956,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-BOD
+site_1247,corr_ETP-BOD_ETP-TSS,ETP-BOD,ETP-TSS,False,False,25956,25956,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-TSS"
+site_1247,corr_ETP-BOD_ETP-pH,ETP-BOD,ETP-pH,False,False,25956,25956,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-pH"
+site_1247,corr_ETP-COD_ETP-Flow,ETP-COD,ETP-Flow,False,True,25956,25956,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-COD
+site_1247,corr_ETP-COD_ETP-TSS,ETP-COD,ETP-TSS,False,False,25956,25956,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-COD, ETP-TSS"
+site_1247,corr_ETP-COD_ETP-pH,ETP-COD,ETP-pH,False,False,25956,25956,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-COD, ETP-pH"
+site_1247,corr_ETP-Flow_ETP-TSS,ETP-Flow,ETP-TSS,True,False,25956,25956,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-TSS
+site_1247,corr_ETP-TSS_ETP-pH,ETP-TSS,ETP-pH,False,False,25956,25956,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-TSS, ETP-pH"
+site_1256,corr_ETP-Flow_ETP-pH,ETP-Flow,ETP-pH,True,True,1562,472,30.22,Window Gaps / Constant Variance / NaN Values,Both present. 30.22% NaN in 24H rolling corr
+site_1256,corr_ETP-BOD_ETP-COD,ETP-BOD,ETP-COD,False,False,1562,1562,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-COD"
+site_1256,corr_ETP-BOD_ETP-Flow,ETP-BOD,ETP-Flow,False,True,1562,1562,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-BOD
+site_1256,corr_ETP-BOD_ETP-TSS,ETP-BOD,ETP-TSS,False,False,1562,1562,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-TSS"
+site_1256,corr_ETP-BOD_ETP-pH,ETP-BOD,ETP-pH,False,True,1562,1562,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-BOD
+site_1256,corr_ETP-COD_ETP-Flow,ETP-COD,ETP-Flow,False,True,1562,1562,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-COD
+site_1256,corr_ETP-COD_ETP-TSS,ETP-COD,ETP-TSS,False,False,1562,1562,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-COD, ETP-TSS"
+site_1256,corr_ETP-COD_ETP-pH,ETP-COD,ETP-pH,False,True,1562,1562,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-COD
+site_1256,corr_ETP-Flow_ETP-TSS,ETP-Flow,ETP-TSS,True,False,1562,1562,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-TSS
+site_1256,corr_ETP-TSS_ETP-pH,ETP-TSS,ETP-pH,False,True,1562,1562,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-TSS
+site_1257,corr_ETP-Flow_ETP-pH,ETP-Flow,ETP-pH,True,True,62119,1071,1.72,Window Gaps / Constant Variance / NaN Values,Both present. 1.72% NaN in 24H rolling corr
+site_1257,corr_ETP-BOD_ETP-COD,ETP-BOD,ETP-COD,False,False,62119,62119,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-COD"
+site_1257,corr_ETP-BOD_ETP-Flow,ETP-BOD,ETP-Flow,False,True,62119,62119,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-BOD
+site_1257,corr_ETP-BOD_ETP-TSS,ETP-BOD,ETP-TSS,False,False,62119,62119,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-TSS"
+site_1257,corr_ETP-BOD_ETP-pH,ETP-BOD,ETP-pH,False,True,62119,62119,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-BOD
+site_1257,corr_ETP-COD_ETP-Flow,ETP-COD,ETP-Flow,False,True,62119,62119,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-COD
+site_1257,corr_ETP-COD_ETP-TSS,ETP-COD,ETP-TSS,False,False,62119,62119,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-COD, ETP-TSS"
+site_1257,corr_ETP-COD_ETP-pH,ETP-COD,ETP-pH,False,True,62119,62119,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-COD
+site_1257,corr_ETP-Flow_ETP-TSS,ETP-Flow,ETP-TSS,True,False,62119,62119,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-TSS
+site_1257,corr_ETP-TSS_ETP-pH,ETP-TSS,ETP-pH,False,True,62119,62119,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-TSS
+site_1259,corr_ETP-Flow_ETP-pH,ETP-Flow,ETP-pH,True,True,5476,5282,96.46,Window Gaps / Constant Variance / NaN Values,Both present. 96.46% NaN in 24H rolling corr
+site_1259,corr_ETP-BOD_ETP-COD,ETP-BOD,ETP-COD,False,False,5476,5476,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-COD"
+site_1259,corr_ETP-BOD_ETP-Flow,ETP-BOD,ETP-Flow,False,True,5476,5476,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-BOD
+site_1259,corr_ETP-BOD_ETP-TSS,ETP-BOD,ETP-TSS,False,False,5476,5476,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-TSS"
+site_1259,corr_ETP-BOD_ETP-pH,ETP-BOD,ETP-pH,False,True,5476,5476,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-BOD
+site_1259,corr_ETP-COD_ETP-Flow,ETP-COD,ETP-Flow,False,True,5476,5476,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-COD
+site_1259,corr_ETP-COD_ETP-TSS,ETP-COD,ETP-TSS,False,False,5476,5476,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-COD, ETP-TSS"
+site_1259,corr_ETP-COD_ETP-pH,ETP-COD,ETP-pH,False,True,5476,5476,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-COD
+site_1259,corr_ETP-Flow_ETP-TSS,ETP-Flow,ETP-TSS,True,False,5476,5476,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-TSS
+site_1259,corr_ETP-TSS_ETP-pH,ETP-TSS,ETP-pH,False,True,5476,5476,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-TSS
+site_1264,corr_ETP-Flow_ETP-pH,ETP-Flow,ETP-pH,True,True,43729,35103,80.27,Window Gaps / Constant Variance / NaN Values,Both present. 80.27% NaN in 24H rolling corr
+site_1264,corr_ETP-BOD_ETP-COD,ETP-BOD,ETP-COD,False,False,43729,43729,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-COD"
+site_1264,corr_ETP-BOD_ETP-Flow,ETP-BOD,ETP-Flow,False,True,43729,43729,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-BOD
+site_1264,corr_ETP-BOD_ETP-TSS,ETP-BOD,ETP-TSS,False,False,43729,43729,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-TSS"
+site_1264,corr_ETP-BOD_ETP-pH,ETP-BOD,ETP-pH,False,True,43729,43729,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-BOD
+site_1264,corr_ETP-COD_ETP-Flow,ETP-COD,ETP-Flow,False,True,43729,43729,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-COD
+site_1264,corr_ETP-COD_ETP-TSS,ETP-COD,ETP-TSS,False,False,43729,43729,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-COD, ETP-TSS"
+site_1264,corr_ETP-COD_ETP-pH,ETP-COD,ETP-pH,False,True,43729,43729,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-COD
+site_1264,corr_ETP-Flow_ETP-TSS,ETP-Flow,ETP-TSS,True,False,43729,43729,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-TSS
+site_1264,corr_ETP-TSS_ETP-pH,ETP-TSS,ETP-pH,False,True,43729,43729,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-TSS
+site_1280,corr_ETP-Flow_ETP-pH,ETP-Flow,ETP-pH,True,False,29513,29513,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-pH
+site_1280,corr_ETP-BOD_ETP-COD,ETP-BOD,ETP-COD,False,False,29513,29513,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-COD"
+site_1280,corr_ETP-BOD_ETP-Flow,ETP-BOD,ETP-Flow,False,True,29513,29513,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-BOD
+site_1280,corr_ETP-BOD_ETP-TSS,ETP-BOD,ETP-TSS,False,False,29513,29513,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-TSS"
+site_1280,corr_ETP-BOD_ETP-pH,ETP-BOD,ETP-pH,False,False,29513,29513,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-pH"
+site_1280,corr_ETP-COD_ETP-Flow,ETP-COD,ETP-Flow,False,True,29513,29513,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-COD
+site_1280,corr_ETP-COD_ETP-TSS,ETP-COD,ETP-TSS,False,False,29513,29513,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-COD, ETP-TSS"
+site_1280,corr_ETP-COD_ETP-pH,ETP-COD,ETP-pH,False,False,29513,29513,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-COD, ETP-pH"
+site_1280,corr_ETP-Flow_ETP-TSS,ETP-Flow,ETP-TSS,True,False,29513,29513,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-TSS
+site_1280,corr_ETP-TSS_ETP-pH,ETP-TSS,ETP-pH,False,False,29513,29513,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-TSS, ETP-pH"
+site_1281,corr_ETP-Flow_ETP-pH,ETP-Flow,ETP-pH,True,True,28793,12001,41.68,Window Gaps / Constant Variance / NaN Values,Both present. 41.68% NaN in 24H rolling corr
+site_1281,corr_ETP-BOD_ETP-COD,ETP-BOD,ETP-COD,False,False,28793,28793,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-COD"
+site_1281,corr_ETP-BOD_ETP-Flow,ETP-BOD,ETP-Flow,False,True,28793,28793,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-BOD
+site_1281,corr_ETP-BOD_ETP-TSS,ETP-BOD,ETP-TSS,False,False,28793,28793,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-TSS"
+site_1281,corr_ETP-BOD_ETP-pH,ETP-BOD,ETP-pH,False,True,28793,28793,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-BOD
+site_1281,corr_ETP-COD_ETP-Flow,ETP-COD,ETP-Flow,False,True,28793,28793,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-COD
+site_1281,corr_ETP-COD_ETP-TSS,ETP-COD,ETP-TSS,False,False,28793,28793,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-COD, ETP-TSS"
+site_1281,corr_ETP-COD_ETP-pH,ETP-COD,ETP-pH,False,True,28793,28793,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-COD
+site_1281,corr_ETP-Flow_ETP-TSS,ETP-Flow,ETP-TSS,True,False,28793,28793,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-TSS
+site_1281,corr_ETP-TSS_ETP-pH,ETP-TSS,ETP-pH,False,True,28793,28793,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-TSS
+site_1284,corr_ETP-Flow_ETP-pH,ETP-Flow,ETP-pH,True,True,35587,35587,100.0,Window Gaps / Constant Variance / NaN Values,Both present. 100.0% NaN in 24H rolling corr
+site_1284,corr_ETP-BOD_ETP-COD,ETP-BOD,ETP-COD,False,False,35587,35587,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-COD"
+site_1284,corr_ETP-BOD_ETP-Flow,ETP-BOD,ETP-Flow,False,True,35587,35587,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-BOD
+site_1284,corr_ETP-BOD_ETP-TSS,ETP-BOD,ETP-TSS,False,False,35587,35587,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-TSS"
+site_1284,corr_ETP-BOD_ETP-pH,ETP-BOD,ETP-pH,False,True,35587,35587,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-BOD
+site_1284,corr_ETP-COD_ETP-Flow,ETP-COD,ETP-Flow,False,True,35587,35587,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-COD
+site_1284,corr_ETP-COD_ETP-TSS,ETP-COD,ETP-TSS,False,False,35587,35587,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-COD, ETP-TSS"
+site_1284,corr_ETP-COD_ETP-pH,ETP-COD,ETP-pH,False,True,35587,35587,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-COD
+site_1284,corr_ETP-Flow_ETP-TSS,ETP-Flow,ETP-TSS,True,False,35587,35587,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-TSS
+site_1284,corr_ETP-TSS_ETP-pH,ETP-TSS,ETP-pH,False,True,35587,35587,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-TSS
+site_1285,corr_ETP-Flow_ETP-pH,ETP-Flow,ETP-pH,True,True,52592,23120,43.96,Window Gaps / Constant Variance / NaN Values,Both present. 43.96% NaN in 24H rolling corr
+site_1285,corr_ETP-BOD_ETP-COD,ETP-BOD,ETP-COD,False,False,52592,52592,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-COD"
+site_1285,corr_ETP-BOD_ETP-Flow,ETP-BOD,ETP-Flow,False,True,52592,52592,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-BOD
+site_1285,corr_ETP-BOD_ETP-TSS,ETP-BOD,ETP-TSS,False,False,52592,52592,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-TSS"
+site_1285,corr_ETP-BOD_ETP-pH,ETP-BOD,ETP-pH,False,True,52592,52592,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-BOD
+site_1285,corr_ETP-COD_ETP-Flow,ETP-COD,ETP-Flow,False,True,52592,52592,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-COD
+site_1285,corr_ETP-COD_ETP-TSS,ETP-COD,ETP-TSS,False,False,52592,52592,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-COD, ETP-TSS"
+site_1285,corr_ETP-COD_ETP-pH,ETP-COD,ETP-pH,False,True,52592,52592,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-COD
+site_1285,corr_ETP-Flow_ETP-TSS,ETP-Flow,ETP-TSS,True,False,52592,52592,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-TSS
+site_1285,corr_ETP-TSS_ETP-pH,ETP-TSS,ETP-pH,False,True,52592,52592,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-TSS
+site_1310,corr_ETP-Flow_ETP-pH,ETP-Flow,ETP-pH,True,False,27740,27740,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-pH
+site_1310,corr_ETP-BOD_ETP-COD,ETP-BOD,ETP-COD,False,False,27740,27740,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-COD"
+site_1310,corr_ETP-BOD_ETP-Flow,ETP-BOD,ETP-Flow,False,True,27740,27740,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-BOD
+site_1310,corr_ETP-BOD_ETP-TSS,ETP-BOD,ETP-TSS,False,False,27740,27740,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-TSS"
+site_1310,corr_ETP-BOD_ETP-pH,ETP-BOD,ETP-pH,False,False,27740,27740,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-pH"
+site_1310,corr_ETP-COD_ETP-Flow,ETP-COD,ETP-Flow,False,True,27740,27740,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-COD
+site_1310,corr_ETP-COD_ETP-TSS,ETP-COD,ETP-TSS,False,False,27740,27740,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-COD, ETP-TSS"
+site_1310,corr_ETP-COD_ETP-pH,ETP-COD,ETP-pH,False,False,27740,27740,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-COD, ETP-pH"
+site_1310,corr_ETP-Flow_ETP-TSS,ETP-Flow,ETP-TSS,True,False,27740,27740,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-TSS
+site_1310,corr_ETP-TSS_ETP-pH,ETP-TSS,ETP-pH,False,False,27740,27740,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-TSS, ETP-pH"
+site_1321,corr_ETP-Flow_ETP-pH,ETP-Flow,ETP-pH,True,True,58278,45593,78.23,Window Gaps / Constant Variance / NaN Values,Both present. 78.23% NaN in 24H rolling corr
+site_1321,corr_ETP-BOD_ETP-COD,ETP-BOD,ETP-COD,True,True,58278,19058,32.7,Window Gaps / Constant Variance / NaN Values,Both present. 32.7% NaN in 24H rolling corr
+site_1321,corr_ETP-BOD_ETP-Flow,ETP-BOD,ETP-Flow,True,True,58278,45573,78.2,Window Gaps / Constant Variance / NaN Values,Both present. 78.2% NaN in 24H rolling corr
+site_1321,corr_ETP-BOD_ETP-TSS,ETP-BOD,ETP-TSS,True,True,58278,19058,32.7,Window Gaps / Constant Variance / NaN Values,Both present. 32.7% NaN in 24H rolling corr
+site_1321,corr_ETP-BOD_ETP-pH,ETP-BOD,ETP-pH,True,True,58278,19353,33.21,Window Gaps / Constant Variance / NaN Values,Both present. 33.21% NaN in 24H rolling corr
+site_1321,corr_ETP-COD_ETP-Flow,ETP-COD,ETP-Flow,True,True,58278,45573,78.2,Window Gaps / Constant Variance / NaN Values,Both present. 78.2% NaN in 24H rolling corr
+site_1321,corr_ETP-COD_ETP-TSS,ETP-COD,ETP-TSS,True,True,58278,19058,32.7,Window Gaps / Constant Variance / NaN Values,Both present. 32.7% NaN in 24H rolling corr
+site_1321,corr_ETP-COD_ETP-pH,ETP-COD,ETP-pH,True,True,58278,19353,33.21,Window Gaps / Constant Variance / NaN Values,Both present. 33.21% NaN in 24H rolling corr
+site_1321,corr_ETP-Flow_ETP-TSS,ETP-Flow,ETP-TSS,True,True,58278,45573,78.2,Window Gaps / Constant Variance / NaN Values,Both present. 78.2% NaN in 24H rolling corr
+site_1321,corr_ETP-TSS_ETP-pH,ETP-TSS,ETP-pH,True,True,58278,19353,33.21,Window Gaps / Constant Variance / NaN Values,Both present. 33.21% NaN in 24H rolling corr
+site_1369,corr_ETP-Flow_ETP-pH,ETP-Flow,ETP-pH,True,True,87457,77482,88.59,Window Gaps / Constant Variance / NaN Values,Both present. 88.59% NaN in 24H rolling corr
+site_1369,corr_ETP-BOD_ETP-COD,ETP-BOD,ETP-COD,True,True,87457,19282,22.05,Window Gaps / Constant Variance / NaN Values,Both present. 22.05% NaN in 24H rolling corr
+site_1369,corr_ETP-BOD_ETP-Flow,ETP-BOD,ETP-Flow,True,True,87457,74847,85.58,Window Gaps / Constant Variance / NaN Values,Both present. 85.58% NaN in 24H rolling corr
+site_1369,corr_ETP-BOD_ETP-TSS,ETP-BOD,ETP-TSS,True,True,87457,19057,21.79,Window Gaps / Constant Variance / NaN Values,Both present. 21.79% NaN in 24H rolling corr
+site_1369,corr_ETP-BOD_ETP-pH,ETP-BOD,ETP-pH,True,True,87457,60797,69.52,Window Gaps / Constant Variance / NaN Values,Both present. 69.52% NaN in 24H rolling corr
+site_1369,corr_ETP-COD_ETP-Flow,ETP-COD,ETP-Flow,True,True,87457,74847,85.58,Window Gaps / Constant Variance / NaN Values,Both present. 85.58% NaN in 24H rolling corr
+site_1369,corr_ETP-COD_ETP-TSS,ETP-COD,ETP-TSS,True,True,87457,18677,21.36,Window Gaps / Constant Variance / NaN Values,Both present. 21.36% NaN in 24H rolling corr
+site_1369,corr_ETP-COD_ETP-pH,ETP-COD,ETP-pH,True,True,87457,59797,68.37,Window Gaps / Constant Variance / NaN Values,Both present. 68.37% NaN in 24H rolling corr
+site_1369,corr_ETP-Flow_ETP-TSS,ETP-Flow,ETP-TSS,True,True,87457,74847,85.58,Window Gaps / Constant Variance / NaN Values,Both present. 85.58% NaN in 24H rolling corr
+site_1369,corr_ETP-TSS_ETP-pH,ETP-TSS,ETP-pH,True,True,87457,59572,68.12,Window Gaps / Constant Variance / NaN Values,Both present. 68.12% NaN in 24H rolling corr
+site_1376,corr_ETP-Flow_ETP-pH,ETP-Flow,ETP-pH,True,True,92679,83219,89.79,Window Gaps / Constant Variance / NaN Values,Both present. 89.79% NaN in 24H rolling corr
+site_1376,corr_ETP-BOD_ETP-COD,ETP-BOD,ETP-COD,True,True,92679,22243,24.0,Window Gaps / Constant Variance / NaN Values,Both present. 24.0% NaN in 24H rolling corr
+site_1376,corr_ETP-BOD_ETP-Flow,ETP-BOD,ETP-Flow,True,True,92679,59894,64.63,Window Gaps / Constant Variance / NaN Values,Both present. 64.63% NaN in 24H rolling corr
+site_1376,corr_ETP-BOD_ETP-TSS,ETP-BOD,ETP-TSS,True,True,92679,22243,24.0,Window Gaps / Constant Variance / NaN Values,Both present. 24.0% NaN in 24H rolling corr
+site_1376,corr_ETP-BOD_ETP-pH,ETP-BOD,ETP-pH,True,True,92679,73415,79.21,Window Gaps / Constant Variance / NaN Values,Both present. 79.21% NaN in 24H rolling corr
+site_1376,corr_ETP-COD_ETP-Flow,ETP-COD,ETP-Flow,True,True,92679,59894,64.63,Window Gaps / Constant Variance / NaN Values,Both present. 64.63% NaN in 24H rolling corr
+site_1376,corr_ETP-COD_ETP-TSS,ETP-COD,ETP-TSS,True,True,92679,22243,24.0,Window Gaps / Constant Variance / NaN Values,Both present. 24.0% NaN in 24H rolling corr
+site_1376,corr_ETP-COD_ETP-pH,ETP-COD,ETP-pH,True,True,92679,73415,79.21,Window Gaps / Constant Variance / NaN Values,Both present. 79.21% NaN in 24H rolling corr
+site_1376,corr_ETP-Flow_ETP-TSS,ETP-Flow,ETP-TSS,True,True,92679,59894,64.63,Window Gaps / Constant Variance / NaN Values,Both present. 64.63% NaN in 24H rolling corr
+site_1376,corr_ETP-TSS_ETP-pH,ETP-TSS,ETP-pH,True,True,92679,73415,79.21,Window Gaps / Constant Variance / NaN Values,Both present. 79.21% NaN in 24H rolling corr
+site_1561,corr_ETP-Flow_ETP-pH,ETP-Flow,ETP-pH,False,True,32920,32920,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-Flow
+site_1561,corr_ETP-BOD_ETP-COD,ETP-BOD,ETP-COD,False,False,32920,32920,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-COD"
+site_1561,corr_ETP-BOD_ETP-Flow,ETP-BOD,ETP-Flow,False,False,32920,32920,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-Flow"
+site_1561,corr_ETP-BOD_ETP-TSS,ETP-BOD,ETP-TSS,False,False,32920,32920,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-TSS"
+site_1561,corr_ETP-BOD_ETP-pH,ETP-BOD,ETP-pH,False,True,32920,32920,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-BOD
+site_1561,corr_ETP-COD_ETP-Flow,ETP-COD,ETP-Flow,False,False,32920,32920,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-COD, ETP-Flow"
+site_1561,corr_ETP-COD_ETP-TSS,ETP-COD,ETP-TSS,False,False,32920,32920,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-COD, ETP-TSS"
+site_1561,corr_ETP-COD_ETP-pH,ETP-COD,ETP-pH,False,True,32920,32920,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-COD
+site_1561,corr_ETP-Flow_ETP-TSS,ETP-Flow,ETP-TSS,False,False,32920,32920,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-Flow, ETP-TSS"
+site_1561,corr_ETP-TSS_ETP-pH,ETP-TSS,ETP-pH,False,True,32920,32920,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-TSS
+site_1569,corr_ETP-Flow_ETP-pH,ETP-Flow,ETP-pH,True,False,5310,5310,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-pH
+site_1569,corr_ETP-BOD_ETP-COD,ETP-BOD,ETP-COD,False,False,5310,5310,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-COD"
+site_1569,corr_ETP-BOD_ETP-Flow,ETP-BOD,ETP-Flow,False,True,5310,5310,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-BOD
+site_1569,corr_ETP-BOD_ETP-TSS,ETP-BOD,ETP-TSS,False,False,5310,5310,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-TSS"
+site_1569,corr_ETP-BOD_ETP-pH,ETP-BOD,ETP-pH,False,False,5310,5310,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-pH"
+site_1569,corr_ETP-COD_ETP-Flow,ETP-COD,ETP-Flow,False,True,5310,5310,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-COD
+site_1569,corr_ETP-COD_ETP-TSS,ETP-COD,ETP-TSS,False,False,5310,5310,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-COD, ETP-TSS"
+site_1569,corr_ETP-COD_ETP-pH,ETP-COD,ETP-pH,False,False,5310,5310,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-COD, ETP-pH"
+site_1569,corr_ETP-Flow_ETP-TSS,ETP-Flow,ETP-TSS,True,False,5310,5310,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-TSS
+site_1569,corr_ETP-TSS_ETP-pH,ETP-TSS,ETP-pH,False,False,5310,5310,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-TSS, ETP-pH"
+site_1581,corr_ETP-Flow_ETP-pH,ETP-Flow,ETP-pH,True,True,263,263,100.0,Window Gaps / Constant Variance / NaN Values,Both present. 100.0% NaN in 24H rolling corr
+site_1581,corr_ETP-BOD_ETP-COD,ETP-BOD,ETP-COD,False,False,263,263,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-COD"
+site_1581,corr_ETP-BOD_ETP-Flow,ETP-BOD,ETP-Flow,False,True,263,263,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-BOD
+site_1581,corr_ETP-BOD_ETP-TSS,ETP-BOD,ETP-TSS,False,False,263,263,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-TSS"
+site_1581,corr_ETP-BOD_ETP-pH,ETP-BOD,ETP-pH,False,True,263,263,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-BOD
+site_1581,corr_ETP-COD_ETP-Flow,ETP-COD,ETP-Flow,False,True,263,263,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-COD
+site_1581,corr_ETP-COD_ETP-TSS,ETP-COD,ETP-TSS,False,False,263,263,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-COD, ETP-TSS"
+site_1581,corr_ETP-COD_ETP-pH,ETP-COD,ETP-pH,False,True,263,263,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-COD
+site_1581,corr_ETP-Flow_ETP-TSS,ETP-Flow,ETP-TSS,True,False,263,263,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-TSS
+site_1581,corr_ETP-TSS_ETP-pH,ETP-TSS,ETP-pH,False,True,263,263,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-TSS
+site_1668,corr_ETP-Flow_ETP-pH,ETP-Flow,ETP-pH,True,True,62269,44844,72.02,Window Gaps / Constant Variance / NaN Values,Both present. 72.02% NaN in 24H rolling corr
+site_1668,corr_ETP-BOD_ETP-COD,ETP-BOD,ETP-COD,True,True,62269,42066,67.56,Window Gaps / Constant Variance / NaN Values,Both present. 67.56% NaN in 24H rolling corr
+site_1668,corr_ETP-BOD_ETP-Flow,ETP-BOD,ETP-Flow,True,True,62269,49054,78.78,Window Gaps / Constant Variance / NaN Values,Both present. 78.78% NaN in 24H rolling corr
+site_1668,corr_ETP-BOD_ETP-TSS,ETP-BOD,ETP-TSS,True,True,62269,42356,68.02,Window Gaps / Constant Variance / NaN Values,Both present. 68.02% NaN in 24H rolling corr
+site_1668,corr_ETP-BOD_ETP-pH,ETP-BOD,ETP-pH,True,True,62269,38376,61.63,Window Gaps / Constant Variance / NaN Values,Both present. 61.63% NaN in 24H rolling corr
+site_1668,corr_ETP-COD_ETP-Flow,ETP-COD,ETP-Flow,True,True,62269,49054,78.78,Window Gaps / Constant Variance / NaN Values,Both present. 78.78% NaN in 24H rolling corr
+site_1668,corr_ETP-COD_ETP-TSS,ETP-COD,ETP-TSS,True,True,62269,42356,68.02,Window Gaps / Constant Variance / NaN Values,Both present. 68.02% NaN in 24H rolling corr
+site_1668,corr_ETP-COD_ETP-pH,ETP-COD,ETP-pH,True,True,62269,42066,67.56,Window Gaps / Constant Variance / NaN Values,Both present. 67.56% NaN in 24H rolling corr
+site_1668,corr_ETP-Flow_ETP-TSS,ETP-Flow,ETP-TSS,True,True,62269,49344,79.24,Window Gaps / Constant Variance / NaN Values,Both present. 79.24% NaN in 24H rolling corr
+site_1668,corr_ETP-TSS_ETP-pH,ETP-TSS,ETP-pH,True,True,62269,42356,68.02,Window Gaps / Constant Variance / NaN Values,Both present. 68.02% NaN in 24H rolling corr
+site_1756,corr_ETP-Flow_ETP-pH,ETP-Flow,ETP-pH,True,True,51559,40249,78.06,Window Gaps / Constant Variance / NaN Values,Both present. 78.06% NaN in 24H rolling corr
+site_1756,corr_ETP-BOD_ETP-COD,ETP-BOD,ETP-COD,True,True,51559,29714,57.63,Window Gaps / Constant Variance / NaN Values,Both present. 57.63% NaN in 24H rolling corr
+site_1756,corr_ETP-BOD_ETP-Flow,ETP-BOD,ETP-Flow,True,True,51559,29949,58.09,Window Gaps / Constant Variance / NaN Values,Both present. 58.09% NaN in 24H rolling corr
+site_1756,corr_ETP-BOD_ETP-TSS,ETP-BOD,ETP-TSS,True,True,51559,36309,70.42,Window Gaps / Constant Variance / NaN Values,Both present. 70.42% NaN in 24H rolling corr
+site_1756,corr_ETP-BOD_ETP-pH,ETP-BOD,ETP-pH,True,True,51559,40399,78.35,Window Gaps / Constant Variance / NaN Values,Both present. 78.35% NaN in 24H rolling corr
+site_1756,corr_ETP-COD_ETP-Flow,ETP-COD,ETP-Flow,True,True,51559,30389,58.94,Window Gaps / Constant Variance / NaN Values,Both present. 58.94% NaN in 24H rolling corr
+site_1756,corr_ETP-COD_ETP-TSS,ETP-COD,ETP-TSS,True,True,51559,36309,70.42,Window Gaps / Constant Variance / NaN Values,Both present. 70.42% NaN in 24H rolling corr
+site_1756,corr_ETP-COD_ETP-pH,ETP-COD,ETP-pH,True,True,51559,40839,79.21,Window Gaps / Constant Variance / NaN Values,Both present. 79.21% NaN in 24H rolling corr
+site_1756,corr_ETP-Flow_ETP-TSS,ETP-Flow,ETP-TSS,True,True,51559,33834,65.62,Window Gaps / Constant Variance / NaN Values,Both present. 65.62% NaN in 24H rolling corr
+site_1756,corr_ETP-TSS_ETP-pH,ETP-TSS,ETP-pH,True,True,51559,46259,89.72,Window Gaps / Constant Variance / NaN Values,Both present. 89.72% NaN in 24H rolling corr
+site_1787,corr_ETP-Flow_ETP-pH,ETP-Flow,ETP-pH,True,False,34161,34161,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-pH
+site_1787,corr_ETP-BOD_ETP-COD,ETP-BOD,ETP-COD,False,False,34161,34161,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-COD"
+site_1787,corr_ETP-BOD_ETP-Flow,ETP-BOD,ETP-Flow,False,True,34161,34161,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-BOD
+site_1787,corr_ETP-BOD_ETP-TSS,ETP-BOD,ETP-TSS,False,False,34161,34161,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-TSS"
+site_1787,corr_ETP-BOD_ETP-pH,ETP-BOD,ETP-pH,False,False,34161,34161,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-pH"
+site_1787,corr_ETP-COD_ETP-Flow,ETP-COD,ETP-Flow,False,True,34161,34161,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-COD
+site_1787,corr_ETP-COD_ETP-TSS,ETP-COD,ETP-TSS,False,False,34161,34161,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-COD, ETP-TSS"
+site_1787,corr_ETP-COD_ETP-pH,ETP-COD,ETP-pH,False,False,34161,34161,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-COD, ETP-pH"
+site_1787,corr_ETP-Flow_ETP-TSS,ETP-Flow,ETP-TSS,True,False,34161,34161,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-TSS
+site_1787,corr_ETP-TSS_ETP-pH,ETP-TSS,ETP-pH,False,False,34161,34161,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-TSS, ETP-pH"
+site_1789,corr_ETP-Flow_ETP-pH,ETP-Flow,ETP-pH,False,True,6429,6429,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-Flow
+site_1789,corr_ETP-BOD_ETP-COD,ETP-BOD,ETP-COD,True,True,6429,6429,100.0,Window Gaps / Constant Variance / NaN Values,Both present. 100.0% NaN in 24H rolling corr
+site_1789,corr_ETP-BOD_ETP-Flow,ETP-BOD,ETP-Flow,True,False,6429,6429,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-Flow
+site_1789,corr_ETP-BOD_ETP-TSS,ETP-BOD,ETP-TSS,True,True,6429,6429,100.0,Window Gaps / Constant Variance / NaN Values,Both present. 100.0% NaN in 24H rolling corr
+site_1789,corr_ETP-BOD_ETP-pH,ETP-BOD,ETP-pH,True,True,6429,6429,100.0,Window Gaps / Constant Variance / NaN Values,Both present. 100.0% NaN in 24H rolling corr
+site_1789,corr_ETP-COD_ETP-Flow,ETP-COD,ETP-Flow,True,False,6429,6429,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-Flow
+site_1789,corr_ETP-COD_ETP-TSS,ETP-COD,ETP-TSS,True,True,6429,6429,100.0,Window Gaps / Constant Variance / NaN Values,Both present. 100.0% NaN in 24H rolling corr
+site_1789,corr_ETP-COD_ETP-pH,ETP-COD,ETP-pH,True,True,6429,6429,100.0,Window Gaps / Constant Variance / NaN Values,Both present. 100.0% NaN in 24H rolling corr
+site_1789,corr_ETP-Flow_ETP-TSS,ETP-Flow,ETP-TSS,False,True,6429,6429,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-Flow
+site_1789,corr_ETP-TSS_ETP-pH,ETP-TSS,ETP-pH,True,True,6429,6429,100.0,Window Gaps / Constant Variance / NaN Values,Both present. 100.0% NaN in 24H rolling corr
+site_1799,corr_ETP-Flow_ETP-pH,ETP-Flow,ETP-pH,True,True,74565,64975,87.14,Window Gaps / Constant Variance / NaN Values,Both present. 87.14% NaN in 24H rolling corr
+site_1799,corr_ETP-BOD_ETP-COD,ETP-BOD,ETP-COD,True,True,74565,30820,41.33,Window Gaps / Constant Variance / NaN Values,Both present. 41.33% NaN in 24H rolling corr
+site_1799,corr_ETP-BOD_ETP-Flow,ETP-BOD,ETP-Flow,True,True,74565,63955,85.77,Window Gaps / Constant Variance / NaN Values,Both present. 85.77% NaN in 24H rolling corr
+site_1799,corr_ETP-BOD_ETP-TSS,ETP-BOD,ETP-TSS,True,True,74565,67700,90.79,Window Gaps / Constant Variance / NaN Values,Both present. 90.79% NaN in 24H rolling corr
+site_1799,corr_ETP-BOD_ETP-pH,ETP-BOD,ETP-pH,True,True,74565,32765,43.94,Window Gaps / Constant Variance / NaN Values,Both present. 43.94% NaN in 24H rolling corr
+site_1799,corr_ETP-COD_ETP-Flow,ETP-COD,ETP-Flow,True,True,74565,63945,85.76,Window Gaps / Constant Variance / NaN Values,Both present. 85.76% NaN in 24H rolling corr
+site_1799,corr_ETP-COD_ETP-TSS,ETP-COD,ETP-TSS,True,True,74565,67625,90.69,Window Gaps / Constant Variance / NaN Values,Both present. 90.69% NaN in 24H rolling corr
+site_1799,corr_ETP-COD_ETP-pH,ETP-COD,ETP-pH,True,True,74565,30940,41.49,Window Gaps / Constant Variance / NaN Values,Both present. 41.49% NaN in 24H rolling corr
+site_1799,corr_ETP-Flow_ETP-TSS,ETP-Flow,ETP-TSS,True,True,74565,70170,94.11,Window Gaps / Constant Variance / NaN Values,Both present. 94.11% NaN in 24H rolling corr
+site_1799,corr_ETP-TSS_ETP-pH,ETP-TSS,ETP-pH,True,True,74565,67625,90.69,Window Gaps / Constant Variance / NaN Values,Both present. 90.69% NaN in 24H rolling corr
+site_1905,corr_ETP-Flow_ETP-pH,ETP-Flow,ETP-pH,True,False,15762,15762,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-pH
+site_1905,corr_ETP-BOD_ETP-COD,ETP-BOD,ETP-COD,False,False,15762,15762,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-COD"
+site_1905,corr_ETP-BOD_ETP-Flow,ETP-BOD,ETP-Flow,False,True,15762,15762,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-BOD
+site_1905,corr_ETP-BOD_ETP-TSS,ETP-BOD,ETP-TSS,False,False,15762,15762,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-TSS"
+site_1905,corr_ETP-BOD_ETP-pH,ETP-BOD,ETP-pH,False,False,15762,15762,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-pH"
+site_1905,corr_ETP-COD_ETP-Flow,ETP-COD,ETP-Flow,False,True,15762,15762,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-COD
+site_1905,corr_ETP-COD_ETP-TSS,ETP-COD,ETP-TSS,False,False,15762,15762,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-COD, ETP-TSS"
+site_1905,corr_ETP-COD_ETP-pH,ETP-COD,ETP-pH,False,False,15762,15762,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-COD, ETP-pH"
+site_1905,corr_ETP-Flow_ETP-TSS,ETP-Flow,ETP-TSS,True,False,15762,15762,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-TSS
+site_1905,corr_ETP-TSS_ETP-pH,ETP-TSS,ETP-pH,False,False,15762,15762,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-TSS, ETP-pH"
+site_1909,corr_ETP-Flow_ETP-pH,ETP-Flow,ETP-pH,True,True,7222,7030,97.34,Window Gaps / Constant Variance / NaN Values,Both present. 97.34% NaN in 24H rolling corr
+site_1909,corr_ETP-BOD_ETP-COD,ETP-BOD,ETP-COD,False,False,7222,7222,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-COD"
+site_1909,corr_ETP-BOD_ETP-Flow,ETP-BOD,ETP-Flow,False,True,7222,7222,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-BOD
+site_1909,corr_ETP-BOD_ETP-TSS,ETP-BOD,ETP-TSS,False,False,7222,7222,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-BOD, ETP-TSS"
+site_1909,corr_ETP-BOD_ETP-pH,ETP-BOD,ETP-pH,False,True,7222,7222,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-BOD
+site_1909,corr_ETP-COD_ETP-Flow,ETP-COD,ETP-Flow,False,True,7222,7222,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-COD
+site_1909,corr_ETP-COD_ETP-TSS,ETP-COD,ETP-TSS,False,False,7222,7222,100.0,Missing Parameter (One/Both parameters not monitored),"Missing: ETP-COD, ETP-TSS"
+site_1909,corr_ETP-COD_ETP-pH,ETP-COD,ETP-pH,False,True,7222,7222,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-COD
+site_1909,corr_ETP-Flow_ETP-TSS,ETP-Flow,ETP-TSS,True,False,7222,7222,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-TSS
+site_1909,corr_ETP-TSS_ETP-pH,ETP-TSS,ETP-pH,False,True,7222,7222,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-TSS
+site_2070,corr_ETP-Flow_ETP-pH,ETP-Flow,ETP-pH,True,True,559,559,100.0,Window Gaps / Constant Variance / NaN Values,Both present. 100.0% NaN in 24H rolling corr
+site_2070,corr_ETP-BOD_ETP-COD,ETP-BOD,ETP-COD,True,True,559,504,90.16,Window Gaps / Constant Variance / NaN Values,Both present. 90.16% NaN in 24H rolling corr
+site_2070,corr_ETP-BOD_ETP-Flow,ETP-BOD,ETP-Flow,True,True,559,559,100.0,Window Gaps / Constant Variance / NaN Values,Both present. 100.0% NaN in 24H rolling corr
+site_2070,corr_ETP-BOD_ETP-TSS,ETP-BOD,ETP-TSS,True,True,559,529,94.63,Window Gaps / Constant Variance / NaN Values,Both present. 94.63% NaN in 24H rolling corr
+site_2070,corr_ETP-BOD_ETP-pH,ETP-BOD,ETP-pH,True,True,559,504,90.16,Window Gaps / Constant Variance / NaN Values,Both present. 90.16% NaN in 24H rolling corr
+site_2070,corr_ETP-COD_ETP-Flow,ETP-COD,ETP-Flow,True,True,559,559,100.0,Window Gaps / Constant Variance / NaN Values,Both present. 100.0% NaN in 24H rolling corr
+site_2070,corr_ETP-COD_ETP-TSS,ETP-COD,ETP-TSS,True,True,559,529,94.63,Window Gaps / Constant Variance / NaN Values,Both present. 94.63% NaN in 24H rolling corr
+site_2070,corr_ETP-COD_ETP-pH,ETP-COD,ETP-pH,True,True,559,504,90.16,Window Gaps / Constant Variance / NaN Values,Both present. 90.16% NaN in 24H rolling corr
+site_2070,corr_ETP-Flow_ETP-TSS,ETP-Flow,ETP-TSS,True,True,559,559,100.0,Window Gaps / Constant Variance / NaN Values,Both present. 100.0% NaN in 24H rolling corr
+site_2070,corr_ETP-TSS_ETP-pH,ETP-TSS,ETP-pH,True,True,559,529,94.63,Window Gaps / Constant Variance / NaN Values,Both present. 94.63% NaN in 24H rolling corr
+site_887,corr_ETP-Flow_ETP-pH,ETP-Flow,ETP-pH,True,True,89025,22510,25.29,Window Gaps / Constant Variance / NaN Values,Both present. 25.29% NaN in 24H rolling corr
+site_887,corr_ETP-BOD_ETP-COD,ETP-BOD,ETP-COD,True,True,89025,25397,28.53,Window Gaps / Constant Variance / NaN Values,Both present. 28.53% NaN in 24H rolling corr
+site_887,corr_ETP-BOD_ETP-Flow,ETP-BOD,ETP-Flow,True,True,89025,21815,24.5,Window Gaps / Constant Variance / NaN Values,Both present. 24.5% NaN in 24H rolling corr
+site_887,corr_ETP-BOD_ETP-TSS,ETP-BOD,ETP-TSS,True,True,89025,23227,26.09,Window Gaps / Constant Variance / NaN Values,Both present. 26.09% NaN in 24H rolling corr
+site_887,corr_ETP-BOD_ETP-pH,ETP-BOD,ETP-pH,True,True,89025,22465,25.23,Window Gaps / Constant Variance / NaN Values,Both present. 25.23% NaN in 24H rolling corr
+site_887,corr_ETP-COD_ETP-Flow,ETP-COD,ETP-Flow,True,True,89025,25442,28.58,Window Gaps / Constant Variance / NaN Values,Both present. 28.58% NaN in 24H rolling corr
+site_887,corr_ETP-COD_ETP-TSS,ETP-COD,ETP-TSS,True,True,89025,26355,29.6,Window Gaps / Constant Variance / NaN Values,Both present. 29.6% NaN in 24H rolling corr
+site_887,corr_ETP-COD_ETP-pH,ETP-COD,ETP-pH,True,True,89025,26067,29.28,Window Gaps / Constant Variance / NaN Values,Both present. 29.28% NaN in 24H rolling corr
+site_887,corr_ETP-Flow_ETP-TSS,ETP-Flow,ETP-TSS,True,True,89025,23272,26.14,Window Gaps / Constant Variance / NaN Values,Both present. 26.14% NaN in 24H rolling corr
+site_887,corr_ETP-TSS_ETP-pH,ETP-TSS,ETP-pH,True,True,89025,23897,26.84,Window Gaps / Constant Variance / NaN Values,Both present. 26.84% NaN in 24H rolling corr
+site_982,corr_ETP-Flow_ETP-pH,ETP-Flow,ETP-pH,True,False,11380,11380,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-pH
+site_982,corr_ETP-BOD_ETP-COD,ETP-BOD,ETP-COD,True,True,11380,8752,76.91,Window Gaps / Constant Variance / NaN Values,Both present. 76.91% NaN in 24H rolling corr
+site_982,corr_ETP-BOD_ETP-Flow,ETP-BOD,ETP-Flow,True,True,11380,6492,57.05,Window Gaps / Constant Variance / NaN Values,Both present. 57.05% NaN in 24H rolling corr
+site_982,corr_ETP-BOD_ETP-TSS,ETP-BOD,ETP-TSS,True,True,11380,8752,76.91,Window Gaps / Constant Variance / NaN Values,Both present. 76.91% NaN in 24H rolling corr
+site_982,corr_ETP-BOD_ETP-pH,ETP-BOD,ETP-pH,True,False,11380,11380,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-pH
+site_982,corr_ETP-COD_ETP-Flow,ETP-COD,ETP-Flow,True,True,11380,5684,49.95,Window Gaps / Constant Variance / NaN Values,Both present. 49.95% NaN in 24H rolling corr
+site_982,corr_ETP-COD_ETP-TSS,ETP-COD,ETP-TSS,True,True,11380,5432,47.73,Window Gaps / Constant Variance / NaN Values,Both present. 47.73% NaN in 24H rolling corr
+site_982,corr_ETP-COD_ETP-pH,ETP-COD,ETP-pH,True,False,11380,11380,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-pH
+site_982,corr_ETP-Flow_ETP-TSS,ETP-Flow,ETP-TSS,True,True,11380,6040,53.08,Window Gaps / Constant Variance / NaN Values,Both present. 53.08% NaN in 24H rolling corr
+site_982,corr_ETP-TSS_ETP-pH,ETP-TSS,ETP-pH,True,False,11380,11380,100.0,Missing Parameter (One/Both parameters not monitored),Missing: ETP-pH

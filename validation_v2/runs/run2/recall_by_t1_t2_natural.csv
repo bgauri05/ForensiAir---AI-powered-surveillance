@@ -1,0 +1,5 @@
+Tamper Type,Duration Category,Total Events,Detected Events,Recall,95% CI Lower,95% CI Upper
+T1,Beyond-Natural (>= 99.9th pctile),189,75,0.3968,0.2936,0.5035
+T1,Within-Natural (< 99.9th pctile),464,39,0.0841,0.0401,0.1386
+T2,Beyond-Natural (>= 99.9th pctile),155,30,0.1935,0.0887,0.3906
+T2,Within-Natural (< 99.9th pctile),366,11,0.0301,0.0079,0.0627
