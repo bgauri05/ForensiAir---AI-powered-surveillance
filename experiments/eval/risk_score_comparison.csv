@@ -1,0 +1,5 @@
+tamper_type,severity,risk_before_mean,risk_after_mean,risk_delta
+Headline Injections (Combined),Subtle,14.11,19.85,5.74
+Headline Injections (Combined),Medium,14.11,20.32,6.21
+Headline Injections (Combined),Easy,14.11,20.58,6.47
+Overall Headline Mean,All,14.11,20.21,6.1

@@ -1,0 +1,7 @@
+fingerprint_check,injected_runs_eval,clean_factories_eval,tp,fp,fn,tn,precision,recall,f1_score
+correlation_break,16,4,16,4,0,0,0.8,1.0,0.8889
+coordinated_missing_data,16,4,16,4,0,0,0.8,1.0,0.8889
+impossible_pH,16,4,16,0,0,4,1.0,1.0,1.0
+flatline,16,4,16,4,0,0,0.8,1.0,0.8889
+limit_hugging,16,4,0,0,16,4,0.0,0.0,0.0
+copy_paste,16,4,16,4,0,0,0.8,1.0,0.8889

@@ -17,3 +17,12 @@
 ## Final Run
 - Date: 2026-10-11
 - Description: FINAL: run once, hash=9b493594bb1475aa792123236f3c069308340d2b. Evaluated on 4 locked unseen factories (Cipla, Glenmark, Indoco, Zydus) per PROTOCOL_v1.md + v1.1. Injected seeds 101-105, 30 events/factory/seed. Fixed dev cutoffs from 33 dev factories. All outputs written to validation_v2/runs/final/.
+
+## V2 Exploratory Run (detector_b)
+- Date: 2026-10-11
+- Status: exploratory, mechanism-aware
+- Description: Evaluated hand-crafted check extensions (F1B, F2B, F3B, F7B, IF_B) and composite M2 max fusion on Mechanism B development injections. Documented unweighted max-fusion dilution penalty under multi-detector check expansion. Outputs kept untouched in validation_v2/v2/detector_b/.
+
+## V2 FINAL (dev): run once, tag hash=8c98d3d2d45f3ab79dfa54327cb56bd94b28188c
+- Date: 2026-10-11
+- Description: Supervised HistGradientBoostingClassifier evaluated on 5-fold factory-grouped cross-validation across Mechanism A and Mechanism B. Protocol v2.0 frozen. Outputs in validation_v2/v2/model/.

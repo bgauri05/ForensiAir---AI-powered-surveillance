@@ -1,0 +1,5 @@
+Direction,Matched_Duty_Cutoff_Tau,Clean_Alert_Rows,Realized_Clean_Duty_Pct,Realized_Clean_FA_mo,Test_Mechanism,Setting,Evaluated_Events,Detected_Events,Recall_Matched_Duty
+Train A,0.9907805528667603,1190,0.1046,0.25,A,In-Mechanism,1899,381,20.06
+Train A,0.9907805528667603,1190,0.1046,0.25,B,Cross-Mechanism,2553,219,8.58
+Train B,0.9863437853080025,1182,0.1039,0.205,A,Cross-Mechanism,1899,321,16.9
+Train B,0.9863437853080025,1182,0.1039,0.205,B,In-Mechanism,2553,388,15.2

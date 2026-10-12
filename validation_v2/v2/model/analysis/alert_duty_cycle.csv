@@ -1,0 +1,13 @@
+Method,Family,Operating_Cutoff_Tau,Clean_Alert_Episodes,Episodes_per_Month,Total_Alert_Rows,Pct_Valid_Rows_in_Alerts,Mean_Alert_Length_Rows,Median_Alert_Length_Rows
+V1 M1 Fusion,V1,3.7906,327,0.998,1185,0.1041,3.62,1.0
+V1 IF alone,V1,2.556,309,0.943,2685,0.2359,8.69,7.0
+V1 F1 (eps=0),V1,2.6739,329,1.004,21800,1.9155,66.27,6.0
+V1 F1 (eps=1),V1,2.621,327,0.998,20456,1.7974,62.56,5.0
+V1 F1 (eps=2),V1,2.5335,327,0.998,21364,1.8772,65.34,7.0
+V1 F2 Copy-Paste,V1,2.8168,328,1.001,1744,0.1532,5.32,2.0
+V1 F3 Limit Hugging,V1,1.1786,328,1.001,20080,1.7644,61.25,25.5
+V1 F6 Shift,V1,3.0779,328,1.001,1525,0.134,4.65,3.0
+V1 F6 Slope,V1,3.311,328,1.001,1332,0.117,4.06,2.0
+B0 Consent Limit,Baseline,Consent Limit,0,0.0,0,0.0,0.0,0.0
+V2 Pooled (Train A),V2 (Supervised),0.97875,291,0.888,6132,0.5388,21.07,9.0
+V2 Pooled (Train B),V2 (Supervised),0.96469,325,0.992,7613,0.6689,23.45,8.0

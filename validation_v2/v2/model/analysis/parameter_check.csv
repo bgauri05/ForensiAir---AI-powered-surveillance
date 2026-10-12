@@ -1,0 +1,6 @@
+Parameter,Mech_A_Pos_Events,Mech_A_Pos_Rows,Mech_A_Pos_Row_Share_Pct,Mech_B_Pos_Events,Mech_B_Pos_Rows,Mech_B_Pos_Row_Share_Pct,Mean_Feature_NaN_Pct,V2_Recall_Dir1_Cross_on_B,V2_Recall_Dir2_InMech_on_B,V1_M1_Recall_on_B,V2_Recall_Dir2_Cross_on_A,V2_Recall_Dir1_InMech_on_A,V1_M1_Recall_on_A
+ETP-pH,1147,81328,51.33,1433,107300,55.32,31.59,22.54,33.5,14.24,32.69,33.83,7.85
+ETP-Flow,594,67184,42.4,794,68408,35.27,35.04,14.99,28.34,17.76,34.34,42.93,13.47
+ETP-COD,80,4344,2.74,93,6512,3.36,41.15,0.0,2.15,12.9,1.25,0.0,12.5
+ETP-TSS,42,3720,2.35,114,8024,4.14,41.15,0.0,7.02,14.04,2.38,2.38,9.52
+ETP-BOD,36,1880,1.19,119,3724,1.92,41.16,0.0,0.0,16.81,0.0,0.0,25.0

@@ -16,6 +16,7 @@ from backend.config import (
     SECRET_KEY, ALGORITHM, ADMIN_USERNAME, ADMIN_PASSWORD, INSPECTOR_USERNAME, INSPECTOR_PASSWORD
 )
 from ml_pipeline.risk_engine import WEIGHT_XGB, WEIGHT_ISO, WEIGHT_FINGERPRINTS
+from backend.v2_adapter import get_v2_adapter
 
 app = FastAPI(
     title="Forensier Backend API",
@@ -1132,3 +1133,56 @@ def get_institutional_oversight():
         "coordinated_missing_pairs": coord_pairs,
         "inspection_dispatch_queue": dispatch_queue
     }
+
+
+# -------------------------------------------------------------
+# 10. ForensiAIR V2 Causal Supervised ML Endpoints
+# -------------------------------------------------------------
+@app.get("/api/v2/model-info")
+def get_v2_model_info():
+    """
+    Returns verified ForensiAIR V2 model architecture, feature specifications,
+    calibrated 1.0 alert/month operating budget, and reconciled cross-mechanism metrics.
+    """
+    adapter = get_v2_adapter()
+    return adapter.get_model_info()
+
+
+@app.get("/api/v2/alerts")
+def get_v2_alerts(
+    factory_id: Optional[str] = Query(None),
+    tamper_type: Optional[str] = Query(None),
+    severity: Optional[str] = Query(None),
+    direction: Optional[str] = Query("dir1"),
+    detected_only: bool = Query(True),
+    limit: int = Query(50),
+    offset: int = Query(0)
+):
+    """
+    Returns validated ForensiAIR V2 alert episodes from historical evaluation outputs.
+    Includes timestamps, sensor/parameter, anomaly category, relevant evidence,
+    duration, and operating budget context. Clearly marked as historical development evaluation.
+    """
+    adapter = get_v2_adapter()
+    return adapter.get_alerts(
+        factory_id=factory_id,
+        tamper_type=tamper_type,
+        severity=severity,
+        direction=direction,
+        detected_only=detected_only,
+        limit=limit,
+        offset=offset
+    )
+
+
+@app.get("/api/factories/{factory_id}/v2-analysis")
+def get_factory_v2_analysis(factory_id: str):
+    """
+    Returns factory-specific V2 performance, clean false-alarm rate, and event detection
+    history from development evaluation under the 1.0 alert/month budget.
+    """
+    adapter = get_v2_adapter()
+    result = adapter.get_factory_analysis(factory_id)
+    if not result.get("found"):
+        raise HTTPException(status_code=404, detail=result.get("error", "Factory not found"))
+    return result

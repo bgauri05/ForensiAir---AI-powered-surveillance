@@ -1,0 +1,7 @@
+tamper_type,severity,n_events,detected_events,recall,ci_95_lower,ci_95_upper
+BDL GAMING,Subtle,16,16,1.0,0.8064,1.0
+BDL GAMING,Medium,7,7,1.0,0.6457,1.0
+BDL GAMING,Easy,12,12,1.0,0.7575,1.0
+INSPECTION DIP,Subtle,13,13,1.0,0.7719,1.0
+INSPECTION DIP,Medium,7,7,1.0,0.6457,1.0
+INSPECTION DIP,Easy,15,15,1.0,0.7961,1.0

@@ -1,0 +1,16 @@
+Method,Method_Key,Total_Events,Detected_Events,Recall,CI95_Lower,CI95_Upper,Median_Delay_h,Calibrated_Tau,Realized_FA_mo
+M1: Multi-Check Max Fusion,M1_fusion,2698,396,0.1468,0.1107,0.1842,3.75,3.7906369619317033,0.998
+F1: Exact Repeat Run-Level (eps=0),F1_eps0,2698,272,0.1008,0.0593,0.1445,2.25,2.673941998634088,1.004
+F1: 1-Step Quasi-Flat (eps=1),F1_eps1,2698,301,0.1116,0.0617,0.1657,3.25,2.62096843564429,1.001
+F1: 2-Step Quasi-Flat (eps=2),F1_eps2,2698,315,0.1168,0.0664,0.1705,4.25,2.5334910958475403,1.004
+F2: Copy-Paste Replay,F2_copypaste,2698,126,0.0467,0.0274,0.0667,32.62,2.816837630902035,1.001
+F3: Consent Limit Proximity,F3_limit,2698,256,0.0949,0.0411,0.1509,2.0,1.1786257582791115,1.001
+F5: Correlation Break,F5_corr,2698,79,0.0293,0.0,0.0744,0.5,1.0375662773051721,1.001
+F6: Level Shift Drift,F6_shift,2698,280,0.1038,0.0761,0.1305,2.0,3.077932867522038,1.001
+F6: Linear Slope Drift,F6_slope,2698,292,0.1082,0.0792,0.1366,1.5,3.3110117489812882,1.001
+IF: Sensor Isolation Forest,IF_sensor,2698,405,0.1501,0.1076,0.1912,1.0,2.555995315247147,1.001
+B0: Random Alerts (1.0 alert/mo),B0,2698,95,0.0352,0.0267,0.0434,0.0,,1.0
+B1: Robust Z-Score,B1_zscore,2698,183,0.0678,0.016,0.1434,0.0,46300.0,1.007
+B2: Pooled Isolation Forest,B2_pooled_if,2698,175,0.0649,0.0284,0.1094,0.0,0.2608352705570385,1.001
+B3: Sensor IF alone,B3_sensor_if,2698,405,0.1501,0.1076,0.1912,1.0,2.555995315247147,1.001
+B4: Legacy Fingerprint Rules,B4_legacy_rules,2698,2698,1.0,1.0,1.0,0.0,0.0,4.515

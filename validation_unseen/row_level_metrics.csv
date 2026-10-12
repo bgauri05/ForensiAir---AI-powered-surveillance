@@ -1,0 +1,6 @@
+check_name,total_positive_rows,tp,fp,fn,tn,precision,recall,f1_score
+flatline,448,337,19221,111,259803,0.0172,0.7522,0.0337
+copy_paste,832,52,8370,780,270270,0.0062,0.0625,0.0112
+limit_hugging,704,704,36,0,278732,0.9514,1.0,0.9751
+impossible_pH,336,336,1844,0,277292,0.1541,1.0,0.2671
+gradual_drift,768,172,90280,596,188424,0.0019,0.224,0.0038

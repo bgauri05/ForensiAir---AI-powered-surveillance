@@ -1,0 +1,5 @@
+severity,n_events,forensiair_recall,baseline_zscore_recall,improvement_delta,improvement_pct
+Subtle,69,0.9565,0.8986,0.0579,+5.8%
+Medium,72,0.8889,0.8472,0.0417,+4.2%
+Easy,57,0.9123,0.8596,0.0527,+5.3%
+Overall,198,0.9192,0.8687,0.0505,+5.1%
