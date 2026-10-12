@@ -1,0 +1,2 @@
+Metric,Mean,Std,Median,P25,P75,Min,Max,Total Dev Telemetry Months,Total False Alert Episodes
+Realized False Alarms per Factory-Month,0.834,0.835,0.749,0.0,1.248,0.0,3.161,327.61,328

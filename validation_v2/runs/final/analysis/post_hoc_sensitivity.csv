@@ -1,0 +1,2 @@
+Evaluation_Type,Target_Budget_alerts_mo,Post_Hoc_Tau,Clean_False_Alert_Episodes,Realized_FA_Rate_per_Month,Headline_Events_Total,Headline_Events_Detected,Headline_Recall,95% CI Lower,95% CI Upper
+POST-HOC SENSITIVITY (Clean Test Calibrated; not replacing primary),1.0,3.9435,25,1.046,493,64,0.1298,0.044,0.1875

@@ -1,0 +1,5 @@
+factory_id,Total Events,Detected Events,Recall
+Cipla,28,1,0.0357
+Glenmark,26,0,0.0
+Indoco,19,0,0.0
+Zydus,26,0,0.0

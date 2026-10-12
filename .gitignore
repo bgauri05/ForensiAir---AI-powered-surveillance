@@ -8,6 +8,7 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
+*.pkl
 .pytest_cache/
 .venv*/
 venv/
@@ -26,3 +27,16 @@ _to_delete/
 # SQLite DB — ignore all except the pre-seeded production DB
 *.db
 !forensier.db
+
+# Archives
+*.rar
+
+# Generated test parquets and sensitive injected evaluation data
+validation_v2/runs/*/injected/
+validation_v2/runs/final/injected/
+validation_v2/v2/injector_b/injected_b/
+*.parquet
+
+# Scratch and temporary directories
+scratch/
+Data/OutputRar_Hybrid/

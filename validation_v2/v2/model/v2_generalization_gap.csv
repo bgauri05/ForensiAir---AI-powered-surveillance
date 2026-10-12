@@ -1,0 +1,11 @@
+Direction,Training_Mechanism,Type,In_Mechanism_Test,In_Events,In_Recall,In_CI95,Cross_Mechanism_Test,Cross_Events,Cross_Recall,Cross_CI95,Generalization_Gap,Gap_Pct
+Direction 1 (Train A),Mechanism A (V1),T1,Mechanism A,653,0.2772,"[14.77%, 37.58%]",Mechanism B,714,0.0798,"[3.86%, 12.54%]",0.1974,+19.74%
+Direction 1 (Train A),Mechanism A (V1),T2,Mechanism A,521,0.3781,"[19.31%, 49.80%]",Mechanism B,510,0.3294,"[21.56%, 42.93%]",0.0487,+4.87%
+Direction 1 (Train A),Mechanism A (V1),T3,Mechanism A,353,0.2805,"[19.48%, 36.44%]",Mechanism B,611,0.0442,"[1.61%, 7.50%]",0.2363,+23.63%
+Direction 1 (Train A),Mechanism A (V1),T7,Mechanism A,372,0.4489,"[33.62%, 54.61%]",Mechanism B,718,0.2646,"[15.88%, 37.21%]",0.1843,+18.43%
+Direction 1 (Train A),Mechanism A (V1),Pooled,Mechanism A,1899,0.3391,"[24.62%, 42.13%]",Mechanism B,2553,0.1731,"[11.81%, 22.92%]",0.166,+16.60%
+Direction 2 (Train B),Mechanism B (V2),T1,Mechanism B,714,0.2157,"[10.20%, 34.86%]",Mechanism A,653,0.1807,"[8.92%, 26.15%]",0.035,+3.50%
+Direction 2 (Train B),Mechanism B (V2),T2,Mechanism B,510,0.3314,"[22.16%, 43.25%]",Mechanism A,521,0.3436,"[18.31%, 45.97%]",-0.0122,-1.22%
+Direction 2 (Train B),Mechanism B (V2),T3,Mechanism B,611,0.2013,"[12.27%, 30.30%]",Mechanism A,353,0.3739,"[25.42%, 48.65%]",-0.1726,-17.26%
+Direction 2 (Train B),Mechanism B (V2),T7,Mechanism B,718,0.3747,"[23.73%, 50.28%]",Mechanism A,372,0.4086,"[27.51%, 52.42%]",-0.034,-3.40%
+Direction 2 (Train B),Mechanism B (V2),Pooled,Mechanism B,2553,0.2801,"[19.96%, 36.08%]",Mechanism A,1899,0.306,"[22.97%, 37.45%]",-0.0259,-2.59%

@@ -1,0 +1,4 @@
+severity,n_events,detected_events,recall,recall_pct,ci_95_lower,ci_95_upper,ci_display
+Subtle,69,66,0.9565,95.7%,0.8798,0.9851,"[88.0%, 98.5%]"
+Medium,72,64,0.8889,88.9%,0.7958,0.9426,"[79.6%, 94.3%]"
+Easy,57,52,0.9123,91.2%,0.8106,0.9619,"[81.1%, 96.2%]"

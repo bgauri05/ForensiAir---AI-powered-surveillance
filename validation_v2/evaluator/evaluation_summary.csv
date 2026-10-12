@@ -1,0 +1,5 @@
+Method,Calibrated Tau,Headline Recall,95% CI Lower,95% CI Upper,T6 Recall (Separate),Pass Status
+New 33-Fold LOFO Detector,0.234632,0.1,0.0705,0.1315,0.0,FAILED
+Rolling Z-Score Baseline,3.75,0.0026,0.0,0.0061,0.0,FAILED
+Static Limit Baseline,9.905278,0.0085,0.0,0.019,0.0,FAILED
+Legacy Baseline,10000.0,0.0,0.0,0.0,0.0,FAILED

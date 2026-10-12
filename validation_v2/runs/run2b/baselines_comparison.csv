@@ -1,0 +1,19 @@
+Method,Headline Recall,95% CI Lower,95% CI Upper,T6 Recall,Median Delay (h),Window AUPRC,Pass Bar Status
+B5: Legacy Composite (Factory risk delta),,,,,,,"N/A (Paired Risk Delta: Mean=+0.0169, 95% CI [-0.0184, +0.1290])"
+B0: Random Alerts (Budget rate),0.0319,0.0229,0.0406,0.0395,0.0,0.0436,FAILED
+M1: Multi-Check Max Fusion (Pre-declared),0.1426,0.1182,0.1667,0.0,3.75,0.2289,FAILED
+"  F1 (eps=0, exact repeat run-level)",0.0536,0.03,0.0803,0.0,1.75,,FAILED
+"  F1 (eps=1, 1-step quasi-flat)",0.0745,0.0325,0.1231,0.0,3.0,,FAILED
+"  F1 (eps=2, 2-step quasi-flat)",0.1098,0.0545,0.1753,0.0,3.0,,FAILED
+  F2 (Copy-Paste Replay alone),0.0447,0.0291,0.0618,0.0,23.0,,FAILED
+  F3 (Limit Proximity alone),0.1222,0.0584,0.1862,0.0,1.75,,FAILED
+  F5 (Correlation Break alone),0.0243,0.0,0.0651,0.0,8.0,,FAILED
+  F6 (Level Shift Drift alone),0.1052,0.0774,0.1322,0.0,2.0,,FAILED
+  F6 (Linear Slope Drift alone),0.0724,0.0575,0.0878,0.0,1.5,,FAILED
+  IF (LOFO Sensor Isolation Forest alone),0.1145,0.0854,0.1455,0.0,1.0,0.123,FAILED
+B1: Robust Z-Score (Median/MAD),0.0068,0.0,0.0209,0.0,0.62,0.0804,FAILED
+B2: Pooled IF (Legacy style),0.0115,0.0,0.0352,0.0132,0.5,0.066,FAILED
+B3: Per-Sensor IF alone,0.1145,0.0854,0.1455,0.0,1.0,0.123,FAILED
+B4: Legacy Fingerprint Rules,1.0,1.0,1.0,1.0,0.0,0.043,NOT BUDGET-MATCHED (Natural alert rate: 12.09 alerts/mo; outside pass table)
+F4: Validity Hard Alert (pH < 0 or pH > 14),0.0579,0.0394,0.0754,0.0,0.0,0.0436,REPORTED SEPARATELY (T4 obvious: 100% recall)
+F7: Gaps Fraction (Missing Data Outages),0.0,0.0,0.0,1.0,0.0,0.0436,REPORTED SEPARATELY (T6 missing data: 100% recall)

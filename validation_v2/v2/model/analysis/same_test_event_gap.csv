@@ -1,0 +1,11 @@
+Test_Events_Mechanism,Tamper_Type,Events_Evaluated,Recall_Trained_A,CI_95_Trained_A,Recall_Trained_B,CI_95_Trained_B,Generalization_Gap,CI_95_Gap,Interpretation
+Mechanism A,T1,653,27.72,"[14.86%, 37.45%]",18.07,"[8.75%, 26.04%]",9.65,"[2.90%, 15.85%]",Trained A superior (In-Mech)
+Mechanism A,T2,521,37.81,"[19.09%, 50.07%]",34.36,"[18.29%, 46.00%]",3.45,"[-0.59%, 6.69%]",Indistinguishable (Includes 0)
+Mechanism A,T3,353,28.05,"[19.65%, 36.41%]",37.39,"[25.72%, 48.81%]",-9.35,"[-17.87%, -0.85%]",Trained B superior (Cross-Mech)
+Mechanism A,T7,372,44.89,"[33.81%, 54.48%]",40.86,"[27.25%, 52.54%]",4.03,"[-3.69%, 11.36%]",Indistinguishable (Includes 0)
+Mechanism A,Pooled,1899,33.91,"[24.44%, 42.17%]",30.6,"[22.88%, 37.65%]",3.32,"[-1.13%, 7.69%]",Indistinguishable (Includes 0)
+Mechanism B,T1,714,7.98,"[3.87%, 12.53%]",21.57,"[10.28%, 34.93%]",13.59,"[5.12%, 23.33%]",Trained B superior (In-Mech)
+Mechanism B,T2,510,32.94,"[21.75%, 42.99%]",33.14,"[22.34%, 43.22%]",0.2,"[-2.08%, 2.83%]",Indistinguishable (Includes 0)
+Mechanism B,T3,611,4.42,"[1.57%, 7.40%]",20.13,"[12.25%, 29.86%]",15.71,"[8.52%, 25.47%]",Trained B superior (In-Mech)
+Mechanism B,T7,718,26.46,"[16.42%, 37.27%]",37.47,"[23.92%, 50.16%]",11.0,"[2.42%, 19.32%]",Trained B superior (In-Mech)
+Mechanism B,Pooled,2553,17.31,"[11.77%, 22.86%]",28.01,"[19.83%, 36.22%]",10.69,"[6.35%, 14.98%]",Trained B superior (In-Mech)

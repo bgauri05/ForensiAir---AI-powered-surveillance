@@ -1,0 +1,7 @@
+metric_name,value
+Clean Pass Mean Risk Score,49.05
+Injected Pass Mean Risk Score,55.33
+Mean Risk Score Delta (Injected vs Clean),6.27
+Factory-Level Risk Score ROC AUC,0.9453
+Row-Level Anomaly Score ROC AUC,0.4581
+Clean Data False Positive Flag Rate (%),14.31

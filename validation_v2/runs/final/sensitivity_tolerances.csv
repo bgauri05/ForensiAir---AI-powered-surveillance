@@ -1,0 +1,4 @@
+Tolerance Window,Classification Label,Detected Events,Total Headline Events,Headline Recall,95% CI Lower,95% CI Upper
+2h,Primary (<= 2h),144,493,0.2921,0.2022,0.3633
+24h,Sensitivity (<= 24h),148,493,0.3002,0.211,0.375
+72h,Sensitivity (<= 72h),164,493,0.3327,0.2352,0.4121

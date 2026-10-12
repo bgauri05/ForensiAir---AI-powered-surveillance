@@ -1,0 +1,4 @@
+Severity,Total Events,Detected Events,Recall,95% CI Lower,95% CI Upper
+subtle,771,41,0.0532,0.0369,0.0712
+moderate,782,78,0.0997,0.0731,0.1264
+obvious,796,216,0.2714,0.2224,0.3177

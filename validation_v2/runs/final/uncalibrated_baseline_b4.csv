@@ -1,0 +1,2 @@
+Method,Headline Recall,95% CI Lower,95% CI Upper,T6 Recall,Median Delay (h),Window AUPRC,Pass Bar Status
+B4: Legacy Fingerprint Rules,0.5903,0.5293,0.633,0.0,0.0,0.0684,NOT BUDGET-MATCHED (Natural alert rate: 28.77 alerts/mo; outside pass table)

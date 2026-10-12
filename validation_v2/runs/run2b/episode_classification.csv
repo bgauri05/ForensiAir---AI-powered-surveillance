@@ -1,0 +1,10 @@
+Section,Metric,Count,Percentage (%),Details
+Episode Classification,(a) Overlapping or <= 2h after event,1453.0,12.73,On-target alerts directly detecting injected event
+Episode Classification,(b) 2h to 72h after event ends,1715.0,15.03,Post-event tail alerts during plant relaxation
+Episode Classification,(c) Elsewhere,8242.0,72.23,Spurious / unassociated alerts on unaffected windows
+Episode Classification,Total Alert Episodes on Injected Copies,11410.0,100.0,All merged episodes on injected copies across 5 seeds
+Episodes per Detected Event,Mean Episodes per Detected Event,1.582,,"Range: [1, 12], Median: 1.0"
+Episodes per Detected Event,Median Episodes per Detected Event,1.0,,Total detected events: 335
+Recall by Tolerance Window,Recall under Primary (<= 2h),335.0,14.26,"95% CI: [11.82%, 16.67%]"
+Recall by Tolerance Window,Recall under Sensitivity (<= 24h),372.0,15.84,"95% CI: [13.31%, 18.41%]"
+Recall by Tolerance Window,Recall under Sensitivity (<= 72h),427.0,18.18,"95% CI: [15.54%, 20.83%]"

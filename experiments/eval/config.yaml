@@ -1,0 +1,24 @@
+confidence_interval:
+  level: 0.95
+  method: wilson
+detector_fingerprint_mapping:
+  BDL GAMING: bdl_gaming
+  COORDINATED MISSING DATA: coordinated_missing_data
+  COPY-PASTE: copy_paste
+  CORRELATION BREAK: correlation_break
+  FLATLINE: flatline
+  IMPOSSIBLE PH RANGE: impossible_ph_range
+  INSPECTION DIP: inspection_dip
+  LIMIT HUGGING: limit_hugging
+evaluation_rules:
+  excluded_natural_problems:
+    baseline_flatline_threshold_hours: 6.0
+    data_gap_threshold_hours: 1.0
+  excluded_parameters:
+  - ETP-Flow
+  - Flow
+  random_seed: 42
+  separately_reported_tamper_types:
+  - BDL GAMING
+  - INSPECTION DIP
+  window_margin_hours: 2

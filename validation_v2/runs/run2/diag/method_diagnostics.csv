@@ -1,0 +1,16 @@
+Method,Cutoff_Tau,Clean_Alert_Episodes,Clean_Flagged_Rows,Injected_Alert_Episodes,Injected_Flagged_Rows,Clean_Series_Zero_Alerts,Injected_Series_Zero_Alerts,Realized_FA_per_Factory_Month,Zero_Alerts_Or_Saturation_Explanation
+M1: Multi-Check Max Fusion,3.7709,328,867,1323,19940,39 / 81 (48.1%),32 / 200 (16.0%),1.001,"N/A (Active detector, 14.39% recall)"
+F1 (eps=0 exact repeat),2.6739,329,21559,1387,88797,47 / 81 (58.0%),74 / 200 (37.0%),1.004,"N/A (Active detector, 5.36% recall)"
+F1 (eps=1 1-step quasi-flat),2.621,328,20324,1436,87163,47 / 81 (58.0%),77 / 200 (38.5%),1.001,"N/A (Active detector, 7.45% recall)"
+F1 (eps=2 2-step quasi-flat),2.5335,329,21260,1557,102463,43 / 81 (53.1%),67 / 200 (33.5%),1.004,"N/A (Active detector, 10.98% recall)"
+F2 (Copy-Paste replay),2.8168,328,1453,918,4250,26 / 81 (32.1%),29 / 200 (14.5%),1.001,"N/A (Active detector, 4.47% recall)"
+F3 (Limit Proximity),1.1786,328,19587,0,0,58 / 81 (71.6%),200 / 200 (100.0%),1.001,"NO ALERTS ON EVENTS: Only 27/81 series have CTO limits; on those series tau=1.4556 required extreme proximity, missing T3 events; 0 alert episodes on injected series."
+F5 (Correlation Break),1.0,0,0,0,0,81 / 81 (100.0%),200 / 200 (100.0%),0.0,"CODE BUG: Correlation stats not added to calib_dict in calibrate(); score_tail_prob received empty calibration distribution, outputting 100% NaN scores."
+F6 (Level Shift Drift),3.0779,328,1345,1183,5682,22 / 81 (27.2%),10 / 200 (5.0%),1.001,"N/A (Active detector, 10.52% recall)"
+F6 (Linear Slope Drift),3.311,328,914,1117,3772,24 / 81 (29.6%),20 / 200 (10.0%),1.001,"N/A (Active detector, 7.24% recall)"
+IF (LOFO Sensor Isolation Forest),1.0,0,0,0,0,81 / 81 (100.0%),200 / 200 (100.0%),0.0,"CODE BUG: evaluate_run2 called calibrate(skip_if=True) which omitted if_raw_score from calib_dict; score_tail_prob received empty calibration array, outputting 100% NaN."
+B0: Random Alerts,N/A (Budget),328,5248,1235,26240,0 / 81 (0.0%),0 / 200 (0.0%),1.001,"N/A (Active baseline, 3.19% recall)"
+B1: Robust Z-Score,46300.0,330,3444,936,1831,69 / 81 (85.2%),170 / 200 (85.0%),1.007,"N/A (Active baseline, 0.68% recall)"
+B2: Pooled IF,0.2608,328,1537,1162,4915,67 / 81 (82.7%),170 / 200 (85.0%),1.001,"N/A (Active baseline, 1.15% recall)"
+B3: Per-Sensor IF alone,1.0,0,0,0,0,81 / 81 (100.0%),200 / 200 (100.0%),0.0,CODE BUG: Identical to IF_sensor; inherited 100% NaN scores due to skip_if=True omitting if_raw_score calibration distribution.
+B4: Legacy Fingerprint Rules,0.5,3961,349264,17443,1491347,17 / 81 (21.0%),15 / 200 (7.5%),12.091,"UNCONSTRAINED BINARY RULES: Uncalibrated binary flags fired 3,961 times on clean series (12.09 alerts/fac-mo, 12x over budget); achieved 100% recall by saturating telemetry."

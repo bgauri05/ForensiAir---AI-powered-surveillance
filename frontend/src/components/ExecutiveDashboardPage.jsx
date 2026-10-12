@@ -16,6 +16,8 @@ const INDUSTRIES = [
 export function ExecutiveDashboardPage({ onNavigate }) {
   const [summary, setSummary] = useState(null);
   const [factories, setFactories] = useState([]);
+  const [v2Alerts, setV2Alerts] = useState([]);
+  const [v2TotalAlerts, setV2TotalAlerts] = useState(0);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
 
@@ -29,14 +31,20 @@ export function ExecutiveDashboardPage({ onNavigate }) {
 
   const fetchDashboard = async () => {
     try {
-      const [sumRes, facRes] = await Promise.all([
+      const [sumRes, facRes, alertsRes] = await Promise.all([
         apiFetch(`/api/dashboard/summary`),
-        apiFetch(`/api/factories`)
+        apiFetch(`/api/factories`),
+        apiFetch(`/api/v2/alerts?limit=5&detected_only=true`)
       ]);
 
       if (sumRes.ok && facRes.ok) {
         setSummary(await sumRes.json());
         setFactories(await facRes.json());
+        if (alertsRes.ok) {
+          const aData = await alertsRes.json();
+          setV2Alerts(aData.alerts || []);
+          setV2TotalAlerts(aData.total || 0);
+        }
         setLoadError(false);
       } else {
         setLoadError(true);
@@ -134,6 +142,14 @@ export function ExecutiveDashboardPage({ onNavigate }) {
           </nav>
           <h2 className="font-headline-lg text-headline-lg text-[var(--color-primary)]">Executive Dashboard</h2>
           <p className="font-body-md text-body-md text-[var(--color-text-secondary)]">Central monitoring of national environmental compliance and risk metrics.</p>
+          <div className="flex flex-wrap items-center gap-2 mt-2">
+            <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#00355f]/10 text-[#00355f] border border-[#00355f]/20">
+              Historical Development Evaluation Mode
+            </span>
+            <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#f2f4f6] text-[#727780]">
+              33 Monitored Industrial Facilities
+            </span>
+          </div>
         </div>
       </div>
 
@@ -142,34 +158,39 @@ export function ExecutiveDashboardPage({ onNavigate }) {
         {/* Total Factories */}
         <div className="card p-5 transition-shadow hover:shadow-md">
           <div className="flex justify-between items-start mb-3">
-            <span className="font-label-caps text-label-caps text-[var(--color-text-secondary)] uppercase">Total Factories</span>
+            <span className="font-label-caps text-label-caps text-[var(--color-text-secondary)] uppercase">Total Monitored Sites</span>
             <span className="stat-icon stat-icon-neutral">
               <span className="material-symbols-outlined">factory</span>
             </span>
           </div>
           <div className="font-display-kpi text-display-kpi text-[var(--color-text)]">{summary.total_factories?.toLocaleString()}</div>
+          <p className="text-xs text-[var(--color-text-muted)] mt-1">327.61 facility-months evaluated</p>
         </div>
 
         {/* High Risk */}
         <div className="bg-[var(--color-surface)] border border-[var(--color-border)] p-5 rounded-xl shadow-xs border-l-4 border-l-[var(--color-danger)] transition-shadow hover:shadow-md">
           <div className="flex justify-between items-start mb-3">
-            <span className="font-label-caps text-label-caps text-[var(--color-danger)] uppercase">High Risk Factories</span>
+            <span className="font-label-caps text-label-caps text-[var(--color-danger)] uppercase">High Risk Sites (Legacy Baseline)</span>
             <span className="stat-icon stat-icon-danger">
               <span className="material-symbols-outlined">warning</span>
             </span>
           </div>
           <div className="font-display-kpi text-display-kpi text-[var(--color-danger)]">{summary.high_risk_count}</div>
+          <p className="text-xs text-[var(--color-text-muted)] mt-1">Flagged by heuristic composite score</p>
         </div>
 
         {/* Active Alerts */}
         <div className="card p-5 transition-shadow hover:shadow-md">
           <div className="flex justify-between items-start mb-3">
-            <span className="font-label-caps text-label-caps text-[var(--color-text-secondary)] uppercase">Active Alerts</span>
+            <span className="font-label-caps text-label-caps text-[var(--color-text-secondary)] uppercase">Historical V2 Alerts</span>
             <span className="stat-icon stat-icon-warning">
               <span className="material-symbols-outlined">notifications_active</span>
             </span>
           </div>
-          <div className="font-display-kpi text-display-kpi text-[var(--color-text)]">{(summary.high_risk_count || 0) + (summary.medium_risk_count || 0)}</div>
+          <div className="font-display-kpi text-display-kpi text-[var(--color-text)]">
+            {v2TotalAlerts > 0 ? v2TotalAlerts.toLocaleString() : ((summary.high_risk_count || 0) + (summary.medium_risk_count || 0))}
+          </div>
+          <p className="text-xs text-[var(--color-text-muted)] mt-1">Calibrated at 1.0 false alert / factory-month (τ = 0.97875)</p>
         </div>
       </div>
 
@@ -226,7 +247,7 @@ export function ExecutiveDashboardPage({ onNavigate }) {
         {/* Risk Distribution Donut Chart */}
         <div className="lg:col-span-4 card p-6 flex flex-col justify-between">
           <h3 className="font-headline-md text-headline-md text-[var(--color-primary)] mb-4 flex items-center justify-between">
-            Risk Distribution
+            Risk Distribution (Baseline)
             <span className="material-symbols-outlined text-[var(--color-text-muted)]" title="No additional actions available yet">more_vert</span>
           </h3>
 
@@ -271,12 +292,15 @@ export function ExecutiveDashboardPage({ onNavigate }) {
         {/* Recent Alerts Table */}
         <div className="lg:col-span-8 card p-6">
           <div className="flex justify-between items-center mb-6">
-            <h3 className="font-headline-md text-headline-md text-[var(--color-primary)]">Recent Alerts</h3>
+            <div>
+              <h3 className="font-headline-md text-headline-md text-[var(--color-primary)]">Recent Historical V2 Alert Episodes</h3>
+              <p className="text-xs text-[var(--color-text-secondary)] mt-0.5">Development evaluation detections under the 1.0 alert/month operating budget.</p>
+            </div>
             <button
               className="text-[var(--color-primary)] text-body-sm font-bold flex items-center gap-1 hover:underline"
               onClick={() => onNavigate('alerts')}
             >
-              View All Notifications <ChevronRight size={14} />
+              View All V2 Alerts <ChevronRight size={14} />
             </button>
           </div>
 
@@ -284,19 +308,48 @@ export function ExecutiveDashboardPage({ onNavigate }) {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="border-b border-[var(--color-border)] text-[var(--color-text-secondary)] font-label-caps text-[11px] uppercase tracking-wider">
-                  <th className="py-3 px-4">Factory Name</th>
-                  <th className="py-3 px-4">District</th>
-                  <th className="py-3 px-4">Risk Level</th>
-                  <th className="py-3 px-4">Status</th>
+                  <th className="py-3 px-4">Facility Name</th>
+                  <th className="py-3 px-4">Parameter</th>
+                  <th className="py-3 px-4">Anomaly Pattern</th>
+                  <th className="py-3 px-4">Duration</th>
+                  <th className="py-3 px-4">Severity</th>
                 </tr>
               </thead>
               <tbody className="text-table-data">
-                {recentAlerts.length === 0 ? (
+                {v2Alerts.length > 0 ? (
+                  v2Alerts.map((alert, idx) => (
+                    <tr
+                      key={idx}
+                      className="border-b border-[var(--color-border)] table-row-hover transition-colors cursor-pointer"
+                      onClick={() => onNavigate('alerts')}
+                    >
+                      <td className="py-3 px-4 font-bold text-[var(--color-primary)]">
+                        <div className="truncate max-w-[200px]">{alert.factory_name}</div>
+                        <div className="text-[10px] text-[var(--color-text-muted)] font-normal">{alert.region}</div>
+                      </td>
+                      <td className="py-3 px-4 font-mono text-xs font-semibold">{alert.parameter}</td>
+                      <td className="py-3 px-4 text-xs font-medium text-[var(--color-text)]">
+                        {alert.anomaly_category}
+                      </td>
+                      <td className="py-3 px-4 text-xs text-[var(--color-text-secondary)]">
+                        {alert.duration_hours}h ({alert.duration_rows} readings)
+                      </td>
+                      <td className="py-3 px-4">
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
+                          alert.severity === 'obvious' ? 'bg-[var(--color-danger)]/10 text-[var(--color-danger)]' :
+                          (alert.severity === 'moderate' ? 'bg-[var(--color-warning)]/10 text-[var(--color-warning)]' : 'bg-[#00355f]/10 text-[#00355f]')
+                        }`}>
+                          {alert.severity}
+                        </span>
+                      </td>
+                    </tr>
+                  ))
+                ) : recentAlerts.length === 0 ? (
                   <tr>
-                    <td colSpan={4} className="py-2">
+                    <td colSpan={5} className="py-2">
                       <div className="empty-state">
                         <span className="material-symbols-outlined">filter_alt_off</span>
-                        <p>No factories match the current filters.</p>
+                        <p>No alert records available.</p>
                       </div>
                     </td>
                   </tr>
@@ -316,7 +369,7 @@ export function ExecutiveDashboardPage({ onNavigate }) {
                         {row.risk_level}
                       </span>
                     </td>
-                    <td className="py-3.5 px-4 font-semibold text-[var(--color-text)]">
+                    <td className="py-3.5 px-4 font-semibold text-[var(--color-text)]" colSpan={2}>
                       <div className="flex items-center gap-2">
                         {row.status === 'Under AI Review' && <span className="w-2 h-2 rounded-full bg-[var(--color-warning)] animate-pulse" />}
                         {row.status}
@@ -331,8 +384,8 @@ export function ExecutiveDashboardPage({ onNavigate }) {
       </div>
 
       {/* Priority Risk Factors */}
-      <div className="card p-6">
-        <h3 className="font-headline-md text-headline-md text-[var(--color-primary)] mb-4">Priority Risk Factors</h3>
+      <div className="card p-6 mb-8">
+        <h3 className="font-headline-md text-headline-md text-[var(--color-primary)] mb-4">Priority Risk Factors (Legacy Baseline)</h3>
         <div className="space-y-3">
           {priorityRiskFactors.length === 0 ? (
             <div className="empty-state">
@@ -350,6 +403,19 @@ export function ExecutiveDashboardPage({ onNavigate }) {
               </button>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* Mandatory Regulatory & Data Integrity Disclaimer */}
+      <div className="card p-5 bg-[#f8f9fb] border-l-4 border-l-[#0f4c81] flex flex-col sm:flex-row gap-4 items-start">
+        <div className="p-2 bg-[#0f4c81]/10 text-[#0f4c81] rounded-lg shrink-0">
+          <span className="material-symbols-outlined text-xl">gavel</span>
+        </div>
+        <div className="space-y-1">
+          <h4 className="font-bold text-body-sm text-[#00355f]">Regulatory Notice & Investigation Disclaimer</h4>
+          <p className="text-xs text-[#42474f] leading-relaxed">
+            ForensiAIR identifies unusual patterns in wastewater telemetry that may indicate data-quality or data-integrity issues. Alerts are indicators for further investigation and do not establish deliberate tampering, misconduct, or regulatory non-compliance. Possible explanations include sensor faults, maintenance, operational changes, missing data, and transmission issues. Verify readings and operational records before drawing conclusions.
+          </p>
         </div>
       </div>
     </div>

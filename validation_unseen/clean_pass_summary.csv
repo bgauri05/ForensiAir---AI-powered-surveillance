@@ -1,0 +1,5 @@
+factory_id,total_rows,flag_rate_pct,tamper_probability,raw_if_score,norm_anomaly_score,composite_risk_score,risk_category,total_fingerprints_triggered,trig_impossible_ph_range,trig_inspection_dip,trig_flatline,trig_limit_hugging,trig_correlation_break,trig_copy_paste,trig_coordinated_missing_data,trig_data_integrity,mag_impossible_ph_pct,mag_flatline_pct,mag_limit_hugging_pct,mag_correlation_break_avg,mag_copy_paste_pct,risk_rank
+Zydus,17466,6.62,0.343,-0.4291,0.3536,53.6,CRITICAL,5,1,0,1,0,1,1,1,0,2.96,7.27,0.0,0.2031,2.52,1
+Cipla,17467,22.02,0.6348,-0.4364,0.3774,48.6,CRITICAL,4,0,0,1,0,1,1,1,0,0.0,28.46,0.0,-0.0237,1.85,2
+Glenmark,17468,15.02,0.5841,-0.4382,0.3833,48.2,CRITICAL,4,0,0,1,0,1,1,1,0,0.0,18.37,0.0,0.1911,10.71,3
+Indoco,17467,13.59,0.6435,-0.3975,0.2506,45.8,CRITICAL,4,0,0,1,0,1,1,1,0,0.0,28.94,0.0,0.2155,10.25,4
