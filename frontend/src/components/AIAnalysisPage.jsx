@@ -28,6 +28,7 @@ import {
   ReferenceLine
 } from 'recharts';
 import { apiFetch } from '../config';
+import { InspectionReportModal } from './InspectionReportModal';
 
 // Parameter measurement definitions with units for wastewater inspectors
 const PARAM_METADATA = {
@@ -239,7 +240,7 @@ function CorrelationHeatmap({ parameters, pairs, selectedPair, onSelectPair }) {
   );
 }
 
-export function AIAnalysisPage({ onNavigate, selectedFactoryId: initialFactoryId }) {
+export function AIAnalysisPage({ onNavigate, selectedFactoryId: initialFactoryId, currentUser }) {
   const [factories, setFactories] = useState([]);
   const [selectedFactoryId, setSelectedFactoryId] = useState(initialFactoryId || '');
   const [selectedFactoryData, setSelectedFactoryData] = useState(null);
@@ -251,6 +252,10 @@ export function AIAnalysisPage({ onNavigate, selectedFactoryId: initialFactoryId
   const [correlation, setCorrelation] = useState(null);
   const [selectedCorrelationPair, setSelectedCorrelationPair] = useState(null);
   const [expandedEpisodeIndex, setExpandedEpisodeIndex] = useState(null);
+
+  // Inspection Report Modal state
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+  const [selectedModalAlert, setSelectedModalAlert] = useState(null);
 
   useEffect(() => {
     fetchInitialData();
@@ -787,6 +792,37 @@ export function AIAnalysisPage({ onNavigate, selectedFactoryId: initialFactoryId
                                 </ul>
                               </div>
                             </div>
+
+                            {/* Action: Document Findings in Verification Report */}
+                            <div className="p-3 bg-[#e7f0f8]/60 rounded-lg border border-[#00355f]/20 flex flex-wrap items-center justify-between gap-3">
+                              <div>
+                                <span className="font-bold text-[#00355f] block text-xs">Document Findings in Verification Report</span>
+                                <span className="text-[11px] text-[#727780]">File an official on-site verification report for episode {ep.event_id}.</span>
+                              </div>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setSelectedModalAlert({
+                                    alert_id: ep.event_id,
+                                    factory_id: selectedFactoryId,
+                                    factory_name: fObj.factory_name || fObj.name,
+                                    parameter: ep.parameter,
+                                    tamper_type: ep.tamper_type,
+                                    tamper_label: `${ep.tamper_type} (${ep.anomaly_category})`,
+                                    anomaly_category: ep.anomaly_category,
+                                    severity: ep.severity,
+                                    start_time: ep.start_time,
+                                    end_time: ep.end_time,
+                                    duration_hours: ep.duration_hours
+                                  });
+                                  setIsReportModalOpen(true);
+                                }}
+                                className="px-3.5 py-1.5 bg-[#00355f] text-white rounded-lg font-bold text-xs hover:bg-[#0f4c81] flex items-center gap-1.5 transition-colors shadow-2xs"
+                              >
+                                <FileText size={13} />
+                                <span>File Verification Report</span>
+                              </button>
+                            </div>
                           </div>
                         )}
                       </div>
@@ -1165,6 +1201,15 @@ export function AIAnalysisPage({ onNavigate, selectedFactoryId: initialFactoryId
           </p>
         </div>
       </div>
+
+      {/* Inspection Verification Report Modal */}
+      <InspectionReportModal
+        isOpen={isReportModalOpen}
+        onClose={() => setIsReportModalOpen(false)}
+        alertId={selectedModalAlert?.alert_id}
+        alertData={selectedModalAlert}
+        currentUser={currentUser}
+      />
     </div>
   );
 }

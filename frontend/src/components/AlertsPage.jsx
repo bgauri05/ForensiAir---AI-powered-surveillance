@@ -11,18 +11,25 @@ import {
   FileText
 } from 'lucide-react';
 import { apiFetch } from '../config';
+import { InspectionReportModal } from './InspectionReportModal';
 
-export function AlertsPage({ onNavigate }) {
+export function AlertsPage({ onNavigate, currentUser }) {
   const [activeTab, setActiveTab] = useState('v2'); // 'v2' or 'legacy'
   const [v2Data, setV2Data] = useState({ alerts: [], total: 0 });
   const [legacyFactories, setLegacyFactories] = useState([]);
+  const [reportStatuses, setReportStatuses] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
-  // Filters
+  // Filters & Accordion
   const [selectedType, setSelectedType] = useState('ALL');
   const [selectedSeverity, setSelectedSeverity] = useState('ALL');
   const [expandedAlertId, setExpandedAlertId] = useState(null);
+
+  // Inspection Report Modal state
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+  const [selectedModalAlert, setSelectedModalAlert] = useState(null);
+  const [selectedModalReportId, setSelectedModalReportId] = useState(null);
 
   useEffect(() => {
     fetchAlertsData();
@@ -32,9 +39,10 @@ export function AlertsPage({ onNavigate }) {
     setLoading(true);
     setError(false);
     try {
-      const [v2Res, facRes] = await Promise.all([
+      const [v2Res, facRes, repRes] = await Promise.all([
         apiFetch(`/api/v2/alerts?limit=100&detected_only=true`),
-        apiFetch(`/api/factories`)
+        apiFetch(`/api/factories`),
+        apiFetch(`/api/reports/alerts/status`)
       ]);
 
       if (v2Res.ok) {
@@ -50,6 +58,11 @@ export function AlertsPage({ onNavigate }) {
           .filter((f) => f.risk_tier === 'High' || f.risk_tier === 'Medium')
           .sort((a, b) => (b.tsi_score || 0) - (a.tsi_score || 0));
         setLegacyFactories(flagged);
+      }
+
+      if (repRes.ok) {
+        const repJson = await repRes.json();
+        setReportStatuses(repJson || {});
       }
     } catch (err) {
       console.error('Error fetching alerts:', err);
@@ -137,6 +150,64 @@ export function AlertsPage({ onNavigate }) {
       default:
         return { text: 'text-[#00355f]', bg: 'bg-[#e7f0f8]', border: 'border-[#00355f]/20', label: 'Subtle Deviation' };
     }
+  };
+
+  const getReportBadge = (alertId) => {
+    const rep = reportStatuses[String(alertId)];
+    if (!rep) {
+      return {
+        status: 'none',
+        label: 'No Verification Report',
+        bg: 'bg-[#f2f4f6]',
+        text: 'text-[#727780]',
+        border: 'border-[#E5E7EB]'
+      };
+    }
+    switch (rep.status) {
+      case 'Reviewed':
+        return {
+          status: 'Reviewed',
+          label: 'Reviewed & Verified',
+          bg: 'bg-[#e8f5e9]',
+          text: 'text-[#1b6d24]',
+          border: 'border-[#1b6d24]/30',
+          reportId: rep.report_id
+        };
+      case 'Submitted for Review':
+        return {
+          status: 'Submitted for Review',
+          label: 'Submitted for Review',
+          bg: 'bg-[#e7f0f8]',
+          text: 'text-[#00355f]',
+          border: 'border-[#00355f]/30',
+          reportId: rep.report_id
+        };
+      case 'Further Information Required':
+        return {
+          status: 'Further Information Required',
+          label: 'Further Info Required',
+          bg: 'bg-[#fff3e6]',
+          text: 'text-[#F57C00]',
+          border: 'border-[#F57C00]/30',
+          reportId: rep.report_id
+        };
+      default:
+        return {
+          status: 'Draft',
+          label: 'Draft Report Saved',
+          bg: 'bg-[#fef9c3]',
+          text: 'text-[#854d0e]',
+          border: 'border-[#854d0e]/30',
+          reportId: rep.report_id
+        };
+    }
+  };
+
+  const handleOpenReportModal = (alert) => {
+    setSelectedModalAlert(alert);
+    const rep = reportStatuses[String(alert.alert_id)];
+    setSelectedModalReportId(rep ? rep.report_id : null);
+    setIsReportModalOpen(true);
   };
 
   if (loading) {
@@ -288,6 +359,7 @@ export function AlertsPage({ onNavigate }) {
             {filteredV2Alerts.map((alert) => {
               const isExpanded = expandedAlertId === alert.alert_id;
               const sevBadge = getSeverityBadge(alert.severity);
+              const repBadge = getReportBadge(alert.alert_id);
 
               return (
                 <div
@@ -325,7 +397,13 @@ export function AlertsPage({ onNavigate }) {
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-3 shrink-0">
+                    <div className="flex items-center gap-2.5 shrink-0">
+                      {repBadge.status !== 'none' && (
+                        <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider ${repBadge.bg} ${repBadge.text} border ${repBadge.border}`}>
+                          {repBadge.label}
+                        </span>
+                      )}
+
                       <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider ${sevBadge.bg} ${sevBadge.text} border ${sevBadge.border}`}>
                         {sevBadge.label}
                       </span>
@@ -398,14 +476,31 @@ export function AlertsPage({ onNavigate }) {
                       </div>
 
                       {/* Footer Actions */}
-                      <div className="pt-2 flex justify-between items-center text-[11px] text-[#727780]">
-                        <span>Event ID: <strong className="font-mono text-[#191c1e]">{alert.alert_id}</strong></span>
-                        <button
-                          onClick={() => onNavigate('ai-analysis', alert.factory_id)}
-                          className="font-bold text-[#00355f] hover:underline flex items-center gap-1"
-                        >
-                          View Facility Profile <ChevronRight size={12} />
-                        </button>
+                      <div className="pt-2 flex flex-wrap justify-between items-center gap-3 text-[11px] text-[#727780]">
+                        <div className="flex items-center gap-2">
+                          <span>Event ID: <strong className="font-mono text-[#191c1e]">{alert.alert_id}</strong></span>
+                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${repBadge.bg} ${repBadge.text} border ${repBadge.border}`}>
+                            {repBadge.label}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleOpenReportModal(alert);
+                            }}
+                            className="px-3 py-1 bg-white border border-[#00355f] text-[#00355f] rounded-lg font-bold text-xs hover:bg-[#e7f0f8] flex items-center gap-1.5 transition-colors shadow-2xs"
+                          >
+                            <FileText size={13} />
+                            <span>{repBadge.status !== 'none' ? 'View / Edit Verification Report' : 'File Verification Report'}</span>
+                          </button>
+                          <button
+                            onClick={() => onNavigate('ai-analysis', alert.factory_id)}
+                            className="font-bold text-[#00355f] hover:underline flex items-center gap-1"
+                          >
+                            View Facility Profile <ChevronRight size={12} />
+                          </button>
+                        </div>
                       </div>
                     </div>
                   )}
@@ -483,6 +578,19 @@ export function AlertsPage({ onNavigate }) {
           </p>
         </div>
       </div>
+
+      {/* Inspection Verification Report Modal */}
+      <InspectionReportModal
+        isOpen={isReportModalOpen}
+        onClose={() => setIsReportModalOpen(false)}
+        alertId={selectedModalAlert?.alert_id}
+        alertData={selectedModalAlert}
+        reportId={selectedModalReportId}
+        currentUser={currentUser}
+        onReportSaved={() => {
+          fetchAlertsData();
+        }}
+      />
     </div>
   );
 }

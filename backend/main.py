@@ -17,11 +17,15 @@ from backend.config import (
 )
 from ml_pipeline.risk_engine import WEIGHT_XGB, WEIGHT_ISO, WEIGHT_FINGERPRINTS
 from backend.v2_adapter import get_v2_adapter
+import backend.reports_service as reports_service
+
+# Initialize Inspection Verification Reports schema (safe & non-destructive)
+reports_service.init_reports_tables()
 
 app = FastAPI(
     title="Forensier Backend API",
     description="AI-Powered Industrial Environmental Surveillance & Tampering Detection Backend",
-    version="2.3.0"
+    version="2.4.0"
 )
 
 # In production, set ALLOWED_ORIGINS to your Vercel URL (comma-separated).
@@ -329,6 +333,20 @@ def get_current_user(authorization: Optional[str] = Header(None)) -> Dict[str, A
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail=f"Invalid authentication token: {str(e)}"
         )
+
+def get_optional_current_user(authorization: Optional[str] = Header(None)) -> Optional[Dict[str, Any]]:
+    """Decodes token if present; returns None if header missing or invalid."""
+    if not authorization:
+        return None
+    try:
+        token = authorization.replace("Bearer ", "").strip()
+        if token in ["admin_token", "inspector_token"]:
+            role = "admin" if "admin" in token else "inspector"
+            return {"username": role, "role": role, "sub": role}
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        return payload
+    except Exception:
+        return None
 
 def require_role(roles: List[str]):
     def dependency(user: Dict[str, Any] = Depends(get_current_user)):
@@ -956,14 +974,188 @@ def get_data_quality():
     }
 
 # -------------------------------------------------------------
-# 7. Reports Center & Generation
+# 7. Inspection Verification Reports & Admin Review
 # -------------------------------------------------------------
+class ReportCreateRequest(BaseModel):
+    alert_id: str
+    inspection_date: str
+    checks_performed: List[str]
+    findings: str
+    outcome: str
+    other_checks_description: Optional[str] = None
+    evidence_references: Optional[Dict[str, Any]] = None
+    case_id: Optional[str] = None
+    submit_immediately: Optional[bool] = False
+
+class ReportUpdateRequest(BaseModel):
+    inspection_date: Optional[str] = None
+    checks_performed: Optional[List[str]] = None
+    findings: Optional[str] = None
+    outcome: Optional[str] = None
+    other_checks_description: Optional[str] = None
+    evidence_references: Optional[Dict[str, Any]] = None
+    case_id: Optional[str] = None
+
+class ReportReviewRequest(BaseModel):
+    decision: str  # 'Reviewed' or 'Further Information Required'
+    admin_notes: str
+
+
+@app.get("/api/reports/alerts/status")
+def get_reports_alert_status():
+    """Returns mapping of alert_id -> {report_id, status, inspection_date, updated_at}."""
+    return reports_service.get_alert_report_statuses()
+
+
 @app.get("/api/reports")
-def list_reports(type: Optional[str] = Query(None), date_range: Optional[str] = Query(None)):
-    return {
-        "status": "not_implemented",
-        "message": "Reports listing endpoint is a feature stub and is not backed by persistent report storage yet."
-    }
+def list_reports(
+    status: Optional[str] = Query(None),
+    alert_id: Optional[str] = Query(None),
+    factory_id: Optional[str] = Query(None),
+    limit: int = Query(50),
+    offset: int = Query(0)
+):
+    """Lists inspection reports with optional status, alert, and factory filtering."""
+    return reports_service.list_reports(
+        status=status,
+        alert_id=alert_id,
+        factory_id=factory_id,
+        limit=limit,
+        offset=offset
+    )
+
+
+@app.get("/api/reports/{report_id}")
+def get_single_report(report_id: str):
+    """Retrieves a single inspection verification report with full revision history."""
+    report = reports_service.get_report(report_id)
+    if not report:
+        raise HTTPException(status_code=404, detail=f"Report '{report_id}' not found.")
+    return report
+
+
+@app.post("/api/reports")
+def create_inspection_report(
+    req: ReportCreateRequest,
+    user: Optional[Dict[str, Any]] = Depends(get_optional_current_user)
+):
+    """Creates a new inspection verification report draft (or submits immediately)."""
+    if user:
+        inspector_id = user.get("sub") or user.get("username") or "inspector"
+        inspector_name = user.get("full_name") or user.get("username") or inspector_id
+    else:
+        inspector_id = "inspector"
+        inspector_name = "Inspector (Session Context)"
+
+    try:
+        report = reports_service.create_report(
+            alert_id=req.alert_id,
+            inspection_date=req.inspection_date,
+            checks_performed=req.checks_performed,
+            findings=req.findings,
+            outcome=req.outcome,
+            inspector_id=inspector_id,
+            inspector_name=inspector_name,
+            other_checks_description=req.other_checks_description,
+            evidence_references=req.evidence_references,
+            case_id=req.case_id,
+            status="Submitted for Review" if req.submit_immediately else "Draft"
+        )
+        return report
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to create report: {str(e)}")
+
+
+@app.put("/api/reports/{report_id}")
+def update_inspection_report(
+    report_id: str,
+    req: ReportUpdateRequest,
+    user: Optional[Dict[str, Any]] = Depends(get_optional_current_user)
+):
+    """Updates an editable report draft. Prevents silent overwrite of submitted/reviewed reports."""
+    actor_id = user.get("sub") or user.get("username") if user else "inspector"
+    try:
+        report = reports_service.update_report(
+            report_id=report_id,
+            inspection_date=req.inspection_date,
+            checks_performed=req.checks_performed,
+            findings=req.findings,
+            outcome=req.outcome,
+            other_checks_description=req.other_checks_description,
+            evidence_references=req.evidence_references,
+            case_id=req.case_id,
+            actor_id=actor_id
+        )
+        return report
+    except KeyError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except ValueError as e:
+        raise HTTPException(status_code=409, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to update report: {str(e)}")
+
+
+@app.post("/api/reports/{report_id}/submit")
+def submit_inspection_report(
+    report_id: str,
+    user: Optional[Dict[str, Any]] = Depends(get_optional_current_user)
+):
+    """Submits a draft report for administrator review."""
+    actor_id = user.get("sub") or user.get("username") if user else "inspector"
+    try:
+        report = reports_service.submit_report(report_id=report_id, actor_id=actor_id)
+        return report
+    except KeyError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to submit report: {str(e)}")
+
+
+@app.post("/api/reports/{report_id}/review")
+def review_inspection_report(
+    report_id: str,
+    req: ReportReviewRequest,
+    user: Optional[Dict[str, Any]] = Depends(get_optional_current_user)
+):
+    """
+    Administrator review decision.
+    Marks report as 'Reviewed' or requests 'Further Information Required'.
+    """
+    if user and user.get("role") and user.get("role") != "admin":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied: Only administrators can review inspection reports."
+        )
+
+    admin_id = user.get("sub") or user.get("username") if user else "administrator"
+    try:
+        report = reports_service.review_report(
+            report_id=report_id,
+            decision=req.decision,
+            admin_notes=req.admin_notes,
+            admin_id=admin_id
+        )
+        return report
+    except KeyError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to review report: {str(e)}")
+
+
+@app.get("/api/reports/{report_id}/revisions")
+def get_report_revisions(report_id: str):
+    """Retrieves full append-only audit trail and revision snapshots for a report."""
+    report = reports_service.get_report(report_id)
+    if not report:
+        raise HTTPException(status_code=404, detail=f"Report '{report_id}' not found.")
+    return {"report_id": report_id, "revisions": report.get("revisions", [])}
+
 
 @app.post("/api/reports/generate")
 def generate_report(report_type: str = "Surveillance Digest"):

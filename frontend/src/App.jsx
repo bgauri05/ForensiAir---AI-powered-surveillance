@@ -119,20 +119,20 @@ export default function App() {
       case 'dashboard':
         return <ExecutiveDashboardPage onNavigate={handleNavigate} />;
       case 'ai-analysis':
-        return <AIAnalysisPage onNavigate={handleNavigate} selectedFactoryId={selectedFactoryId} />;
+        return <AIAnalysisPage onNavigate={handleNavigate} selectedFactoryId={selectedFactoryId} currentUser={currentUser} />;
       case 'institutional-oversight':
         return <InstitutionalOversightPage onNavigate={handleNavigate} />;
       case 'factories':
       case 'factory-detail':
         return <FactoryDetailDossierPage onNavigate={handleNavigate} selectedFactoryId={selectedFactoryId} />;
       case 'reports':
-        return <ReportsCenterPage onNavigate={handleNavigate} />;
+        return <ReportsCenterPage onNavigate={handleNavigate} currentUser={currentUser} />;
       case 'dataset-quality':
         return <DatasetQualityPage onNavigate={handleNavigate} />;
       case 'administration':
         return <AdminPortalPage onNavigate={handleNavigate} />;
       case 'alerts':
-        return <AlertsPage onNavigate={handleNavigate} />;
+        return <AlertsPage onNavigate={handleNavigate} currentUser={currentUser} />;
       case 'settings':
         return <SettingsPage currentUser={currentUser} onLogout={handleLogout} />;
       default:
